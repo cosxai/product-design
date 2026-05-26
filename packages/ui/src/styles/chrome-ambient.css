@@ -1,0 +1,222 @@
+/* Ambient Glass chrome — component overrides.
+   Tokens.css supplies the gradient backdrop + glass surface
+   tokens + Superbar gradient. This file makes every chrome
+   surface translucent with backdrop-filter blur so the ambient
+   mesh shows through, and threads the Superbar accent into the
+   places it belongs (active list items, AI input divider). */
+
+html[data-ck-chrome="ambient"] body {
+  /* Pin the ambient mesh to the viewport so it doesn't scroll
+     with content — feels like a real desktop wallpaper. */
+  background-attachment: fixed;
+  font-weight: 400;
+}
+
+/* ===== Layout chrome: glass surfaces over the mesh ============ */
+
+html[data-ck-chrome="ambient"] [data-ck-leftnav] {
+  background: var(--ck-bg-sidebar) !important;
+  backdrop-filter: var(--ck-blur-window);
+  -webkit-backdrop-filter: var(--ck-blur-window);
+  border-right: 1px solid var(--ck-border-subtle);
+}
+
+html[data-ck-chrome="ambient"] [data-ck-topbar] {
+  background: var(--ck-bg-sidebar) !important;
+  backdrop-filter: var(--ck-blur-window);
+  -webkit-backdrop-filter: var(--ck-blur-window);
+  border-bottom: 1px solid var(--ck-border-subtle);
+}
+
+/* ===== Cards ================================================= */
+
+html[data-ck-chrome="ambient"] .ck-card {
+  background: var(--ck-bg-surface);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 16px;
+  box-shadow: var(--ck-shadow-1);
+  backdrop-filter: var(--ck-blur-window);
+  -webkit-backdrop-filter: var(--ck-blur-window);
+}
+html[data-ck-chrome="ambient"] .ck-card__head {
+  border-bottom: 1px solid var(--ck-border-subtle);
+}
+html[data-ck-chrome="ambient"] .ck-card__foot {
+  border-top: 1px solid var(--ck-border-subtle);
+  background: transparent;
+}
+
+/* ===== Buttons — soft pills, no chunky shadow ================ */
+
+html[data-ck-chrome="ambient"] .ck-btn,
+html[data-ck-chrome="ambient"] .ck-actionbar-btn {
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  transition: background var(--ck-dur-fast) var(--ck-ease),
+    border-color var(--ck-dur-fast) var(--ck-ease),
+    filter var(--ck-dur-fast) var(--ck-ease);
+}
+html[data-ck-chrome="ambient"] .ck-btn--primary {
+  background: var(--ck-accent);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: var(--ck-shadow-1);
+}
+html[data-ck-chrome="ambient"] .ck-btn--primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+html[data-ck-chrome="ambient"] .ck-btn--secondary {
+  background: var(--ck-bg-surface);
+  border-color: var(--ck-border-subtle);
+  color: var(--ck-text-primary);
+  backdrop-filter: var(--ck-blur-window);
+}
+html[data-ck-chrome="ambient"] .ck-btn--ghost {
+  background: transparent;
+  border: none;
+}
+html[data-ck-chrome="ambient"] .ck-btn--ghost:hover:not(:disabled) {
+  background: var(--ck-bg-surface);
+}
+
+/* ===== Inputs / Textareas =================================== */
+
+html[data-ck-chrome="ambient"] .ck-input,
+html[data-ck-chrome="ambient"] .ck-textarea {
+  background: var(--ck-bg-muted);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 10px;
+  color: var(--ck-text-primary);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+html[data-ck-chrome="ambient"] .ck-input:focus-visible,
+html[data-ck-chrome="ambient"] .ck-textarea:focus-visible {
+  outline: none;
+  border-color: var(--ck-accent-border) !important;
+  box-shadow: 0 0 0 3px var(--ck-accent-muted) !important;
+}
+
+/* ===== Typography =========================================== */
+
+html[data-ck-chrome="ambient"] h1,
+html[data-ck-chrome="ambient"] .ck-h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+html[data-ck-chrome="ambient"] h2,
+html[data-ck-chrome="ambient"] .ck-h2 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+html[data-ck-chrome="ambient"] h3,
+html[data-ck-chrome="ambient"] .ck-h3 {
+  font-weight: 600;
+}
+
+/* ===== NavItem — active gets right-edge Superbar strip ======= */
+
+html[data-ck-chrome="ambient"] [data-ck-navitem] {
+  position: relative;
+  font-weight: 500 !important;
+  color: var(--ck-text-secondary) !important;
+  transition: background var(--ck-dur-fast) var(--ck-ease),
+    color var(--ck-dur-fast) var(--ck-ease);
+}
+html[data-ck-chrome="ambient"] [data-ck-navitem]:not([data-active="true"]) {
+  background: transparent !important;
+}
+html[data-ck-chrome="ambient"] [data-ck-navitem]:not([data-active="true"]):hover {
+  background: var(--ck-bg-surface) !important;
+  color: var(--ck-text-primary) !important;
+}
+html[data-ck-chrome="ambient"] [data-ck-navitem][data-active="true"] {
+  background: var(--ck-bg-surface) !important;
+  color: var(--ck-text-primary) !important;
+  font-weight: 600 !important;
+}
+/* The Superbar right-edge strip — signature accent. 3 px wide,
+   inset 6 px top/bottom so it doesn't kiss the border-radius. */
+html[data-ck-chrome="ambient"] [data-ck-navitem][data-active="true"]::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  background: var(--ck-superbar);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* ===== Search trigger ====================================== */
+
+html[data-ck-chrome="ambient"] [data-ck-search-trigger] {
+  background: var(--ck-bg-muted) !important;
+  border: 1px solid var(--ck-border-subtle) !important;
+  border-radius: 10px !important;
+  backdrop-filter: var(--ck-blur-window);
+}
+
+/* ===== Tags / badges — soft tinted pills ===================== */
+
+html[data-ck-chrome="ambient"] [data-ck-tag] {
+  border-radius: 8px !important;
+  padding: 3px 10px !important;
+  font-weight: 600 !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+html[data-ck-chrome="ambient"] [data-ck-tag][data-tone="accent"] {
+  background: color-mix(in oklab, var(--ck-accent) 14%, transparent) !important;
+  color: var(--ck-accent) !important;
+}
+html[data-ck-chrome="ambient"] [data-ck-tag][data-tone="success"] {
+  background: color-mix(in oklab, var(--ck-success) 14%, transparent) !important;
+  color: var(--ck-success) !important;
+}
+html[data-ck-chrome="ambient"] [data-ck-tag][data-tone="warning"] {
+  background: color-mix(in oklab, var(--ck-warning) 14%, transparent) !important;
+  color: var(--ck-warning) !important;
+}
+html[data-ck-chrome="ambient"] [data-ck-tag][data-tone="critical"] {
+  background: color-mix(in oklab, var(--ck-critical) 14%, transparent) !important;
+  color: var(--ck-critical) !important;
+}
+html[data-ck-chrome="ambient"] [data-ck-tag][data-tone="neutral"] {
+  background: var(--ck-bg-muted) !important;
+  color: var(--ck-text-secondary) !important;
+}
+
+/* ===== Action bar — floating glass pill ===================== */
+
+html[data-ck-chrome="ambient"] [data-ck-actionbar] {
+  background: var(--ck-bg-sidebar) !important;
+  backdrop-filter: var(--ck-blur-overlay);
+  -webkit-backdrop-filter: var(--ck-blur-overlay);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 24px;
+  box-shadow: var(--ck-shadow-2);
+}
+
+/* ===== Modal — heavy backdrop blur ========================== */
+
+html[data-ck-chrome="ambient"] [role="dialog"] > div:first-child {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: var(--ck-blur-overlay);
+  -webkit-backdrop-filter: var(--ck-blur-overlay);
+}
+html[data-ck-chrome="ambient"] [role="dialog"] > div > div {
+  border-radius: 20px;
+}
+
+/* ===== Reduced motion ====================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-ck-chrome="ambient"] * {
+    transition: none !important;
+  }
+}

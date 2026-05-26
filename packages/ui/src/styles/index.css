@@ -1,0 +1,198 @@
+/* @cosx/ui — single stylesheet consumers import.
+   Order matters: fonts → tokens → base → component CSS →
+   chrome variants. Each chrome-* file is scoped to a
+   `html[data-ck-chrome="<name>"]` selector so it's a no-op
+   until that chrome is selected. */
+
+@import "./fonts.css";
+@import "./tokens.css";
+@import "./base.css";
+@import "./chrome-editorial.css";
+@import "./chrome-neobrutalism.css";
+@import "./chrome-ambient.css";
+@import "./chrome-swiss.css";
+@import "./chrome-terminal.css";
+@import "./chrome-bento.css";
+@import "./chrome-frutiger.css";
+@import "./chrome-riso.css";
+@import "./chrome-sketch.css";
+
+/* ---------- Button (Phase 0 bootstrap — Phase 3 will replace
+              this with full variant + size + loading-state styles
+              keyed off the tokens block). ---------- */
+
+.ck-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--ck-radius-sm);
+  font: 500 13px/1 var(--ck-font-sans);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ck-text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--ck-dur-fast) var(--ck-ease), border-color var(--ck-dur-fast) var(--ck-ease);
+}
+
+.ck-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ck-btn--primary {
+  background: var(--ck-accent);
+  color: var(--ck-text-inverse);
+}
+.ck-btn--primary:hover { background: var(--ck-accent-hover); }
+
+.ck-btn--secondary {
+  background: var(--ck-bg-surface);
+  color: var(--ck-text-primary);
+  border-color: var(--ck-border-strong);
+}
+.ck-btn--secondary:hover { background: var(--ck-bg-muted); }
+
+.ck-btn--ghost {
+  background: transparent;
+  color: var(--ck-text-primary);
+}
+.ck-btn--ghost:hover { background: var(--ck-bg-muted); }
+
+.ck-btn--icon {
+  background: transparent;
+  color: var(--ck-text-secondary);
+  width: 32px;
+  padding: 0;
+  justify-content: center;
+}
+.ck-btn--icon:hover {
+  background: var(--ck-bg-muted);
+  color: var(--ck-text-primary);
+}
+
+/* ---------- Card ---------- */
+.ck-card {
+  background: var(--ck-bg-surface);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: var(--ck-radius-md);
+  overflow: hidden;
+}
+html[data-ck-chrome="seamless"] .ck-card {
+  border-color: transparent;
+  border-radius: 14px;
+  box-shadow: var(--ck-shadow-1);
+}
+.ck-card__head {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--ck-border-subtle);
+}
+html[data-ck-chrome="seamless"] .ck-card__head {
+  border-bottom-color: transparent;
+  padding-bottom: 8px;
+}
+.ck-card__body {
+  padding: 20px;
+}
+.ck-card__foot {
+  padding: 12px 20px;
+  border-top: 1px solid var(--ck-border-subtle);
+  background: var(--ck-bg-surface-2);
+}
+html[data-ck-chrome="seamless"] .ck-card__foot {
+  border-top-color: transparent;
+  background: transparent;
+}
+
+/* ---------- Input + Textarea focus state ---------- */
+.ck-input:focus-visible,
+.ck-textarea:focus-visible {
+  border-color: var(--ck-accent) !important;
+  box-shadow: 0 0 0 3px var(--ck-accent-muted);
+}
+.ck-input::placeholder,
+.ck-textarea::placeholder {
+  color: var(--ck-text-tertiary);
+}
+
+/* ---------- ActionBar — button row inside <ActionBar> ---------- */
+.ck-actionbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ck-text-primary);
+  font: 500 13px/1 var(--ck-font-sans);
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--ck-dur-fast) var(--ck-ease), color var(--ck-dur-fast) var(--ck-ease);
+}
+.ck-actionbar-btn:hover:not(:disabled):not(.ck-actionbar-btn--primary) {
+  background: var(--ck-bg-muted);
+}
+.ck-actionbar-btn--primary {
+  background: var(--ck-accent);
+  color: var(--ck-text-inverse);
+}
+.ck-actionbar-btn--primary:hover:not(:disabled) {
+  background: var(--ck-accent-hover);
+}
+.ck-actionbar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Hide labels below 768 px (the standard md breakpoint).
+   Icons + tooltips remain — the bar's still informative on phones. */
+@media (max-width: 767px) {
+  .ck-actionbar-label {
+    display: none;
+  }
+}
+
+/* Spring entry from the left edge — only applied when the bar
+   sits at its default centred position. A dragged custom position
+   doesn't replay this on mount. Back-out easing overshoots ~10%
+   so the bar reads as "stuck to the edge". */
+@keyframes ck-actionbar-enter {
+  from {
+    opacity: 0;
+    transform: translateX(calc(-50% - 240px));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+}
+.ck-actionbar-enter {
+  animation: ck-actionbar-enter 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Phone collapsed-to-handle peek-in animation. Pairs with the
+   half-pill render path in ActionBar.tsx. */
+@keyframes ck-action-handle-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-110%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.ck-action-handle-enter {
+  animation: ck-action-handle-enter 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ck-actionbar-enter,
+  .ck-action-handle-enter {
+    animation: none;
+  }
+}

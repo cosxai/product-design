@@ -1,0 +1,315 @@
+/* Neobrutalism chrome — component overrides.
+   Token overrides live in tokens.css (palette + typography +
+   shadow primitives). This file ships the signature interactions:
+   2 px black borders everywhere, 4 px offset hard shadows on
+   interactive elements, and the hover-translate effect that
+   pushes elements toward their shadow.
+   Loads alongside index.css; takes effect only when
+   html[data-ck-chrome="neobrutalism"] is set on the root. */
+
+html[data-ck-chrome="neobrutalism"] body {
+  font-weight: 500;
+  font-feature-settings: "kern", "ss01";
+}
+
+/* ===== Buttons ============================================== */
+
+/* Standard neobrut button — thick border, hard offset shadow.
+   On hover the element translates toward its shadow and the
+   shadow shrinks; on active it fully merges with the shadow.
+   This "physical push" reads as the signature interaction. */
+html[data-ck-chrome="neobrutalism"] .ck-btn,
+html[data-ck-chrome="neobrutalism"] .ck-actionbar-btn {
+  border: 2px solid var(--neobrut-ink);
+  border-radius: 5px;
+  box-shadow: 4px 4px 0 0 var(--neobrut-ink);
+  font-family: var(--ck-font-sans);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+html[data-ck-chrome="neobrutalism"] .ck-btn:hover:not(:disabled),
+html[data-ck-chrome="neobrutalism"] .ck-actionbar-btn:hover:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 var(--neobrut-ink);
+}
+html[data-ck-chrome="neobrutalism"] .ck-btn:active:not(:disabled),
+html[data-ck-chrome="neobrutalism"] .ck-actionbar-btn:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 var(--neobrut-ink);
+}
+
+html[data-ck-chrome="neobrutalism"] .ck-btn--primary {
+  background: var(--ck-accent);
+  color: #000;
+}
+html[data-ck-chrome="neobrutalism"] .ck-btn--primary:hover:not(:disabled) {
+  background: var(--ck-accent);
+}
+html[data-ck-chrome="neobrutalism"] .ck-btn--secondary,
+html[data-ck-chrome="neobrutalism"] .ck-btn--ghost {
+  background: var(--ck-bg-surface);
+  color: var(--ck-text-primary);
+}
+html[data-ck-chrome="neobrutalism"] .ck-btn--secondary:hover:not(:disabled),
+html[data-ck-chrome="neobrutalism"] .ck-btn--ghost:hover:not(:disabled) {
+  background: var(--ck-bg-surface);
+}
+
+/* ===== Cards ================================================ */
+
+html[data-ck-chrome="neobrutalism"] .ck-card {
+  background: var(--ck-bg-surface);
+  border: 2px solid var(--neobrut-ink);
+  border-radius: 5px;
+  box-shadow: 4px 4px 0 0 var(--neobrut-ink);
+}
+/* No internal dividers + no footer tint — the reference card is
+   one cohesive chunky surface. Header eyebrow / body / footer
+   buttons all sit on the same near-black plane; chunky buttons
+   inside the footer provide their own visual separation via
+   border + shadow. */
+html[data-ck-chrome="neobrutalism"] .ck-card__head {
+  border-bottom: none;
+  padding: 24px 24px 0;
+}
+html[data-ck-chrome="neobrutalism"] .ck-card__body {
+  padding: 16px 24px;
+}
+html[data-ck-chrome="neobrutalism"] .ck-card__foot {
+  border-top: none;
+  background: transparent;
+  padding: 0 24px 24px;
+}
+
+/* ===== Inputs / Textareas =================================== */
+
+html[data-ck-chrome="neobrutalism"] .ck-input,
+html[data-ck-chrome="neobrutalism"] .ck-textarea {
+  border: 2px solid var(--neobrut-ink);
+  border-radius: 5px;
+  font-family: var(--ck-font-sans);
+  font-weight: 500;
+  background: #FFFFFF;
+  color: #000000;
+  transition: box-shadow 120ms ease;
+}
+html[data-ck-theme="dark"][data-ck-chrome="neobrutalism"] .ck-input,
+html[data-ck-theme="dark"][data-ck-chrome="neobrutalism"] .ck-textarea {
+  background: var(--ck-bg-surface);
+  color: var(--ck-text-primary);
+}
+html[data-ck-chrome="neobrutalism"] .ck-input:focus-visible,
+html[data-ck-chrome="neobrutalism"] .ck-textarea:focus-visible {
+  outline: none;
+  border-color: var(--neobrut-ink) !important;
+  box-shadow: 4px 4px 0 0 var(--neobrut-ink);
+}
+
+/* ===== Typography =========================================== */
+
+html[data-ck-chrome="neobrutalism"] h1,
+html[data-ck-chrome="neobrutalism"] .ck-h1 {
+  font-family: var(--ck-font-display);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+html[data-ck-chrome="neobrutalism"] h2,
+html[data-ck-chrome="neobrutalism"] .ck-h2 {
+  font-family: var(--ck-font-display);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+html[data-ck-chrome="neobrutalism"] h3,
+html[data-ck-chrome="neobrutalism"] .ck-h3 {
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+/* Eyebrow / tag — neobrut versions are filled pills, not the
+   tracked uppercase the editorial chrome uses. */
+html[data-ck-chrome="neobrutalism"] .ck-tag {
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+
+/* ===== Action bar =========================================== */
+
+html[data-ck-chrome="neobrutalism"] [data-ck-actionbar] {
+  border: 2px solid var(--neobrut-ink);
+  border-radius: 5px;
+  box-shadow: 4px 4px 0 0 var(--neobrut-ink);
+  background: var(--ck-bg-surface);
+}
+
+/* ===== Layout chrome ======================================== */
+
+/* Sidebar + topbar both pin to --ck-bg-surface so the chrome
+   layer is visually unified (light: paper white; dark: dark
+   gray near-black). The canvas behind the main content stays
+   the distinctive hue — cream in light, navy in dark — and the
+   chrome reads as a separate band around it.
+   Topbar gets !important too because <Topbar> sets bg via
+   inline style and we want this override to win across chromes. */
+html[data-ck-chrome="neobrutalism"] [data-ck-leftnav],
+html[data-ck-chrome="neobrutalism"] [data-ck-topbar] {
+  background: var(--ck-bg-surface) !important;
+}
+html[data-ck-chrome="neobrutalism"] [data-ck-leftnav] {
+  border-right: 2px solid var(--neobrut-ink);
+}
+html[data-ck-chrome="neobrutalism"] [data-ck-topbar] {
+  border-bottom: 2px solid var(--neobrut-ink);
+}
+
+/* ===== NavItem ============================================== */
+
+/* Active state — accent fill, 2 px black border, hard black
+   offset shadow, black text. The reference site reserves the
+   chunky treatment for the active item; inactive rows are flat
+   text on the sidebar surface so the active one truly stands
+   out. Earlier I made every row chunky and it read noisy. */
+html[data-ck-chrome="neobrutalism"] [data-ck-navitem][data-active="true"] {
+  background: var(--ck-accent) !important;
+  color: #000 !important;
+  border: 2px solid var(--neobrut-ink) !important;
+  box-shadow: 3px 3px 0 0 var(--neobrut-ink) !important;
+  border-radius: 5px !important;
+  font-weight: 700 !important;
+}
+html[data-ck-chrome="neobrutalism"] [data-ck-navitem]:not([data-active="true"]) {
+  background: transparent !important;
+  border: 2px solid transparent !important;
+  font-weight: 600 !important;
+  color: var(--ck-text-primary) !important;
+}
+html[data-ck-chrome="neobrutalism"] [data-ck-navitem]:not([data-active="true"]):hover {
+  background: var(--ck-bg-canvas) !important;
+}
+
+/* ===== Search trigger ====================================== */
+
+html[data-ck-chrome="neobrutalism"] [data-ck-search-trigger] {
+  background: var(--ck-bg-surface) !important;
+  border: 2px solid var(--neobrut-ink) !important;
+  border-radius: 5px !important;
+  box-shadow: 3px 3px 0 0 var(--neobrut-ink) !important;
+}
+html[data-ck-chrome="neobrutalism"] [data-ck-search-trigger]:hover {
+  transform: translate(1.5px, 1.5px);
+  box-shadow: 1.5px 1.5px 0 0 var(--neobrut-ink) !important;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+/* ===== Tags ================================================= */
+
+/* Every tag becomes a chunky filled pill with 2 px border + a
+   small hard shadow. Both filled and bare variants get the same
+   physical treatment — neobrutalism doesn't do "bare label".
+   Tone-specific colours come from the inline style on the
+   component; we just add the structural overrides. */
+html[data-ck-chrome="neobrutalism"] [data-ck-tag] {
+  padding: 3px 8px !important;
+  border: 2px solid var(--neobrut-ink) !important;
+  border-radius: 4px !important;
+  box-shadow: 2px 2px 0 0 var(--neobrut-ink) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  /* Text on the saturated-tone fill is pure black in both modes —
+     same as main-foreground in the reference. */
+  color: #000 !important;
+}
+
+/* Bare tags (no `filled` prop) — set background from tone via
+   data-tone selector so the chunky pill still pops. */
+html[data-ck-chrome="neobrutalism"] [data-ck-tag]:not([data-filled="true"])[data-tone="accent"] {
+  background: var(--ck-accent) !important;
+}
+html[data-ck-chrome="neobrutalism"] [data-ck-tag]:not([data-filled="true"])[data-tone="success"] {
+  background: var(--ck-success) !important;
+}
+html[data-ck-chrome="neobrutalism"] [data-ck-tag]:not([data-filled="true"])[data-tone="warning"] {
+  background: var(--ck-warning) !important;
+}
+html[data-ck-chrome="neobrutalism"] [data-ck-tag]:not([data-filled="true"])[data-tone="critical"] {
+  background: var(--ck-critical) !important;
+}
+html[data-ck-chrome="neobrutalism"] [data-ck-tag]:not([data-filled="true"])[data-tone="neutral"] {
+  background: var(--ck-bg-surface) !important;
+}
+
+/* ===== Modal backdrop ======================================= */
+
+html[data-ck-chrome="neobrutalism"] [role="dialog"] > div:first-child {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: none;
+}
+/* Modals get a bigger 8 px shadow per brief — heavier than
+   ambient cards because they demand attention. */
+html[data-ck-chrome="neobrutalism"] [role="dialog"] > div > div {
+  border: 2px solid var(--neobrut-ink);
+  border-radius: 8px;
+  box-shadow: 8px 8px 0 0 var(--neobrut-ink);
+}
+
+/* ===== ChromeCard (docs theming page) =======================
+   Any button with aria-pressed (the chrome-picker cards on
+   /theming) — both active and inactive get the chunky 2 px
+   border + offset shadow. Active also gets the accent fill +
+   black-text override. */
+html[data-ck-chrome="neobrutalism"] button[aria-pressed] {
+  border: 2px solid var(--neobrut-ink) !important;
+  border-radius: 6px !important;
+  box-shadow: 4px 4px 0 0 var(--neobrut-ink) !important;
+  transition: transform 120ms ease, box-shadow 120ms ease,
+    background 120ms ease !important;
+}
+html[data-ck-chrome="neobrutalism"] button[aria-pressed]:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 var(--neobrut-ink) !important;
+}
+html[data-ck-chrome="neobrutalism"] button[aria-pressed="true"] {
+  background: var(--ck-accent) !important;
+  color: #000 !important;
+}
+html[data-ck-chrome="neobrutalism"] button[aria-pressed="true"] * {
+  color: #000 !important;
+}
+
+/* ===== Marquee animation ==================================== */
+
+@keyframes ck-neobrut-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ===== Toggle / Checkbox visual touch ======================== */
+
+html[data-ck-chrome="neobrutalism"] [role="checkbox"],
+html[data-ck-chrome="neobrutalism"] [role="switch"] {
+  border-width: 2px !important;
+  border-color: var(--neobrut-ink) !important;
+  border-radius: 4px;
+}
+html[data-ck-chrome="neobrutalism"] [role="switch"] {
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-ck-chrome="neobrutalism"] .ck-btn,
+  html[data-ck-chrome="neobrutalism"] .ck-actionbar-btn {
+    transition: none;
+  }
+  html[data-ck-chrome="neobrutalism"] .ck-btn:hover:not(:disabled),
+  html[data-ck-chrome="neobrutalism"] .ck-actionbar-btn:hover:not(:disabled) {
+    transform: none;
+    box-shadow: 4px 4px 0 0 var(--neobrut-ink);
+  }
+}

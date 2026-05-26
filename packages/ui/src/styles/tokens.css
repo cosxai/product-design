@@ -1,0 +1,976 @@
+/* ============================================================
+   @cosx/ui — design tokens
+   Variables only. No selectors that target consumer markup,
+   no app-specific overrides (those belong in the consumer).
+   Two axes: theme (light | dark) via html[data-ck-theme], chrome
+   (classic | seamless) via html[data-ck-chrome]. Both default to
+   light/classic on :root.
+   ============================================================ */
+
+:root {
+  /* ---------- Fonts ----------
+     Four slots — sans (UI body), mono (metadata / kbd / coordinates),
+     serif (editorial body), and display (headlines). By default
+     display = sans so headings inherit the same neutral grotesk;
+     editorial chrome overrides display → serif to flip headlines
+     to a high-contrast serif without touching component code. */
+  --ck-font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+  --ck-font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --ck-font-serif: "Playfair Display", "GT Sectra", "Canela", Georgia, serif;
+  --ck-font-display: var(--ck-font-sans);
+
+  /* ---------- Radii / motion ---------- */
+  --ck-radius-xs: 4px;
+  --ck-radius-sm: 6px;
+  --ck-radius-md: 8px;
+  --ck-radius-lg: 12px;
+  --ck-radius-xl: 16px;
+  --ck-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ck-dur-fast: 150ms;
+  --ck-dur-page: 260ms;
+
+  /* ---------- Mono type sizes ----------
+     Drives the eyebrow / tag / meta scale. Body sans sizes are
+     set inline on typography utility classes. */
+  --ck-mono-tag-size: 10px;
+  --ck-mono-xs-size: 11px;
+  --ck-mono-sm-size: 12px;
+  --ck-mono-md-size: 14px;
+
+  /* ---------- Light palette (default) ---------- */
+  --ck-bg-canvas:      #ECEEF2;
+  --ck-bg-surface:     #FFFFFF;
+  --ck-bg-surface-2:   #F4F6F9;
+  --ck-bg-muted:       #E5E8EE;
+  --ck-bg-sidebar:     #F4F4F6;
+
+  --ck-border-subtle:  #DDE0E6;
+  --ck-border-strong:  #C5C9D2;
+
+  --ck-text-primary:   #0A0E1A;
+  --ck-text-secondary: #4A5160;
+  --ck-text-tertiary:  #8B92A3;
+  --ck-text-disabled:  #B8BDC8;
+  --ck-text-inverse:   #FFFFFF;
+
+  /* Accent — single primitive, every shade derives via color-mix().
+     Runtime brand override: stamp --ck-accent-light-override or
+     --ck-accent-dark-override on documentElement.style. */
+  --ck-accent:         var(--ck-accent-light-override, #534AB7);
+  --ck-accent-hover:   color-mix(in oklab, var(--ck-accent), black 10%);
+  --ck-accent-active:  color-mix(in oklab, var(--ck-accent), black 18%);
+  --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 8%, transparent);
+  --ck-accent-border:  color-mix(in oklab, var(--ck-accent) 35%, transparent);
+  --ck-border-focus:   var(--ck-accent);
+
+  /* Status */
+  --ck-success:        #0E9F6E;
+  --ck-success-muted:  #E3F5EE;
+  --ck-warning:        #D97706;
+  --ck-warning-muted:  #FEF3E7;
+  --ck-critical:       #DC2626;
+  --ck-critical-muted: #FCEAEA;
+  --ck-info:           var(--ck-accent);
+  --ck-info-muted:     var(--ck-accent-muted);
+
+  /* Shadows */
+  --ck-shadow-1: 0 1px 2px rgba(10, 14, 26, 0.04);
+  --ck-shadow-2: 0 4px 12px rgba(10, 14, 26, 0.06), 0 1px 2px rgba(10, 14, 26, 0.04);
+  --ck-shadow-3: 0 16px 48px rgba(10, 14, 26, 0.12), 0 4px 12px rgba(10, 14, 26, 0.06);
+
+  /* Layout vars — owned by layout primitives. Default 0 so pages
+     that don't mount the rails don't reserve space. */
+  --ck-leftnav-width: 0px;
+  --ck-rightrail-width: 0px;
+  --ck-tabbar-height: 0px;
+  --ck-breadcrumb-height: 64px;
+}
+
+/* ---------- Dark theme ---------- */
+html[data-ck-theme="dark"] {
+  --ck-bg-canvas:      #0B0D12;
+  --ck-bg-surface:     #13161D;
+  --ck-bg-surface-2:   #1A1E27;
+  --ck-bg-muted:       #181B23;
+  --ck-bg-sidebar:     #090B10;
+
+  --ck-border-subtle:  #1F242E;
+  --ck-border-strong:  #2A303C;
+
+  --ck-text-primary:   #F2F3F5;
+  --ck-text-secondary: #A0A6B3;
+  --ck-text-tertiary:  #6B7280;
+  --ck-text-disabled:  #4A5160;
+  --ck-text-inverse:   #0A0E1A;
+
+  --ck-accent:         var(--ck-accent-dark-override, #7B72D9);
+  --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 12%, transparent);
+  --ck-accent-border:  color-mix(in oklab, var(--ck-accent) 32%, transparent);
+
+  --ck-success:        #34D399;  --ck-success-muted:  rgba(52, 211, 153, 0.12);
+  --ck-warning:        #FBBF24;  --ck-warning-muted:  rgba(251, 191, 36, 0.12);
+  --ck-critical:       #F87171;  --ck-critical-muted: rgba(248, 113, 113, 0.12);
+
+  --ck-shadow-1: none;
+  --ck-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --ck-shadow-3: 0 24px 64px rgba(0, 0, 0, 0.5);
+  --ck-glow-accent: 0 0 32px color-mix(in srgb, var(--ck-accent) 25%, transparent);
+}
+
+/* ---------- Seamless chrome — borders go transparent, layering
+              carried by background shifts. Things 3 / Linear /
+              Raycast feel. Combine with dark via
+              html[data-ck-theme='dark'][data-ck-chrome='seamless']. */
+html[data-ck-chrome="seamless"] {
+  --ck-bg-canvas:    #FAFAFB;
+  --ck-bg-sidebar:   #F4F4F6;
+  --ck-bg-surface:   #FFFFFF;
+  --ck-bg-surface-2: #FCFCFD;
+  --ck-bg-muted:     #F1F2F4;
+  --ck-border-subtle: transparent;
+  --ck-border-strong: rgba(10, 14, 26, 0.08);
+  --ck-shadow-1: 0 1px 2px rgba(10, 14, 26, 0.03);
+  --ck-shadow-2: 0 4px 16px rgba(10, 14, 26, 0.04), 0 1px 3px rgba(10, 14, 26, 0.03);
+}
+html[data-ck-theme="dark"][data-ck-chrome="seamless"] {
+  --ck-bg-canvas:    #0F1218;
+  --ck-bg-sidebar:   #090B10;
+  --ck-bg-surface:   #181C24;
+  --ck-bg-surface-2: #1F232D;
+  --ck-bg-muted:     #14171E;
+  --ck-border-subtle: transparent;
+  --ck-border-strong: rgba(255, 255, 255, 0.08);
+  --ck-shadow-1: none;
+  --ck-shadow-2: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Editorial chrome — print-magazine / art-quarterly
+              aesthetic. Cream paper canvas, coral accent, serif
+              headlines. Defaults to its own light variant; the
+              [data-ck-theme="dark"] variant flips to the inverted
+              "spotlight" surface from the brief. Pure white never
+              appears in either mode. */
+html[data-ck-chrome="editorial"] {
+  /* Cream paper, slightly green-tinted (--bg-paper) */
+  --ck-bg-canvas:    #ECE6D6;
+  --ck-bg-sidebar:   #E5DECB;
+  --ck-bg-surface:   #E5DECB;
+  --ck-bg-surface-2: #DCD4C0;
+  --ck-bg-muted:     #DCD4C0;
+
+  --ck-border-subtle: #A8A294;
+  --ck-border-strong: #6B6557;
+
+  /* Ink stack */
+  --ck-text-primary:   #0F0F0F;
+  --ck-text-secondary: #6B6557;
+  --ck-text-tertiary:  #A8A294;
+  --ck-text-disabled:  #C9C3B5;
+  --ck-text-inverse:   #ECE6D6;
+
+  /* Coral is THE accent. Ochre lives in --ck-warning for
+     secondary "guest star" use (the brief says one accent only;
+     ochre repurposes the warning slot since its tone matches). */
+  --ck-accent:         #E96E50;
+  --ck-accent-hover:   #D85A3E;
+  --ck-accent-active:  #C44D34;
+  --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 14%, transparent);
+  --ck-accent-border:  color-mix(in oklab, var(--ck-accent) 40%, transparent);
+  --ck-border-focus:   var(--ck-accent);
+
+  --ck-warning:        #C99A3A;
+  --ck-warning-muted:  color-mix(in oklab, var(--ck-warning) 18%, transparent);
+
+  /* Serif headlines + tracked-sans body. */
+  --ck-font-display: var(--ck-font-serif);
+
+  /* No drop shadows. 1 px hairlines do all the layering work. */
+  --ck-shadow-1: none;
+  --ck-shadow-2: none;
+  --ck-shadow-3: 0 2px 0 rgba(15, 15, 15, 0.04);
+}
+
+/* Dark editorial — coherent dark mode: charcoal canvas + lifted
+   charcoal cards + cream ink + coral accent. Like a magazine
+   printed on black paper. The "spotlight" inversion (cream paper
+   card on dark canvas) from the brief is intentionally OUT of the
+   global theme — it would break legibility when used as the
+   whole-page default (cream text on cream cards = invisible). For
+   genuine spotlight sections wrap content in <EditorialSpotlight>
+   which flips just its own subtree back to cream-on-dark. */
+html[data-ck-theme="dark"][data-ck-chrome="editorial"] {
+  --ck-bg-canvas:    #0E0E0E;
+  --ck-bg-sidebar:   #161616;
+  --ck-bg-surface:   #1A1A1A;
+  --ck-bg-surface-2: #232323;
+  --ck-bg-muted:     #161616;
+
+  /* Cream-tinted hairlines so dividers read against charcoal
+     without going stark white. */
+  --ck-border-subtle: rgba(244, 239, 224, 0.12);
+  --ck-border-strong: rgba(244, 239, 224, 0.24);
+
+  /* Cream ink stack — printed-on-black-paper feel. */
+  --ck-text-primary:   #F4EFE0;
+  --ck-text-secondary: #C9C3B5;
+  --ck-text-tertiary:  #8F897D;
+  --ck-text-disabled:  #5C5851;
+  --ck-text-inverse:   #0F0F0F;
+
+  /* Coral inherits from the parent editorial block. Bump muted/
+     border alpha so accent tints still register on charcoal
+     without going neon. */
+  --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 22%, transparent);
+  --ck-accent-border:  color-mix(in oklab, var(--ck-accent) 44%, transparent);
+}
+
+/* ---------- Neobrutalism chrome — thick 2 px borders, hard
+              offset shadows, pastel canvas, saturated accent.
+              Memphis-group-meets-shareware aesthetic. The signature
+              move (hover-translate) is wired in
+              chrome-neobrutalism.css; this block just sets the
+              colour + typography stack. */
+html[data-ck-chrome="neobrutalism"] {
+  --ck-bg-canvas:    #FEF2E8;
+  --ck-bg-sidebar:   #FEF2E8;
+  --ck-bg-surface:   #FFFFFF;
+  --ck-bg-surface-2: #E3DFF2;
+  --ck-bg-muted:     #E3DFF2;
+
+  /* All borders are pure black under neobrutalism — the brief
+     forbids gray. --neobrut-ink is the canonical "stamp colour"
+     used by every border + shadow in chrome-neobrutalism.css;
+     flips to near-white in dark mode (see below). */
+  --neobrut-ink:      #000000;
+  --ck-border-subtle: #000000;
+  --ck-border-strong: #000000;
+  --ck-border-focus:  #000000;
+
+  --ck-text-primary:   #000000;
+  --ck-text-secondary: #1A1A1A;
+  --ck-text-tertiary:  #4A4A4A;
+  --ck-text-disabled:  #999999;
+  --ck-text-inverse:   #FFFFFF;
+
+  /* Canonical blue accent. Override by setting --ck-accent-light-
+     override on documentElement to pick a different hero — the
+     brief approves lime, orange, violet, pink, yellow, teal. */
+  --ck-accent:         var(--ck-accent-light-override, #88AAEE);
+  --ck-accent-hover:   var(--ck-accent);
+  --ck-accent-active:  var(--ck-accent);
+  --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 30%, transparent);
+  --ck-accent-border:  #000000;
+
+  /* Status colours saturated per brief. */
+  --ck-success:        #A3E636;
+  --ck-warning:        #FFD23F;
+  --ck-critical:       #FF6B6B;
+
+  /* Display font — Archivo Black for headlines is the canonical
+     neobrutalism pick. Body uses Geist's heaviest weight. */
+  --ck-font-display: "Archivo Black", "Space Grotesk", var(--ck-font-sans);
+
+  /* Hard offset shadow primitive. Component CSS reads this so the
+     consistent "4 px offset, pure black, zero blur" reads through
+     every interactive surface. */
+  --ck-shadow-1: 2px 2px 0 0 var(--neobrut-ink);
+  --ck-shadow-2: 4px 4px 0 0 var(--neobrut-ink);
+  --ck-shadow-3: 8px 8px 0 0 var(--neobrut-ink);
+}
+
+html[data-ck-theme="dark"][data-ck-chrome="neobrutalism"] {
+  /* Dark canvas — deep saturated navy / purple. Lifted slightly
+     so the dark-gray card surface beneath it reads as DARKER
+     than canvas. Mirrors the reference site (neobrutalism.dev)
+     pattern exactly: canvas is the brighter hue, cards sit
+     darker, borders + shadows stay PURE BLACK in both modes. */
+  --ck-bg-canvas:    oklch(29.12% 0.0633 270.86);
+  /* Cards / sidebar — dark gray, DARKER than canvas. Black
+     offset shadow on the brighter navy canvas is the dominant
+     visual cue; the border on the card is a quieter structural
+     line. */
+  --ck-bg-sidebar:   oklch(23.93% 0 0);
+  --ck-bg-surface:   oklch(23.93% 0 0);
+  --ck-bg-surface-2: oklch(28% 0 0);
+  --ck-bg-muted:     oklch(28% 0 0);
+
+  /* CRITICAL: borders + shadows stay PURE BLACK in dark mode.
+     I tried flipping them to white earlier — that's the wrong
+     direction. The chunky offset shadow is black on the navy
+     canvas, which is where the contrast lives. */
+  --neobrut-ink:      #000000;
+  --ck-border-subtle: #000000;
+  --ck-border-strong: #000000;
+  --ck-border-focus:  #FFFFFF;
+
+  --ck-text-primary:   oklch(92.49% 0 0);
+  --ck-text-secondary: #C0C0C0;
+  --ck-text-tertiary:  #888888;
+  --ck-text-disabled:  #555555;
+  --ck-text-inverse:   #000000;
+
+  /* Accent stays identical to light — brand commitment doesn't
+     flip per theme. Override per-app via
+     --ck-accent-dark-override if you want a different shade. */
+  --ck-accent:         var(--ck-accent-dark-override, var(--ck-accent-light-override, #88AAEE));
+
+  /* Shadow sizes back to the canonical 4 px offset that the
+     light mode uses — same chunky language across themes. */
+  --ck-shadow-1: 2px 2px 0 0 var(--neobrut-ink);
+  --ck-shadow-2: 4px 4px 0 0 var(--neobrut-ink);
+  --ck-shadow-3: 8px 8px 0 0 var(--neobrut-ink);
+}
+
+/* ---------- Ambient Glass chrome — Superlist / Linear / Arc /
+              Things 3 aesthetic. Translucent glass surfaces over
+              an ambient gradient backdrop. Dark-first; light is a
+              fully equal counterpart. The defining gesture is the
+              single multi-stop "Superbar" gradient used as a thin
+              accent on active elements. */
+html[data-ck-chrome="ambient"] {
+  /* Ambient backdrop — radial gradient mesh derived from
+     --ck-accent. Three different opacities of the brand colour
+     bloom from three corners over a near-neutral base. Change
+     the accent (via --ck-accent-*-override) and the entire mesh
+     re-tints to match — coral accent yields a coral-bloom mesh,
+     emerald yields an emerald mesh, etc. Painted on body (Shell
+     inherits) so glass surfaces have something behind them to
+     blur.
+
+     Override --ck-bg-canvas directly if you want a fixed mesh
+     not derived from accent. */
+  --ck-bg-canvas:
+    radial-gradient(ellipse at 18% 22%, color-mix(in oklab, var(--ck-accent) 40%, transparent) 0%, transparent 55%),
+    radial-gradient(ellipse at 82% 70%, color-mix(in oklab, var(--ck-accent) 22%, transparent) 0%, transparent 52%),
+    radial-gradient(ellipse at 50% 110%, color-mix(in oklab, var(--ck-accent) 32%, transparent) 0%, transparent 50%),
+    #1A1525;
+
+  /* Glass overlay surfaces — semi-transparent so backdrop-filter
+     blurs the ambient mesh underneath. Cards, sidebar, topbar all
+     read from these. */
+  --ck-bg-surface:   rgba(255, 255, 255, 0.05);
+  --ck-bg-surface-2: rgba(255, 255, 255, 0.08);
+  --ck-bg-sidebar:   rgba(20, 20, 28, 0.55);
+  --ck-bg-muted:     rgba(255, 255, 255, 0.04);
+
+  --ck-border-subtle: rgba(255, 255, 255, 0.08);
+  --ck-border-strong: rgba(255, 255, 255, 0.16);
+  --ck-border-focus:  rgba(255, 122, 162, 0.6);
+
+  --ck-text-primary:   #F5F5F7;
+  --ck-text-secondary: #A0A0AB;
+  --ck-text-tertiary:  #6B6B78;
+  --ck-text-disabled:  #4A4A52;
+  --ck-text-inverse:   #1A1525;
+
+  /* Coral as the single brand pop. Override via the *-override
+     vars per-app to pick a different signature colour. */
+  --ck-accent:         var(--ck-accent-dark-override, var(--ck-accent-light-override, #FF6B7A));
+  --ck-accent-hover:   color-mix(in oklab, var(--ck-accent), white 10%);
+  --ck-accent-active:  color-mix(in oklab, var(--ck-accent), black 8%);
+  --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 14%, transparent);
+  --ck-accent-border:  color-mix(in oklab, var(--ck-accent) 40%, transparent);
+
+  --ck-success:        #6EE7B7;
+  --ck-warning:        #FCD34D;
+  --ck-critical:       #FF8A8A;
+
+  /* The Superbar — multi-stop signature gradient. Used as a thin
+     accent (right-edge strip on active items, divider above the
+     command input, tab underlines). Never as a button fill. */
+  --ck-superbar: linear-gradient(90deg, #FF7AA2 0%, #B66EFF 50%, #5DA8FF 100%);
+
+  /* Larger radii — every surface softens. */
+  --ck-radius-xs: 6px;
+  --ck-radius-sm: 10px;
+  --ck-radius-md: 14px;
+  --ck-radius-lg: 18px;
+  --ck-radius-xl: 22px;
+
+  /* Soft outer shadow — large blur, low opacity. Depth comes
+     from this gentle haze, not hard offsets. */
+  --ck-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.18);
+  --ck-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.24), 0 2px 6px rgba(0, 0, 0, 0.16);
+  --ck-shadow-3: 0 24px 60px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
+
+  /* Backdrop blur strength — referenced from CSS in chrome-ambient.css. */
+  --ck-blur-window: blur(24px) saturate(140%);
+  --ck-blur-overlay: blur(40px) saturate(180%);
+}
+
+html[data-ck-theme="light"][data-ck-chrome="ambient"] {
+  /* Warm off-white ambient — softer mesh than the dark counterpart
+     but the same structural approach. */
+  /* Light mesh — same accent-derived structure as dark, lighter
+     base + lower opacity stops so the mesh reads as soft glow
+     blooms instead of saturated tints. */
+  --ck-bg-canvas:
+    radial-gradient(ellipse at 18% 22%, color-mix(in oklab, var(--ck-accent) 28%, transparent) 0%, transparent 55%),
+    radial-gradient(ellipse at 82% 70%, color-mix(in oklab, var(--ck-accent) 16%, transparent) 0%, transparent 52%),
+    radial-gradient(ellipse at 50% 110%, color-mix(in oklab, var(--ck-accent) 22%, transparent) 0%, transparent 50%),
+    #F1EDE6;
+
+  --ck-bg-surface:   rgba(255, 255, 255, 0.62);
+  --ck-bg-surface-2: rgba(255, 255, 255, 0.72);
+  --ck-bg-sidebar:   rgba(255, 255, 255, 0.58);
+  --ck-bg-muted:     rgba(0, 0, 0, 0.03);
+
+  --ck-border-subtle: rgba(20, 20, 30, 0.08);
+  --ck-border-strong: rgba(20, 20, 30, 0.14);
+
+  --ck-text-primary:   #1A1A22;
+  --ck-text-secondary: #5E5E68;
+  --ck-text-tertiary:  #8B8B95;
+  --ck-text-disabled:  #B5B5BC;
+  --ck-text-inverse:   #FFFFFF;
+}
+
+/* ---------- Swiss / International Typographic chrome —
+              Müller-Brockmann / Vignelli / Stripe docs / Vercel
+              docs aesthetic. Achromatic + one saturated accent
+              (red by default). Single neutral grotesk family,
+              tight letter-spacing on headlines. No shadows, no
+              gradients, no decoration — type and space do all
+              the work. */
+html[data-ck-chrome="swiss"] {
+  /* Pure white canvas; bg-alt for very rare row tinting. */
+  --ck-bg-canvas:    #FFFFFF;
+  --ck-bg-sidebar:   #FFFFFF;
+  --ck-bg-surface:   #FFFFFF;
+  --ck-bg-surface-2: #F4F4F4;
+  --ck-bg-muted:     #F4F4F4;
+
+  /* Near-black ink. Rule colour is a quiet gray; strong is the
+     ink itself (used for input focus underline + secondary
+     button border). */
+  --ck-border-subtle: #E5E5E5;
+  --ck-border-strong: #0A0A0A;
+  --ck-border-focus:  #0A0A0A;
+
+  --ck-text-primary:   #0A0A0A;
+  --ck-text-secondary: #525252;
+  --ck-text-tertiary:  #A3A3A3;
+  --ck-text-disabled:  #D4D4D4;
+  --ck-text-inverse:   #FFFFFF;
+
+  /* Canonical Swiss red. Used SPARINGLY — links, active marks,
+     single accent button per page. Override per-app via
+     --ck-accent-*-override (deep blue / forest green /
+     international orange are the brief's other valid hero
+     colours). */
+  --ck-accent:         var(--ck-accent-light-override, #DC2626);
+  --ck-accent-hover:   color-mix(in oklab, var(--ck-accent), black 8%);
+  --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 10%, transparent);
+  --ck-accent-border:  var(--ck-accent);
+
+  /* Single sans family — no display swap. The same grotesk runs
+     headline → body → caption. Headlines achieve scale through
+     size + weight + letter-spacing, not a different face. */
+  --ck-font-display: var(--ck-font-sans);
+
+  /* Tiny radii — 3 px feels engineered, not friendly. */
+  --ck-radius-xs: 2px;
+  --ck-radius-sm: 3px;
+  --ck-radius-md: 3px;
+  --ck-radius-lg: 4px;
+  --ck-radius-xl: 4px;
+
+  /* No shadows. Depth comes from 1 px rules + whitespace. */
+  --ck-shadow-1: none;
+  --ck-shadow-2: none;
+  --ck-shadow-3: none;
+}
+
+html[data-ck-theme="dark"][data-ck-chrome="swiss"] {
+  --ck-bg-canvas:    #0A0A0A;
+  --ck-bg-sidebar:   #0A0A0A;
+  --ck-bg-surface:   #0A0A0A;
+  --ck-bg-surface-2: #161616;
+  --ck-bg-muted:     #161616;
+
+  --ck-border-subtle: rgba(255, 255, 255, 0.12);
+  --ck-border-strong: #FAFAFA;
+  --ck-border-focus:  #FAFAFA;
+
+  --ck-text-primary:   #FAFAFA;
+  --ck-text-secondary: #A3A3A3;
+  --ck-text-tertiary:  #525252;
+  --ck-text-disabled:  #2F2F2F;
+  --ck-text-inverse:   #0A0A0A;
+
+  /* Brighter red against the near-black canvas. */
+  --ck-accent:         var(--ck-accent-dark-override, var(--ck-accent-light-override, #EF4444));
+}
+
+/* ---------- Terminal / Monospace Maximalist chrome —
+              Vercel v0 / charm.sh / Warp / Lazygit / k9s feel.
+              Dark by default (CRT-style), light "vellum" variant
+              available. Everything monospace, semantic colours
+              only, square corners. */
+html[data-ck-chrome="terminal"] {
+  /* Canonical dark canvas — near-black with a hint of warmth. */
+  --ck-bg-canvas:    #0A0A0A;
+  --ck-bg-sidebar:   #0A0A0A;
+  --ck-bg-surface:   #141414;
+  --ck-bg-surface-2: #1A1A1A;
+  --ck-bg-muted:     #1A1A1A;
+
+  --ck-border-subtle: #262626;
+  --ck-border-strong: #404040;
+  --ck-border-focus:  #4ADE80;
+
+  --ck-text-primary:   #E5E5E5;
+  --ck-text-secondary: #A3A3A3;
+  --ck-text-tertiary:  #525252;
+  --ck-text-disabled:  #404040;
+  --ck-text-inverse:   #0A0A0A;
+
+  /* Terminal canon — six semantic colours that earn their place
+     by signalling state, never by decorating. Available as
+     CSS variables so consumer code can read them directly. */
+  --ck-term-green:   #4ADE80;
+  --ck-term-amber:   #FBBF24;
+  --ck-term-red:     #F87171;
+  --ck-term-blue:    #60A5FA;
+  --ck-term-magenta: #C084FC;
+  --ck-term-cyan:    #67E8F9;
+  --ck-term-bright:  #FAFAFA;
+
+  /* Default accent — green (the dominant terminal hue for
+     active / success). Override to swap to amber / blue /
+     magenta etc. as the brand pop. */
+  --ck-accent:        var(--ck-accent-light-override, #4ADE80);
+  --ck-accent-hover:  color-mix(in oklab, var(--ck-accent), white 8%);
+  --ck-accent-muted:  color-mix(in oklab, var(--ck-accent) 16%, transparent);
+  --ck-accent-border: var(--ck-accent);
+
+  --ck-success: var(--ck-term-green);
+  --ck-warning: var(--ck-term-amber);
+  --ck-critical: var(--ck-term-red);
+
+  /* Single typeface — mono everywhere. font-display points to
+     mono too so headings stay terminal-textured. */
+  --ck-font-display: var(--ck-font-mono);
+  --ck-font-sans: var(--ck-font-mono);
+
+  /* Square edges (or near-square). The CRT feel forbids
+     anything that reads as friendly. */
+  --ck-radius-xs: 0px;
+  --ck-radius-sm: 2px;
+  --ck-radius-md: 2px;
+  --ck-radius-lg: 4px;
+  --ck-radius-xl: 4px;
+
+  /* No shadows. Depth comes from border darkness shifts. */
+  --ck-shadow-1: none;
+  --ck-shadow-2: none;
+  --ck-shadow-3: none;
+}
+
+/* Light "vellum" variant — flipped palette but same semantic
+   colour stack. The brief notes it should look like an iTerm2
+   light theme. */
+html[data-ck-theme="light"][data-ck-chrome="terminal"] {
+  --ck-bg-canvas:    #FAFAF7;
+  --ck-bg-sidebar:   #FAFAF7;
+  --ck-bg-surface:   #F3F3EE;
+  --ck-bg-surface-2: #ECECE6;
+  --ck-bg-muted:     #ECECE6;
+
+  --ck-border-subtle: #D4D4D0;
+  --ck-border-strong: #A3A39E;
+
+  --ck-text-primary:   #1A1A1A;
+  --ck-text-secondary: #525252;
+  --ck-text-tertiary:  #A3A39E;
+  --ck-text-disabled:  #C9C9C5;
+  --ck-text-inverse:   #FAFAF7;
+
+  /* Dimmer semantic colours that read on the warm off-white. */
+  --ck-term-green:   #16A34A;
+  --ck-term-amber:   #CA8A04;
+  --ck-term-red:     #DC2626;
+  --ck-term-blue:    #2563EB;
+  --ck-term-magenta: #9333EA;
+  --ck-term-cyan:    #0891B2;
+  --ck-term-bright:  #0A0A0A;
+
+  --ck-accent: var(--ck-accent-light-override, #16A34A);
+}
+
+/* ---------- Bento Grid chrome — Apple product page / Linear /
+              Vercel marketing-page aesthetic. Less a "visual
+              style" than a layout pattern, but with a canonical
+              surface treatment that ties cells together: generous
+              radius (20-28 px), soft multi-layer shadow, neutral
+              page bg, cells where each one does its own visual
+              job. Pair with <BentoGrid> + <BentoCell> primitives. */
+html[data-ck-chrome="bento"] {
+  --ck-bg-canvas:    #F5F5F7;
+  --ck-bg-sidebar:   #FFFFFF;
+  --ck-bg-surface:   #FFFFFF;
+  --ck-bg-surface-2: #F0F0F2;
+  --ck-bg-muted:     #ECECEE;
+
+  --ck-border-subtle: rgba(0, 0, 0, 0.06);
+  --ck-border-strong: rgba(0, 0, 0, 0.12);
+  --ck-border-focus:  var(--ck-accent);
+
+  --ck-text-primary:   #1D1D1F;
+  --ck-text-secondary: #6E6E73;
+  --ck-text-tertiary:  #98989D;
+  --ck-text-disabled:  #C7C7CC;
+  --ck-text-inverse:   #FFFFFF;
+
+  /* Apple-y neutral accent (system blue). Override per app for
+     a different signature. */
+  --ck-accent:         var(--ck-accent-light-override, #0A84FF);
+  --ck-accent-hover:   color-mix(in oklab, var(--ck-accent), black 6%);
+  --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 10%, transparent);
+  --ck-accent-border:  color-mix(in oklab, var(--ck-accent) 35%, transparent);
+
+  /* Three canonical cell-accent gradients — apply manually inside
+     <BentoCell tone="..."> via the demo. */
+  --ck-bento-grad-1: linear-gradient(135deg, #FF6B9D, #C026D3);
+  --ck-bento-grad-2: linear-gradient(135deg, #60A5FA, #A78BFA);
+  --ck-bento-grad-3: linear-gradient(135deg, #34D399, #06B6D4);
+
+  /* Generous Apple-y radii — 20 px is the cell baseline. Smaller
+     primitives (buttons, inputs) sit at 12 px so they nest. */
+  --ck-radius-xs: 8px;
+  --ck-radius-sm: 12px;
+  --ck-radius-md: 16px;
+  --ck-radius-lg: 22px;
+  --ck-radius-xl: 28px;
+
+  /* Soft multi-layer shadow — the canonical bento card lift. */
+  --ck-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --ck-shadow-2: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --ck-shadow-3: 0 1px 3px rgba(0, 0, 0, 0.05), 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+html[data-ck-theme="dark"][data-ck-chrome="bento"] {
+  /* True black canvas (OLED-feel — Apple's product pages flip to
+     this in dark mode). */
+  --ck-bg-canvas:    #000000;
+  --ck-bg-sidebar:   #1C1C1E;
+  --ck-bg-surface:   #1C1C1E;
+  --ck-bg-surface-2: #2C2C2E;
+  --ck-bg-muted:     #2C2C2E;
+
+  --ck-border-subtle: rgba(255, 255, 255, 0.08);
+  --ck-border-strong: rgba(255, 255, 255, 0.16);
+
+  --ck-text-primary:   #F5F5F7;
+  --ck-text-secondary: #98989D;
+  --ck-text-tertiary:  #6E6E73;
+  --ck-text-disabled:  #3A3A3C;
+  --ck-text-inverse:   #1D1D1F;
+
+  --ck-accent: var(--ck-accent-dark-override, var(--ck-accent-light-override, #0A84FF));
+
+  /* Heavier shadow on dark — needed for cards to read against
+     true black. */
+  --ck-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --ck-shadow-2: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --ck-shadow-3: 0 1px 3px rgba(0, 0, 0, 0.5), 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- Frutiger Aero / Glossy Revival chrome — 2004-2013
+              Aero / Vista / iOS 6 / Vision Pro Liquid Glass.
+              Sky-blue canvas, glossy white-glass surfaces, lime
+              pop accent, deep-navy ink (not black), 1px white
+              top-highlight on every elevated element, soft blue-
+              tinted shadows + outer glow on hover. Image-driven,
+              optimistic, intentionally pretty. */
+html[data-ck-chrome="frutiger"] {
+  /* Sky gradient as canvas — the whole page sits on it. */
+  --ck-bg-canvas:    linear-gradient(180deg, #87CEEB 0%, #B3E5FC 45%, #E1F5FE 100%);
+  --ck-bg-sidebar:   rgba(255, 255, 255, 0.55);
+  --ck-bg-surface:   rgba(255, 255, 255, 0.62);
+  --ck-bg-surface-2: rgba(255, 255, 255, 0.78);
+  --ck-bg-muted:     rgba(255, 255, 255, 0.4);
+
+  /* Cool, near-white borders with a hint of sky — they read as
+     light catching the edge of glass. */
+  --ck-border-subtle: rgba(255, 255, 255, 0.55);
+  --ck-border-strong: rgba(26, 35, 126, 0.18);
+  --ck-border-focus:  var(--ck-accent);
+
+  /* Deep navy ink — black is too harsh against sky. */
+  --ck-text-primary:   #0E1A6B;
+  --ck-text-secondary: #38507A;
+  --ck-text-tertiary:  #6C82A8;
+  --ck-text-disabled:  #B7C6DD;
+  --ck-text-inverse:   #FFFFFF;
+
+  /* Aqua accent — the canonical Aero blue. */
+  --ck-accent:         var(--ck-accent-light-override, #0288D1);
+  --ck-accent-hover:   #01579B;
+  --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 14%, transparent);
+  --ck-accent-border:  color-mix(in oklab, var(--ck-accent) 38%, transparent);
+
+  /* Lime pop — used very sparingly for "go" / new / on-states. */
+  --ck-frutiger-lime:  #C6FF00;
+  --ck-frutiger-orange: #FF9800;
+
+  /* Glossy gradient stacks — applied to buttons via background-
+     image. Two layers: the aqua tint at the bottom, the white
+     gloss highlight on the top half. */
+  --ck-frutiger-btn:    linear-gradient(180deg, #4FC3F7 0%, #0288D1 50%, #01579B 100%);
+  --ck-frutiger-btn-hover: linear-gradient(180deg, #81D4FA 0%, #039BE5 50%, #0277BD 100%);
+  --ck-frutiger-gloss:  linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 100%);
+
+  /* Generous "pebble" radii. */
+  --ck-radius-xs: 8px;
+  --ck-radius-sm: 12px;
+  --ck-radius-md: 16px;
+  --ck-radius-lg: 20px;
+  --ck-radius-xl: 28px;
+
+  /* Soft blue-tinted shadows — never dark/crisp. */
+  --ck-shadow-1: 0 2px 8px rgba(0, 100, 200, 0.12);
+  --ck-shadow-2: 0 4px 16px rgba(0, 100, 200, 0.18), 0 1px 2px rgba(0, 100, 200, 0.08);
+  --ck-shadow-3: 0 12px 40px rgba(0, 100, 200, 0.28), 0 2px 6px rgba(0, 100, 200, 0.14);
+
+  /* The "Aero glow" — used on hover/focus. */
+  --ck-frutiger-glow:   0 0 24px rgba(79, 195, 247, 0.55);
+  --ck-frutiger-glow-soft: 0 0 14px rgba(79, 195, 247, 0.35);
+}
+
+html[data-ck-theme="dark"][data-ck-chrome="frutiger"] {
+  /* Twilight / aurora sky for dark — the brief lives in light,
+     but a coherent dark mode keeps the chrome usable. Deep
+     navy → indigo → soft lavender gradient. Glass surfaces
+     become darker translucent panels. */
+  --ck-bg-canvas:    linear-gradient(180deg, #0B1029 0%, #1A2167 50%, #2E2280 100%);
+  --ck-bg-sidebar:   rgba(20, 30, 80, 0.55);
+  --ck-bg-surface:   rgba(30, 45, 110, 0.55);
+  --ck-bg-surface-2: rgba(45, 60, 130, 0.65);
+  --ck-bg-muted:     rgba(20, 30, 80, 0.4);
+
+  --ck-border-subtle: rgba(255, 255, 255, 0.16);
+  --ck-border-strong: rgba(255, 255, 255, 0.28);
+
+  --ck-text-primary:   #EAF3FF;
+  --ck-text-secondary: #B7C6E8;
+  --ck-text-tertiary:  #8094BE;
+  --ck-text-disabled:  #4B5C84;
+  --ck-text-inverse:   #0E1A6B;
+
+  --ck-accent:         var(--ck-accent-dark-override, var(--ck-accent-light-override, #4FC3F7));
+
+  --ck-frutiger-btn:   linear-gradient(180deg, #4FC3F7 0%, #0288D1 50%, #01579B 100%);
+  --ck-frutiger-btn-hover: linear-gradient(180deg, #81D4FA 0%, #039BE5 50%, #0277BD 100%);
+
+  --ck-shadow-1: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --ck-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.42), 0 1px 2px rgba(0, 0, 0, 0.32);
+  --ck-shadow-3: 0 12px 40px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.32);
+
+  --ck-frutiger-glow: 0 0 24px rgba(129, 212, 250, 0.45);
+  --ck-frutiger-glow-soft: 0 0 14px rgba(129, 212, 250, 0.3);
+}
+
+/* ---------- Risograph / Zine Print chrome — DIY print culture as
+              a digital aesthetic. Warm uncoated paper canvas, 2-3
+              fluorescent inks per composition (pink/blue/yellow
+              signature trio), halftone dots, misregistration
+              offset, hand-drawn imperfection, bold display type
+              + workhorse mono body. Anti-glossy, anti-gradient. */
+html[data-ck-chrome="riso"] {
+  /* Warm cream paper, never flat white. */
+  --ck-bg-canvas:    #F4EFE5;
+  --ck-bg-sidebar:   #F8F1DE;
+  --ck-bg-surface:   #F8F1DE;
+  --ck-bg-surface-2: #ECE5D2;
+  --ck-bg-muted:     #ECE5D2;
+
+  /* "Black" is never pure — it's a soft charcoal that mimics riso
+     ink-on-paper rather than CRT pixels. */
+  --ck-border-subtle: rgba(26, 26, 26, 0.18);
+  --ck-border-strong: rgba(26, 26, 26, 0.85);
+  --ck-border-focus:  var(--ck-accent);
+
+  --ck-text-primary:   #1A1A1A;
+  --ck-text-secondary: #4A4A4A;
+  --ck-text-tertiary:  #7A7468;
+  --ck-text-disabled:  #B9B0A0;
+  --ck-text-inverse:   #F8F1DE;
+
+  /* Pink is the canonical riso ink — the one print everyone
+     associates with the aesthetic. Override per-app for blue /
+     yellow / orange-led palettes. */
+  --ck-accent:        var(--ck-accent-light-override, #FF48B0);
+  --ck-accent-hover:  #E63A9D;
+  --ck-accent-muted:  color-mix(in oklab, var(--ck-accent) 14%, transparent);
+  --ck-accent-border: color-mix(in oklab, var(--ck-accent) 50%, transparent);
+
+  /* The canonical riso ink palette — pick 2-3 per layout. */
+  --ck-riso-pink:    #FF48B0;
+  --ck-riso-blue:    #3D5AFE;
+  --ck-riso-yellow:  #FFE100;
+  --ck-riso-teal:    #00A99D;
+  --ck-riso-green:   #00A95C;
+  --ck-riso-orange:  #FF6F3C;
+  --ck-riso-violet:  #765BA7;
+  --ck-riso-red:     #F02D2D;
+
+  /* Overprint blends — when two inks overlap on paper. */
+  --ck-riso-overprint-pb: #6B2DCC; /* pink + blue */
+  --ck-riso-overprint-py: #FF7A2D; /* pink + yellow */
+  --ck-riso-overprint-by: #4A9A4F; /* blue + yellow */
+
+  /* Square-ish radii — riso isn't soft. */
+  --ck-radius-xs: 2px;
+  --ck-radius-sm: 4px;
+  --ck-radius-md: 6px;
+  --ck-radius-lg: 8px;
+  --ck-radius-xl: 12px;
+
+  /* "Shadows" in riso are ink-offset duplicates, not soft drop
+     shadows. The chrome CSS overrides individual primitives with
+     offset shadow blocks. These minimal values are fallbacks. */
+  --ck-shadow-1: 0 1px 0 rgba(26, 26, 26, 0.4);
+  --ck-shadow-2: 3px 3px 0 var(--ck-riso-blue);
+  --ck-shadow-3: 4px 4px 0 var(--ck-riso-pink);
+
+  /* Paper texture — SVG noise that the chrome stamps onto body. */
+  --ck-riso-paper:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/></svg>");
+
+  /* Halftone dot pattern — apply as background-image where you
+     want the "shaded with ink" look. */
+  --ck-riso-halftone:
+    radial-gradient(circle, currentColor 1.4px, transparent 1.6px);
+}
+
+html[data-ck-theme="dark"][data-ck-chrome="riso"] {
+  /* "Dark mode" riso = ink on dark paper / blueprint reversal.
+     Holds the spirit (limited inks, halftone, no gradients) but
+     flips canvas to deep ink-on-newsprint navy. Not the canonical
+     riso look — for late-night reading. */
+  --ck-bg-canvas:    #14131A;
+  --ck-bg-sidebar:   #1A1922;
+  --ck-bg-surface:   #1F1D2A;
+  --ck-bg-surface-2: #262433;
+  --ck-bg-muted:     #1A1922;
+
+  --ck-border-subtle: rgba(248, 241, 222, 0.16);
+  --ck-border-strong: rgba(248, 241, 222, 0.7);
+
+  --ck-text-primary:   #F4EFE5;
+  --ck-text-secondary: #C7BFAE;
+  --ck-text-tertiary:  #8C8678;
+  --ck-text-disabled:  #4D4A40;
+  --ck-text-inverse:   #14131A;
+
+  --ck-accent: var(--ck-accent-dark-override, var(--ck-accent-light-override, #FF6FBF));
+  --ck-accent-hover: #FF8FCC;
+
+  --ck-shadow-1: 0 1px 0 rgba(0, 0, 0, 0.6);
+  --ck-shadow-2: 3px 3px 0 var(--ck-riso-blue);
+  --ck-shadow-3: 4px 4px 0 var(--ck-riso-pink);
+}
+
+/* ---------- Hand-drawn / Sketchy chrome — Excalidraw / tldraw /
+              Whimsical aesthetic. Pen-on-paper feel, hatch-filled
+              shapes, slight wobble on every stroke, handwritten
+              type. Anti-final by design — perfect for AI-output
+              UIs and brainstorming tools. Dark mode flips to a
+              chalkboard. */
+html[data-ck-chrome="sketch"] {
+  /* Notebook paper, never crisp white. */
+  --ck-bg-canvas:    #FFFEF9;
+  --ck-bg-sidebar:   #FFFBEE;
+  --ck-bg-surface:   #FFFEF9;
+  --ck-bg-surface-2: #F8F5E8;
+  --ck-bg-muted:     #F3EFE0;
+
+  --ck-border-subtle: rgba(26, 26, 26, 0.14);
+  --ck-border-strong: rgba(26, 26, 26, 0.85);
+  --ck-border-focus:  var(--ck-accent);
+
+  /* Pen ink — never pure black. */
+  --ck-text-primary:   #1A1A1A;
+  --ck-text-secondary: #555555;
+  --ck-text-tertiary:  #8A8270;
+  --ck-text-disabled:  #C7C0AE;
+  --ck-text-inverse:   #FFFEF9;
+
+  /* The marker palette — bright, friendly, NOT fluorescent. */
+  --ck-sketch-red:    #E54B4B;
+  --ck-sketch-orange: #F2994A;
+  --ck-sketch-yellow: #F2C94C;
+  --ck-sketch-green:  #6FCF97;
+  --ck-sketch-teal:   #45B7AF;
+  --ck-sketch-blue:   #4A90E2;
+  --ck-sketch-purple: #9B6FE0;
+  --ck-sketch-pink:   #E36AB0;
+
+  /* Highlighter (translucent so the line shows through) */
+  --ck-sketch-hi-yellow: rgba(242, 201, 76, 0.42);
+  --ck-sketch-hi-pink:   rgba(227, 106, 176, 0.32);
+  --ck-sketch-hi-green:  rgba(111, 207, 151, 0.32);
+
+  --ck-accent:        var(--ck-accent-light-override, var(--ck-sketch-blue));
+  --ck-accent-hover:  #3A78C8;
+  --ck-accent-muted:  rgba(74, 144, 226, 0.16);
+  --ck-accent-border: rgba(74, 144, 226, 0.5);
+
+  /* Handwriting fonts — Caveat / Patrick Hand / Kalam are common
+     Google Fonts; Comic Sans MS is the universal fallback that
+     still captures the spirit. Body uses the friendlier
+     proportional sans so paragraphs stay readable. */
+  --ck-font-sketch-display: "Caveat", "Patrick Hand", "Kalam",
+    "Shadows Into Light Two", "Comic Sans MS", cursive;
+  --ck-font-sketch-body: "Comic Neue", "Atkinson Hyperlegible",
+    "Nunito", "Comic Sans MS", system-ui, sans-serif;
+  --ck-font-sans: var(--ck-font-sketch-body);
+
+  /* The wobble filter — feTurbulence + feDisplacementMap inline
+     SVG. Applied via filter: var(--ck-sketch-wobble) on the
+     elements that should "draw" with a rough edge. Chrome /
+     Safari render this fine; Firefox skips data:-URL filters,
+     which is OK — borders still read as drawn via asymmetric
+     radii + offset second strokes. */
+  --ck-sketch-wobble:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='w' x='-2%25' y='-2%25' width='104%25' height='104%25'><feTurbulence type='fractalNoise' baseFrequency='0.025' numOctaves='2' seed='4'/><feDisplacementMap in='SourceGraphic' scale='2.2'/></filter></svg>#w");
+  --ck-sketch-wobble-strong:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='w' x='-3%25' y='-3%25' width='106%25' height='106%25'><feTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='2' seed='6'/><feDisplacementMap in='SourceGraphic' scale='3.4'/></filter></svg>#w");
+
+  /* Asymmetric radii — corners that aren't quite the same. */
+  --ck-radius-xs: 5px 7px 6px 8px / 7px 5px 8px 6px;
+  --ck-radius-sm: 7px 9px 8px 10px / 9px 7px 10px 8px;
+  --ck-radius-md: 10px 12px 11px 13px / 12px 10px 13px 11px;
+  --ck-radius-lg: 12px 16px 14px 18px / 16px 12px 18px 14px;
+  --ck-radius-xl: 18px 22px 20px 24px / 22px 18px 24px 20px;
+
+  /* Shadows are offset second strokes — never blurred. */
+  --ck-shadow-1: 2px 3px 0 rgba(26, 26, 26, 0.85);
+  --ck-shadow-2: 3px 4px 0 rgba(26, 26, 26, 0.85);
+  --ck-shadow-3: 4px 6px 0 rgba(26, 26, 26, 0.85);
+}
+
+html[data-ck-theme="dark"][data-ck-chrome="sketch"] {
+  /* Chalkboard — dark teal-grey with off-white chalk lines. */
+  --ck-bg-canvas:    #1E2A2E;
+  --ck-bg-sidebar:   #25333A;
+  --ck-bg-surface:   #233038;
+  --ck-bg-surface-2: #2D3D45;
+  --ck-bg-muted:     #2A3942;
+
+  --ck-border-subtle: rgba(240, 240, 232, 0.18);
+  --ck-border-strong: rgba(240, 240, 232, 0.9);
+
+  --ck-text-primary:   #F0F0E8;
+  --ck-text-secondary: #C8C8C0;
+  --ck-text-tertiary:  #8E938F;
+  --ck-text-disabled:  #4F5A60;
+  --ck-text-inverse:   #1E2A2E;
+
+  --ck-accent: var(--ck-accent-dark-override, var(--ck-accent-light-override, #6FCF97));
+
+  --ck-shadow-1: 2px 3px 0 rgba(240, 240, 232, 0.85);
+  --ck-shadow-2: 3px 4px 0 rgba(240, 240, 232, 0.85);
+  --ck-shadow-3: 4px 6px 0 rgba(240, 240, 232, 0.85);
+}

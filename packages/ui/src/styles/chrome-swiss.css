@@ -1,0 +1,232 @@
+/* Swiss chrome — component overrides.
+   Tokens.css supplies the achromatic palette + red accent. This
+   file strips every primitive of decoration: cards lose fill and
+   shadows, becoming rules-only; inputs lose all borders except
+   the bottom; tags lose pill backgrounds and become dot + text;
+   headings tighten letter-spacing. */
+
+html[data-ck-chrome="swiss"] body {
+  font-weight: 400;
+  font-feature-settings: "ss01", "cv11", "tnum";
+}
+
+/* ===== Typography =========================================== */
+
+html[data-ck-chrome="swiss"] h1,
+html[data-ck-chrome="swiss"] .ck-h1 {
+  font-family: var(--ck-font-sans);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+}
+html[data-ck-chrome="swiss"] h2,
+html[data-ck-chrome="swiss"] .ck-h2 {
+  font-family: var(--ck-font-sans);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+html[data-ck-chrome="swiss"] h3,
+html[data-ck-chrome="swiss"] .ck-h3 {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+html[data-ck-chrome="swiss"] .ck-eyebrow {
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+/* ===== Buttons — small radius, no shadow ==================== */
+
+html[data-ck-chrome="swiss"] .ck-btn,
+html[data-ck-chrome="swiss"] .ck-actionbar-btn {
+  border-radius: 3px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  box-shadow: none !important;
+}
+html[data-ck-chrome="swiss"] .ck-btn--primary {
+  background: var(--ck-text-primary);
+  color: var(--ck-bg-canvas);
+  border: none;
+}
+html[data-ck-chrome="swiss"] .ck-btn--primary:hover:not(:disabled) {
+  background: var(--ck-text-secondary);
+}
+html[data-ck-chrome="swiss"] .ck-btn--secondary {
+  background: transparent;
+  border: 1px solid var(--ck-text-primary);
+  color: var(--ck-text-primary);
+}
+html[data-ck-chrome="swiss"] .ck-btn--secondary:hover:not(:disabled) {
+  background: var(--ck-text-primary);
+  color: var(--ck-bg-canvas);
+}
+html[data-ck-chrome="swiss"] .ck-btn--ghost {
+  background: transparent;
+  color: var(--ck-text-primary);
+  border: none;
+}
+html[data-ck-chrome="swiss"] .ck-btn--ghost:hover:not(:disabled) {
+  background: var(--ck-bg-muted);
+}
+
+/* ===== Inputs — bottom-border-only (canonical Swiss form) === */
+
+html[data-ck-chrome="swiss"] .ck-input,
+html[data-ck-chrome="swiss"] .ck-textarea {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--ck-border-subtle) !important;
+  border-radius: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  color: var(--ck-text-primary);
+  transition: border-bottom-color 120ms ease, border-bottom-width 120ms ease;
+}
+html[data-ck-chrome="swiss"] .ck-input:focus-visible,
+html[data-ck-chrome="swiss"] .ck-textarea:focus-visible {
+  outline: none;
+  border-bottom-color: var(--ck-text-primary) !important;
+  border-bottom-width: 2px !important;
+  box-shadow: none !important;
+}
+
+/* ===== Cards — rules-only sectioning ======================== */
+
+html[data-ck-chrome="swiss"] .ck-card {
+  background: transparent !important;
+  border: none !important;
+  border-top: 1px solid var(--ck-border-subtle) !important;
+  border-bottom: 1px solid var(--ck-border-subtle) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html[data-ck-chrome="swiss"] .ck-card__head {
+  border-bottom: 1px solid var(--ck-border-subtle);
+  padding: 16px 0;
+}
+html[data-ck-chrome="swiss"] .ck-card__body {
+  padding: 16px 0;
+}
+html[data-ck-chrome="swiss"] .ck-card__foot {
+  border-top: 1px solid var(--ck-border-subtle);
+  background: transparent;
+  padding: 12px 0;
+}
+
+/* ===== Tags — dot + text only, no pill ====================== */
+
+html[data-ck-chrome="swiss"] [data-ck-tag] {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+html[data-ck-chrome="swiss"] [data-ck-tag]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+html[data-ck-chrome="swiss"] [data-ck-tag][data-tone="accent"] {
+  color: var(--ck-accent) !important;
+}
+html[data-ck-chrome="swiss"] [data-ck-tag][data-tone="success"] {
+  color: #15803D !important;
+}
+html[data-ck-chrome="swiss"] [data-ck-tag][data-tone="warning"] {
+  color: var(--ck-text-primary) !important;
+}
+html[data-ck-chrome="swiss"] [data-ck-tag][data-tone="critical"] {
+  color: var(--ck-accent) !important;
+}
+html[data-ck-chrome="swiss"] [data-ck-tag][data-tone="neutral"] {
+  color: var(--ck-text-secondary) !important;
+}
+
+/* ===== Layout chrome ======================================== */
+
+html[data-ck-chrome="swiss"] [data-ck-leftnav] {
+  background: var(--ck-bg-canvas) !important;
+  border-right: 1px solid var(--ck-border-subtle);
+}
+html[data-ck-chrome="swiss"] [data-ck-topbar] {
+  background: var(--ck-bg-canvas) !important;
+  border-bottom: 1px solid var(--ck-border-subtle);
+}
+
+/* ===== NavItem — text-only, weight change on active =========
+   Swiss nav is just a list of words; emphasis comes from weight,
+   not from background pills. Active gets weight 600. Leading
+   icons hidden. */
+html[data-ck-chrome="swiss"] [data-ck-navitem] {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  font-weight: 400 !important;
+  color: var(--ck-text-secondary) !important;
+  padding: 6px 8px !important;
+}
+html[data-ck-chrome="swiss"] [data-ck-navitem]:hover {
+  color: var(--ck-text-primary) !important;
+}
+html[data-ck-chrome="swiss"] [data-ck-navitem][data-active="true"] {
+  font-weight: 600 !important;
+  color: var(--ck-text-primary) !important;
+  background: transparent !important;
+}
+/* Hide leading icons — "no icons before nav items" per the brief. */
+html[data-ck-chrome="swiss"] [data-ck-navitem] svg,
+html[data-ck-chrome="swiss"] [data-ck-navitem] span > span:first-child {
+  display: none;
+}
+
+/* ===== Search trigger ======================================= */
+
+html[data-ck-chrome="swiss"] [data-ck-search-trigger] {
+  background: transparent !important;
+  border: 1px solid var(--ck-border-subtle) !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+}
+
+/* ===== Action bar ========================================== */
+
+html[data-ck-chrome="swiss"] [data-ck-actionbar] {
+  background: var(--ck-bg-canvas) !important;
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 3px;
+  box-shadow: none !important;
+}
+
+/* ===== Modal =============================================== */
+
+html[data-ck-chrome="swiss"] [role="dialog"] > div:first-child {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: none;
+}
+html[data-ck-chrome="swiss"] [role="dialog"] > div > div {
+  border-radius: 3px;
+  border: 1px solid var(--ck-text-primary);
+  box-shadow: none;
+}
+
+/* ===== Links — accent underline ============================ */
+
+html[data-ck-chrome="swiss"] a {
+  color: var(--ck-accent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}

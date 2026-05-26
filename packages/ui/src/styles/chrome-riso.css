@@ -1,0 +1,328 @@
+/* Risograph / Zine Print chrome — DIY print culture as a digital
+   aesthetic. Paper canvas + fluorescent ink + halftone dots + ink-
+   offset duplicates instead of soft drop shadows + slight rotation
+   on tags / cards. Anti-glossy, anti-gradient.
+
+   Implementation notes:
+   - Paper noise is stamped on body via ::before so it sits behind
+     all content but inside the chrome scope.
+   - "Shadows" in this chrome are not box-shadow blur — they are
+     offset solid blocks (3-4px translate, second ink color, no blur).
+   - Tags/cards get a tiny rotation via `transform: rotate(...)`.
+     We override the existing transform so neobrutalism-style
+     hover-translate isn't accidentally inherited.
+   - Body is set to a display-leaning sans; we don't bundle a
+     specific indie face — consumers can layer one on top via
+     `--ck-font-sans`. */
+
+html[data-ck-chrome="riso"] body {
+  font-family: "Helvetica Neue", "Inter", var(--ck-font-sans);
+  font-weight: 500;
+  position: relative;
+}
+
+/* Paper grain overlay — sits on body, pointer-events off. */
+html[data-ck-chrome="riso"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--ck-riso-paper);
+  background-size: 240px 240px;
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  z-index: 9999;
+}
+html[data-ck-theme="dark"][data-ck-chrome="riso"] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.18;
+}
+
+/* Display headings — chunky, slightly tighter tracking, raw ink */
+html[data-ck-chrome="riso"] h1,
+html[data-ck-chrome="riso"] .ck-h1 {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  text-transform: none;
+}
+html[data-ck-chrome="riso"] h2,
+html[data-ck-chrome="riso"] .ck-h2 {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+html[data-ck-chrome="riso"] h3,
+html[data-ck-chrome="riso"] .ck-h3 {
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+/* ---------- Buttons — flat ink + offset duplicate "shadow" ---------- */
+html[data-ck-chrome="riso"] .ck-btn,
+html[data-ck-chrome="riso"] .ck-actionbar-btn {
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-size: 12px;
+  height: 38px;
+  padding: 0 16px;
+  border: 2px solid var(--ck-text-primary);
+  box-shadow: 3px 3px 0 var(--ck-text-primary);
+  transition: transform 90ms ease, box-shadow 90ms ease, background 90ms ease;
+}
+html[data-ck-chrome="riso"] .ck-btn:hover:not(:disabled),
+html[data-ck-chrome="riso"] .ck-actionbar-btn:hover:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--ck-text-primary);
+}
+html[data-ck-chrome="riso"] .ck-btn:active:not(:disabled),
+html[data-ck-chrome="riso"] .ck-actionbar-btn:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ck-text-primary);
+}
+
+html[data-ck-chrome="riso"] .ck-btn--primary,
+html[data-ck-chrome="riso"] .ck-actionbar-btn--primary {
+  background: var(--ck-accent);
+  color: #1A1A1A;
+  box-shadow: 3px 3px 0 var(--ck-riso-blue);
+}
+html[data-ck-chrome="riso"] .ck-btn--primary:hover:not(:disabled),
+html[data-ck-chrome="riso"] .ck-actionbar-btn--primary:hover:not(:disabled) {
+  background: var(--ck-accent-hover);
+  box-shadow: 2px 2px 0 var(--ck-riso-blue);
+}
+html[data-ck-chrome="riso"] .ck-btn--primary:active:not(:disabled),
+html[data-ck-chrome="riso"] .ck-actionbar-btn--primary:active:not(:disabled) {
+  box-shadow: 0 0 0 var(--ck-riso-blue);
+}
+
+html[data-ck-chrome="riso"] .ck-btn--secondary {
+  background: var(--ck-bg-surface);
+  color: var(--ck-text-primary);
+}
+html[data-ck-chrome="riso"] .ck-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--ck-text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+html[data-ck-chrome="riso"] .ck-btn--ghost:hover:not(:disabled) {
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+  color: var(--ck-accent);
+}
+
+/* ---------- Inputs — underline-only, ink underline ---------- */
+html[data-ck-chrome="riso"] .ck-input,
+html[data-ck-chrome="riso"] .ck-textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--ck-text-primary);
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+  box-shadow: none;
+  font-weight: 500;
+  color: var(--ck-text-primary);
+}
+html[data-ck-chrome="riso"] .ck-input::placeholder,
+html[data-ck-chrome="riso"] .ck-textarea::placeholder {
+  color: var(--ck-text-tertiary);
+  font-style: italic;
+}
+html[data-ck-chrome="riso"] .ck-input:focus-visible,
+html[data-ck-chrome="riso"] .ck-textarea:focus-visible {
+  outline: none;
+  border-bottom-color: var(--ck-accent) !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Cards — paper plate with offset ink block ---------- */
+html[data-ck-chrome="riso"] .ck-card {
+  background: var(--ck-bg-surface);
+  border: 2px solid var(--ck-text-primary);
+  border-radius: 4px;
+  box-shadow: 5px 5px 0 var(--ck-riso-pink);
+  overflow: visible;
+}
+html[data-ck-chrome="riso"] .ck-card__head {
+  background: transparent;
+  border-bottom: 2px dashed var(--ck-border-subtle);
+  padding: 14px 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+html[data-ck-chrome="riso"] .ck-card__foot {
+  background: transparent;
+  border-top: 2px dashed var(--ck-border-subtle);
+  padding: 12px 20px;
+}
+
+/* Dark mode — switch offset ink to a more legible color on navy */
+html[data-ck-theme="dark"][data-ck-chrome="riso"] .ck-card {
+  box-shadow: 5px 5px 0 var(--ck-riso-pink);
+  border-color: var(--ck-text-primary);
+}
+
+/* ---------- Tags — rubber-stamp feel ---------- */
+html[data-ck-chrome="riso"] [data-ck-tag] {
+  background: transparent !important;
+  border: 2px solid var(--ck-text-primary) !important;
+  border-radius: 4px !important;
+  padding: 3px 8px !important;
+  font-weight: 800 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  box-shadow: 2px 2px 0 var(--ck-text-primary) !important;
+  color: var(--ck-text-primary) !important;
+  display: inline-block !important;
+  transform: rotate(-2deg);
+  transform-origin: center;
+}
+html[data-ck-chrome="riso"] [data-ck-tag][data-tone="accent"] {
+  background: var(--ck-riso-pink) !important;
+  color: #1A1A1A !important;
+  box-shadow: 2px 2px 0 var(--ck-riso-blue) !important;
+}
+html[data-ck-chrome="riso"] [data-ck-tag][data-tone="success"] {
+  background: var(--ck-riso-yellow) !important;
+  color: #1A1A1A !important;
+  box-shadow: 2px 2px 0 var(--ck-riso-green) !important;
+}
+html[data-ck-chrome="riso"] [data-ck-tag][data-tone="warning"] {
+  background: var(--ck-riso-orange) !important;
+  color: #1A1A1A !important;
+  box-shadow: 2px 2px 0 var(--ck-text-primary) !important;
+}
+html[data-ck-chrome="riso"] [data-ck-tag][data-tone="critical"] {
+  background: var(--ck-riso-red) !important;
+  color: #F8F1DE !important;
+  box-shadow: 2px 2px 0 var(--ck-text-primary) !important;
+}
+html[data-ck-chrome="riso"] [data-ck-tag][data-tone="neutral"] {
+  background: transparent !important;
+  color: var(--ck-text-primary) !important;
+  box-shadow: 2px 2px 0 var(--ck-text-primary) !important;
+}
+
+/* ---------- Layout chrome — paper sidebar + topbar ---------- */
+html[data-ck-chrome="riso"] [data-ck-leftnav] {
+  background: var(--ck-bg-sidebar) !important;
+  border-right: 2px solid var(--ck-text-primary);
+}
+
+html[data-ck-chrome="riso"] [data-ck-topbar] {
+  background: var(--ck-bg-canvas) !important;
+  border-bottom: 2px solid var(--ck-text-primary);
+}
+
+/* NavItem — flat hover, riso ink block on active */
+html[data-ck-chrome="riso"] [data-ck-navitem] {
+  background: transparent !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  color: var(--ck-text-primary) !important;
+  transition: background 120ms ease, color 120ms ease;
+}
+html[data-ck-chrome="riso"] [data-ck-navitem]:not([data-active="true"]):hover {
+  background: var(--ck-bg-muted) !important;
+}
+html[data-ck-chrome="riso"] [data-ck-navitem][data-active="true"] {
+  background: var(--ck-riso-pink) !important;
+  color: #1A1A1A !important;
+  font-weight: 800 !important;
+  box-shadow: 3px 3px 0 var(--ck-riso-blue) !important;
+}
+
+/* Search trigger — underlined input feel */
+html[data-ck-chrome="riso"] [data-ck-search-trigger] {
+  background: var(--ck-bg-surface) !important;
+  border: 2px solid var(--ck-text-primary) !important;
+  border-radius: 4px !important;
+  box-shadow: 3px 3px 0 var(--ck-riso-yellow) !important;
+  color: var(--ck-text-primary) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 11px;
+}
+
+/* Action bar — paper plate with offset ink block, no rounding */
+html[data-ck-chrome="riso"] [data-ck-actionbar] {
+  background: var(--ck-bg-surface) !important;
+  border: 2px solid var(--ck-text-primary);
+  border-radius: 4px;
+  box-shadow: 5px 5px 0 var(--ck-riso-blue);
+}
+
+/* Modal — paper plate, no blur */
+html[data-ck-chrome="riso"] [role="dialog"] > div:first-child {
+  background: rgba(26, 26, 26, 0.45);
+  backdrop-filter: none;
+}
+html[data-ck-chrome="riso"] [role="dialog"] > div > div {
+  background: var(--ck-bg-surface) !important;
+  border: 2px solid var(--ck-text-primary);
+  border-radius: 4px;
+  box-shadow: 6px 6px 0 var(--ck-riso-pink);
+}
+
+/* Code blocks — bordered paper with offset block */
+html[data-ck-chrome="riso"] pre {
+  background: var(--ck-bg-surface) !important;
+  border: 2px solid var(--ck-text-primary);
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 var(--ck-riso-yellow);
+  font-family: "Courier Prime", "Courier New", var(--ck-font-mono);
+}
+html[data-ck-chrome="riso"] code {
+  background: var(--ck-riso-yellow) !important;
+  color: var(--ck-text-primary) !important;
+  padding: 1px 6px;
+  font-family: "Courier Prime", "Courier New", var(--ck-font-mono);
+  border-radius: 2px;
+}
+
+/* Dividers — dashed by default under riso */
+html[data-ck-chrome="riso"] hr {
+  border: none;
+  border-top: 2px dashed var(--ck-text-primary);
+  margin: 24px 0;
+  opacity: 0.6;
+}
+
+/* Halftone helper class — apply to any element for shaded ink fill.
+   Set `color: var(--ck-riso-pink)` on the element to control the
+   dot color, then add this class. */
+.ck-riso-halftone {
+  background-image: var(--ck-riso-halftone, radial-gradient(circle, currentColor 1.4px, transparent 1.6px));
+  background-size: 7px 7px;
+  background-repeat: repeat;
+}
+
+/* Crop-mark helper — opt-in via .ck-riso-marks on a positioned
+   container; corners get registration `+` glyphs. */
+.ck-riso-marks {
+  position: relative;
+}
+.ck-riso-marks::before,
+.ck-riso-marks::after {
+  content: "+";
+  position: absolute;
+  font: 700 18px/1 "Courier Prime", "Courier New", monospace;
+  color: currentColor;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.ck-riso-marks::before { top: 4px; left: 8px; }
+.ck-riso-marks::after  { bottom: 4px; right: 8px; }

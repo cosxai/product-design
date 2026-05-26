@@ -1,0 +1,235 @@
+/* Terminal chrome — component overrides.
+   Tokens.css supplies the palette and forces font-display +
+   font-sans to point at font-mono. This file strips every
+   primitive of its softness: square corners, 1 px borders, no
+   shadows, monospace everywhere. */
+
+html[data-ck-chrome="terminal"] body {
+  font-family: var(--ck-font-mono);
+  font-weight: 400;
+  font-feature-settings: "tnum", "zero", "calt" 0;
+  letter-spacing: 0;
+}
+
+/* ===== Typography =========================================== */
+
+html[data-ck-chrome="terminal"] h1,
+html[data-ck-chrome="terminal"] .ck-h1 {
+  font-family: var(--ck-font-mono);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+html[data-ck-chrome="terminal"] h2,
+html[data-ck-chrome="terminal"] .ck-h2 {
+  font-family: var(--ck-font-mono);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+html[data-ck-chrome="terminal"] h3,
+html[data-ck-chrome="terminal"] .ck-h3 {
+  font-family: var(--ck-font-mono);
+  font-weight: 600;
+}
+
+html[data-ck-chrome="terminal"] .ck-eyebrow,
+html[data-ck-chrome="terminal"] .ck-tag {
+  letter-spacing: 0;
+  font-family: var(--ck-font-mono);
+}
+
+html[data-ck-chrome="terminal"] code {
+  background: var(--ck-bg-surface-2);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 2px;
+  padding: 1px 6px;
+}
+html[data-ck-chrome="terminal"] pre {
+  background: var(--ck-bg-surface);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 2px;
+}
+
+/* ===== Buttons ============================================== */
+
+html[data-ck-chrome="terminal"] .ck-btn,
+html[data-ck-chrome="terminal"] .ck-actionbar-btn {
+  border-radius: 2px;
+  font-family: var(--ck-font-mono);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  box-shadow: none !important;
+  border: 1px solid var(--ck-border-subtle);
+}
+html[data-ck-chrome="terminal"] .ck-btn--primary {
+  background: var(--ck-text-primary);
+  color: var(--ck-bg-canvas);
+  border-color: var(--ck-text-primary);
+}
+html[data-ck-chrome="terminal"] .ck-btn--primary:hover:not(:disabled) {
+  background: var(--ck-bg-canvas);
+  color: var(--ck-text-primary);
+}
+html[data-ck-chrome="terminal"] .ck-btn--secondary {
+  background: transparent;
+  color: var(--ck-text-primary);
+  border-color: var(--ck-border-subtle);
+}
+html[data-ck-chrome="terminal"] .ck-btn--secondary:hover:not(:disabled) {
+  border-color: var(--ck-border-strong);
+  background: var(--ck-bg-surface);
+}
+html[data-ck-chrome="terminal"] .ck-btn--ghost {
+  background: transparent;
+  border: 1px solid transparent;
+}
+html[data-ck-chrome="terminal"] .ck-btn--ghost:hover:not(:disabled) {
+  border-color: var(--ck-border-subtle);
+}
+
+/* ===== Inputs ============================================== */
+
+html[data-ck-chrome="terminal"] .ck-input,
+html[data-ck-chrome="terminal"] .ck-textarea {
+  background: var(--ck-bg-surface-2);
+  border: 1px solid var(--ck-border-subtle) !important;
+  border-radius: 2px !important;
+  font-family: var(--ck-font-mono);
+  color: var(--ck-text-primary);
+}
+html[data-ck-chrome="terminal"] .ck-input:focus-visible,
+html[data-ck-chrome="terminal"] .ck-textarea:focus-visible {
+  outline: none;
+  border-color: var(--ck-border-strong) !important;
+  border-top-color: var(--ck-accent) !important;
+  box-shadow: none !important;
+}
+
+/* ===== Cards ================================================ */
+
+html[data-ck-chrome="terminal"] .ck-card {
+  background: var(--ck-bg-surface);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 2px;
+  box-shadow: none;
+}
+html[data-ck-chrome="terminal"] .ck-card__head {
+  border-bottom: 1px solid var(--ck-border-subtle);
+  padding: 12px 16px;
+}
+html[data-ck-chrome="terminal"] .ck-card__body {
+  padding: 14px 16px;
+}
+html[data-ck-chrome="terminal"] .ck-card__foot {
+  border-top: 1px solid var(--ck-border-subtle);
+  background: transparent;
+  padding: 10px 16px;
+}
+
+/* ===== Tags — bracketed text + coloured dot ================ */
+
+html[data-ck-chrome="terminal"] [data-ck-tag] {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  font-family: var(--ck-font-mono) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  font-size: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+html[data-ck-chrome="terminal"] [data-ck-tag]::before {
+  content: "[● ";
+  color: currentColor;
+}
+html[data-ck-chrome="terminal"] [data-ck-tag]::after {
+  content: " ]";
+  color: var(--ck-text-secondary);
+}
+html[data-ck-chrome="terminal"] [data-ck-tag][data-tone="accent"] {
+  color: var(--ck-term-cyan) !important;
+}
+html[data-ck-chrome="terminal"] [data-ck-tag][data-tone="success"] {
+  color: var(--ck-term-green) !important;
+}
+html[data-ck-chrome="terminal"] [data-ck-tag][data-tone="warning"] {
+  color: var(--ck-term-amber) !important;
+}
+html[data-ck-chrome="terminal"] [data-ck-tag][data-tone="critical"] {
+  color: var(--ck-term-red) !important;
+}
+html[data-ck-chrome="terminal"] [data-ck-tag][data-tone="neutral"] {
+  color: var(--ck-text-secondary) !important;
+}
+
+/* ===== Layout chrome ======================================== */
+
+html[data-ck-chrome="terminal"] [data-ck-leftnav] {
+  background: var(--ck-bg-canvas) !important;
+  border-right: 1px solid var(--ck-border-subtle);
+}
+html[data-ck-chrome="terminal"] [data-ck-topbar] {
+  background: var(--ck-bg-canvas) !important;
+  border-bottom: 1px solid var(--ck-border-subtle);
+  font-family: var(--ck-font-mono);
+}
+
+/* ===== NavItem — TUI inverted selection on active =========== */
+
+html[data-ck-chrome="terminal"] [data-ck-navitem] {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 2px !important;
+  font-family: var(--ck-font-mono) !important;
+  font-weight: 400 !important;
+  color: var(--ck-text-secondary) !important;
+  padding: 6px 10px !important;
+}
+html[data-ck-chrome="terminal"] [data-ck-navitem]:not([data-active="true"]):hover {
+  background: var(--ck-bg-surface) !important;
+  color: var(--ck-text-primary) !important;
+}
+/* Classic TUI selection — invert. */
+html[data-ck-chrome="terminal"] [data-ck-navitem][data-active="true"] {
+  background: var(--ck-text-primary) !important;
+  color: var(--ck-bg-canvas) !important;
+  font-weight: 500 !important;
+}
+
+/* ===== Search trigger ====================================== */
+
+html[data-ck-chrome="terminal"] [data-ck-search-trigger] {
+  background: var(--ck-bg-surface) !important;
+  border: 1px solid var(--ck-border-subtle) !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+  font-family: var(--ck-font-mono) !important;
+}
+
+/* ===== Action bar ========================================== */
+
+html[data-ck-chrome="terminal"] [data-ck-actionbar] {
+  background: var(--ck-bg-surface) !important;
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 2px;
+  box-shadow: none !important;
+  font-family: var(--ck-font-mono);
+}
+
+/* ===== Modal =============================================== */
+
+html[data-ck-chrome="terminal"] [role="dialog"] > div:first-child {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: none;
+}
+html[data-ck-chrome="terminal"] [role="dialog"] > div > div {
+  border-radius: 2px;
+  border: 1px solid var(--ck-border-strong);
+  box-shadow: none;
+  font-family: var(--ck-font-mono);
+}

@@ -1,0 +1,22 @@
+/* @font-face declarations for the kit's default sans + mono.
+   Consumer projects supply the OTF/WOFF2 files under /fonts/ (the
+   library's public/fonts/ directory is a reference copy for when
+   the kit is consumed standalone). Swap out for your own brand
+   stack by overriding --ck-font-sans / --ck-font-mono after
+   importing this file. */
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Regular.otf") format("opentype");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/GeistMono-Regular.otf") format("opentype");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}

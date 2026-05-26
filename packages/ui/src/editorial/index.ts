@@ -1,0 +1,10 @@
+export { Folio } from "./Folio";
+export type { FolioProps } from "./Folio";
+export { PlateMarker } from "./PlateMarker";
+export type { PlateMarkerProps } from "./PlateMarker";
+export { RunningMarginalia } from "./RunningMarginalia";
+export type { RunningMarginaliaProps } from "./RunningMarginalia";
+export { RomanSection } from "./RomanSection";
+export type { RomanSectionProps } from "./RomanSection";
+export { EditorialSpotlight } from "./EditorialSpotlight";
+export type { EditorialSpotlightProps } from "./EditorialSpotlight";

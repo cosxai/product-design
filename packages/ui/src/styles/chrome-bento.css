@@ -1,0 +1,184 @@
+/* Bento chrome — component overrides.
+   Tokens.css supplies the neutral palette + generous radii + soft
+   multi-layer shadows. This file polishes existing primitives to
+   match: Apple-style large radius cards, soft pill buttons, no
+   chunky borders, hover-lift on cells. The layout primitives
+   (<BentoGrid> + <BentoCell>) do the heavy lifting elsewhere. */
+
+html[data-ck-chrome="bento"] body {
+  font-weight: 400;
+  font-feature-settings: "ss01", "cv11";
+}
+
+html[data-ck-chrome="bento"] h1,
+html[data-ck-chrome="bento"] .ck-h1 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+html[data-ck-chrome="bento"] h2,
+html[data-ck-chrome="bento"] .ck-h2 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+html[data-ck-chrome="bento"] h3,
+html[data-ck-chrome="bento"] .ck-h3 {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* Buttons */
+html[data-ck-chrome="bento"] .ck-btn,
+html[data-ck-chrome="bento"] .ck-actionbar-btn {
+  border-radius: 12px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-transform: none;
+  box-shadow: var(--ck-shadow-1);
+  transition: background 160ms ease, transform 160ms ease;
+}
+html[data-ck-chrome="bento"] .ck-btn--primary {
+  background: var(--ck-text-primary);
+  color: var(--ck-bg-canvas);
+  border: none;
+}
+html[data-ck-chrome="bento"] .ck-btn--primary:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--ck-text-primary), white 12%);
+}
+html[data-ck-chrome="bento"] .ck-btn--secondary {
+  background: var(--ck-bg-surface);
+  color: var(--ck-text-primary);
+  border: 1px solid var(--ck-border-subtle);
+}
+html[data-ck-chrome="bento"] .ck-btn--ghost {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+html[data-ck-chrome="bento"] .ck-btn--ghost:hover:not(:disabled) {
+  background: var(--ck-bg-muted);
+}
+
+/* Inputs */
+html[data-ck-chrome="bento"] .ck-input,
+html[data-ck-chrome="bento"] .ck-textarea {
+  background: var(--ck-bg-surface);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 12px;
+}
+html[data-ck-chrome="bento"] .ck-input:focus-visible,
+html[data-ck-chrome="bento"] .ck-textarea:focus-visible {
+  outline: none;
+  border-color: var(--ck-accent) !important;
+  box-shadow: 0 0 0 3px var(--ck-accent-muted) !important;
+}
+
+/* Cards — bento baseline */
+html[data-ck-chrome="bento"] .ck-card {
+  background: var(--ck-bg-surface);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 22px;
+  box-shadow: var(--ck-shadow-2);
+}
+html[data-ck-chrome="bento"] .ck-card__head {
+  border-bottom: 1px solid var(--ck-border-subtle);
+  padding: 18px 24px;
+}
+html[data-ck-chrome="bento"] .ck-card__body {
+  padding: 24px;
+}
+html[data-ck-chrome="bento"] .ck-card__foot {
+  border-top: 1px solid var(--ck-border-subtle);
+  background: transparent;
+  padding: 16px 24px;
+}
+
+/* Tags — soft tinted pills */
+html[data-ck-chrome="bento"] [data-ck-tag] {
+  background: var(--ck-bg-muted) !important;
+  border-radius: 999px !important;
+  padding: 4px 10px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  font-size: 12px !important;
+}
+html[data-ck-chrome="bento"] [data-ck-tag][data-tone="accent"] {
+  background: var(--ck-accent-muted) !important;
+  color: var(--ck-accent) !important;
+}
+html[data-ck-chrome="bento"] [data-ck-tag][data-tone="success"] {
+  background: color-mix(in oklab, var(--ck-success) 12%, transparent) !important;
+  color: var(--ck-success) !important;
+}
+html[data-ck-chrome="bento"] [data-ck-tag][data-tone="warning"] {
+  background: color-mix(in oklab, var(--ck-warning) 14%, transparent) !important;
+  color: var(--ck-warning) !important;
+}
+html[data-ck-chrome="bento"] [data-ck-tag][data-tone="critical"] {
+  background: color-mix(in oklab, var(--ck-critical) 12%, transparent) !important;
+  color: var(--ck-critical) !important;
+}
+
+/* Layout chrome */
+html[data-ck-chrome="bento"] [data-ck-leftnav] {
+  background: var(--ck-bg-sidebar) !important;
+  border-right: 1px solid var(--ck-border-subtle);
+}
+html[data-ck-chrome="bento"] [data-ck-topbar] {
+  background: var(--ck-bg-canvas) !important;
+  border-bottom: 1px solid var(--ck-border-subtle);
+}
+
+/* NavItem — soft pill */
+html[data-ck-chrome="bento"] [data-ck-navitem] {
+  background: transparent !important;
+  border-radius: 10px !important;
+  font-weight: 500 !important;
+}
+html[data-ck-chrome="bento"] [data-ck-navitem]:not([data-active="true"]):hover {
+  background: var(--ck-bg-muted) !important;
+}
+html[data-ck-chrome="bento"] [data-ck-navitem][data-active="true"] {
+  background: var(--ck-bg-muted) !important;
+  color: var(--ck-text-primary) !important;
+  font-weight: 600 !important;
+}
+
+/* Search trigger */
+html[data-ck-chrome="bento"] [data-ck-search-trigger] {
+  background: var(--ck-bg-surface) !important;
+  border: 1px solid var(--ck-border-subtle) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--ck-shadow-1);
+}
+
+/* Action bar */
+html[data-ck-chrome="bento"] [data-ck-actionbar] {
+  background: var(--ck-bg-surface) !important;
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 16px;
+  box-shadow: var(--ck-shadow-2);
+}
+
+/* Modal */
+html[data-ck-chrome="bento"] [role="dialog"] > div:first-child {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+html[data-ck-chrome="bento"] [role="dialog"] > div > div {
+  border-radius: 22px;
+  box-shadow: var(--ck-shadow-3);
+}
+
+/* BentoCell — hover lift signature */
+html[data-ck-chrome="bento"] [data-ck-bento-cell] {
+  transition: transform 240ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 240ms cubic-bezier(0.2, 0, 0, 1);
+}
+html[data-ck-chrome="bento"] [data-ck-bento-cell][data-interactive="true"]:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--ck-shadow-3);
+}

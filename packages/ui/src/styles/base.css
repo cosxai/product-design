@@ -1,0 +1,80 @@
+/* Global base — applied once at the consumer root so the kit's
+   typography, color, and motion behaviour kick in. Components
+   themselves are class-driven (`ck-*` prefix) and don't depend on
+   this file being loaded, but consumers should import it to get
+   the cross-fade theme transitions and reduced-motion handling. */
+
+html,
+body {
+  background: var(--ck-bg-canvas);
+  color: var(--ck-text-primary);
+  font-family: var(--ck-font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  /* Cross-fade tones when --ck-bg-canvas / --ck-text-primary flip
+     on theme toggle. All component tokens read from the same vars
+     so they shift in lockstep without per-element transitions. */
+  transition: background-color 200ms var(--ck-ease), color 200ms var(--ck-ease);
+}
+
+/* ---------- Typography utilities ---------- */
+.ck-h1 { font: 500 32px/1.2 var(--ck-font-sans); letter-spacing: -0.01em; color: var(--ck-text-primary); margin: 0; }
+.ck-h2 { font: 500 24px/1.3 var(--ck-font-sans); letter-spacing: -0.005em; color: var(--ck-text-primary); margin: 0; }
+.ck-h3 { font: 500 20px/1.4 var(--ck-font-sans); color: var(--ck-text-primary); margin: 0; }
+.ck-body    { font: 400 16px/1.55 var(--ck-font-sans); color: var(--ck-text-primary); }
+.ck-body-sm { font: 400 14px/1.5  var(--ck-font-sans); color: var(--ck-text-primary); }
+.ck-caption { font: 400 13px/1.4  var(--ck-font-sans); color: var(--ck-text-tertiary); }
+
+.ck-mono { font-family: var(--ck-font-mono); font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+
+/* Section eyebrow — small uppercase mono caption ("ACCESS · SHARES")
+   that sits above titles in cards / panels. */
+.ck-eyebrow {
+  font: 500 var(--ck-mono-xs-size)/1 var(--ck-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ck-text-tertiary);
+  display: inline-block;
+}
+
+/* One-step-smaller sibling of eyebrow — for status pills (PENDING,
+   LIVE, Accepted, Revoked), meta tags inside list rows. */
+.ck-tag {
+  font: 500 var(--ck-mono-tag-size)/1 var(--ck-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ck-text-tertiary);
+  display: inline-block;
+}
+
+.ck-meta {
+  font: 400 var(--ck-mono-sm-size)/1.4 var(--ck-font-mono);
+  color: var(--ck-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Motion primitives ---------- */
+@keyframes ck-slide-in-right { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes ck-slide-in-left  { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes ck-fade-in        { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ck-popover-enter  { from { opacity: 0; transform: translateY(8px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes ck-page-enter     { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.ck-anim-slide-right { animation: ck-slide-in-right 180ms var(--ck-ease) both; }
+.ck-anim-slide-left  { animation: ck-slide-in-left  180ms var(--ck-ease) both; }
+.ck-anim-fade        { animation: ck-fade-in        180ms var(--ck-ease) both; }
+.ck-anim-popover     { animation: ck-popover-enter  160ms var(--ck-ease) both; transform-origin: top center; }
+.ck-anim-page        { animation: ck-page-enter     var(--ck-dur-page) cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Respect the user's OS-level motion preference. Cross-fade
+   transitions on bg/colour stay (below the meaningful-motion
+   threshold); element-level animations are killed. */
+@media (prefers-reduced-motion: reduce) {
+  .ck-anim-slide-right,
+  .ck-anim-slide-left,
+  .ck-anim-fade,
+  .ck-anim-popover,
+  .ck-anim-page {
+    animation: none;
+  }
+}

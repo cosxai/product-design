@@ -1,0 +1,145 @@
+/* Editorial chrome — component overrides.
+   Token overrides live in tokens.css; this file restyles the
+   primitives' shape / feel to match the print-magazine brief.
+   Loads alongside index.css; takes effect only when
+   html[data-ck-chrome="editorial"] is set on the root. */
+
+html[data-ck-chrome="editorial"] body {
+  /* Optical kerning + ligatures for the editorial body type. */
+  font-feature-settings: "kern", "liga", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Buttons — fully rounded pills, no shadow ever. Primary is
+   coral fill with near-black text (the brief specifies dark text
+   on coral, not white). */
+html[data-ck-chrome="editorial"] .ck-btn,
+html[data-ck-chrome="editorial"] .ck-actionbar-btn {
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 9999px;
+  font-family: var(--ck-font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: none !important;
+}
+
+html[data-ck-chrome="editorial"] .ck-btn--primary,
+html[data-ck-chrome="editorial"] .ck-actionbar-btn--primary {
+  background: var(--ck-accent);
+  color: #0F0F0F;
+}
+html[data-ck-chrome="editorial"] .ck-btn--primary:hover,
+html[data-ck-chrome="editorial"] .ck-actionbar-btn--primary:hover {
+  background: var(--ck-accent-hover);
+}
+
+html[data-ck-chrome="editorial"] .ck-btn--secondary {
+  background: transparent;
+  border: 1px solid var(--ck-text-primary);
+  color: var(--ck-text-primary);
+}
+
+/* Cards — 1 px hairline, no shadow, slightly tighter radius.
+   Index-card feel, not glassmorphism. */
+html[data-ck-chrome="editorial"] .ck-card {
+  background: var(--ck-bg-surface);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 16px;
+  box-shadow: none;
+}
+
+/* Eyebrow / tag — editorial uses a longer track + leading
+   em-dash. Reads as a magazine section label. */
+html[data-ck-chrome="editorial"] .ck-eyebrow,
+html[data-ck-chrome="editorial"] .ck-tag {
+  letter-spacing: 0.18em;
+  font-family: var(--ck-font-sans);
+  color: var(--ck-text-secondary);
+}
+html[data-ck-chrome="editorial"] .ck-eyebrow::before {
+  content: "— ";
+  color: var(--ck-text-tertiary);
+}
+
+/* Headings switch to serif via --ck-font-display. ck-h1/h2/h3
+   already read from --ck-font-sans by default; under editorial
+   we override at this scope so the typography stack rotates
+   without touching component code. */
+html[data-ck-chrome="editorial"] h1,
+html[data-ck-chrome="editorial"] h2,
+html[data-ck-chrome="editorial"] h3,
+html[data-ck-chrome="editorial"] .ck-h1,
+html[data-ck-chrome="editorial"] .ck-h2,
+html[data-ck-chrome="editorial"] .ck-h3 {
+  font-family: var(--ck-font-display);
+  letter-spacing: -0.012em;
+  line-height: 1.08;
+  font-weight: 500;
+}
+
+/* Italic-in-the-middle treatment for the docs h1. Wrapping
+   the italicised word in <em> is enough — the serif's italic
+   variant carries the editorial signature move. */
+html[data-ck-chrome="editorial"] h1 em,
+html[data-ck-chrome="editorial"] h2 em,
+html[data-ck-chrome="editorial"] .ck-h1 em,
+html[data-ck-chrome="editorial"] .ck-h2 em {
+  font-style: italic;
+  color: var(--ck-text-primary);
+}
+
+/* Inputs — paper feel, no inner shadow, ink-coloured borders. */
+html[data-ck-chrome="editorial"] .ck-input,
+html[data-ck-chrome="editorial"] .ck-textarea {
+  background: var(--ck-bg-surface);
+  border-color: var(--ck-border-subtle);
+  font-family: var(--ck-font-sans);
+}
+
+/* Action bar — keep the pill profile but drop the shadow. The
+   bar is just a hairline-bounded paper strip floating on cream. */
+html[data-ck-chrome="editorial"] [data-ck-actionbar] {
+  background: var(--ck-bg-surface);
+  border-color: var(--ck-border-subtle);
+  box-shadow: none;
+}
+
+/* Left rail — same cream paper, hairline divider. */
+html[data-ck-chrome="editorial"] [data-ck-leftnav] {
+  background: var(--ck-bg-canvas);
+  border-right-color: var(--ck-border-subtle);
+}
+
+/* Topbar — flatten to the paper, lose the bottom border (the
+   folio rule under it is the visual divider in editorial). */
+html[data-ck-chrome="editorial"] [data-ck-topbar] {
+  background: var(--ck-bg-canvas);
+  border-bottom: none;
+}
+
+/* Modal backdrop — printerly, not glassy. Cream-tinted
+   translucent overlay instead of blue-tinted blur. */
+html[data-ck-chrome="editorial"] [role="dialog"] > div:first-child {
+  background: rgba(15, 15, 15, 0.4);
+  backdrop-filter: none;
+}
+
+/* <EditorialSpotlight>: dark canvas with cream cards floating on
+   top. The wrapper sets --ck-text-primary to cream so paragraphs
+   on the dark surround read correctly — but cards inside it stay
+   cream paper, so their text needs to flip BACK to dark ink. Rebind
+   the text variables on the .ck-card scope and everything nested
+   inside (h1/h2, body copy, eyebrows, captions) reads dark again. */
+[data-ck-spotlight] .ck-card {
+  --ck-text-primary: #0F0F0F;
+  --ck-text-secondary: #6B6557;
+  --ck-text-tertiary: #A8A294;
+  color: #0F0F0F;
+}
+[data-ck-spotlight] .ck-card .ck-eyebrow,
+[data-ck-spotlight] .ck-card .ck-tag {
+  color: var(--ck-text-secondary);
+}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>@cosx/ui — internal component library</title>
+    <!-- Editorial chrome → Playfair Display (high-contrast
+         transitional serif). Neobrutalism chrome → Archivo Black
+         (heavyweight display sans). Loaded eagerly so the
+         headline swap on chrome flip doesn't show a fallback. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Archivo+Black&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // Pre-mount theme paint — prevents white flash on dark
+      // sessions. Mirrors getInlineThemeScript({ themeStorageKey:
+      // "cosx-docs-theme" }) from @cosx/ui. Kept inline because the
+      // module hasn't loaded yet at this point.
+      (function () {
+        try {
+          var t = localStorage.getItem("cosx-docs-theme");
+          if (t !== "light" && t !== "dark") {
+            t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          document.documentElement.setAttribute("data-ck-theme", t);
+          var c = localStorage.getItem("cosx-docs-chrome");
+          if (c !== "classic" && c !== "seamless" && c !== "editorial" && c !== "neobrutalism") c = "seamless";
+          document.documentElement.setAttribute("data-ck-chrome", c);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

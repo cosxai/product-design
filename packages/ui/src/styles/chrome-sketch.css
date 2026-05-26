@@ -1,0 +1,351 @@
+/* Hand-drawn / Sketchy chrome — Excalidraw / tldraw / Whimsical
+   pen-on-paper aesthetic. Implementation strategy is "rough.js by
+   CSS":
+   - Asymmetric border-radius gives corners natural variance
+   - Offset second box-shadow gives the "drawn twice" line feel
+   - filter: var(--ck-sketch-wobble) applies SVG turbulence to
+     drawn surfaces (Chrome / Safari; Firefox falls back gracefully)
+   - Hatch-fill backgrounds use repeating-linear-gradient for
+     emphasized buttons / tags
+   - Each .ck-* primitive gets a tiny pre-set tilt via :nth-child
+     selectors so cards don't all stand perfectly upright
+
+   Body uses handwriting-leaning fonts. Headings push fully to
+   handwritten display via the Caveat / Patrick Hand stack. */
+
+html[data-ck-chrome="sketch"] body {
+  font-family: var(--ck-font-sketch-body, "Comic Neue", "Comic Sans MS", system-ui, sans-serif);
+  font-weight: 400;
+  line-height: 1.55;
+  background-image:
+    radial-gradient(circle, rgba(26, 26, 26, 0.06) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
+}
+html[data-ck-theme="dark"][data-ck-chrome="sketch"] body {
+  background-image:
+    radial-gradient(circle, rgba(240, 240, 232, 0.08) 1px, transparent 1.4px);
+}
+
+/* Headings — handwritten font, slight negative letter-spacing */
+html[data-ck-chrome="sketch"] h1,
+html[data-ck-chrome="sketch"] .ck-h1 {
+  font-family: var(--ck-font-sketch-display);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  transform: rotate(-0.6deg);
+  transform-origin: left;
+}
+html[data-ck-chrome="sketch"] h2,
+html[data-ck-chrome="sketch"] .ck-h2 {
+  font-family: var(--ck-font-sketch-display);
+  font-weight: 700;
+  line-height: 1.1;
+  transform: rotate(-0.3deg);
+  transform-origin: left;
+}
+html[data-ck-chrome="sketch"] h3,
+html[data-ck-chrome="sketch"] .ck-h3 {
+  font-family: var(--ck-font-sketch-display);
+  font-weight: 600;
+}
+
+/* ---------- Buttons — drawn rectangles ---------- */
+html[data-ck-chrome="sketch"] .ck-btn,
+html[data-ck-chrome="sketch"] .ck-actionbar-btn {
+  border-radius: 7px 9px 8px 10px / 9px 7px 10px 8px;
+  font-family: var(--ck-font-sketch-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  height: 40px;
+  padding: 0 18px;
+  border: 2px solid var(--ck-text-primary);
+  background: var(--ck-bg-surface);
+  color: var(--ck-text-primary);
+  box-shadow: 2px 3px 0 var(--ck-text-primary);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+html[data-ck-chrome="sketch"] .ck-btn:hover:not(:disabled),
+html[data-ck-chrome="sketch"] .ck-actionbar-btn:hover:not(:disabled) {
+  background: var(--ck-bg-muted);
+  transform: translate(0px, 1px) rotate(-0.4deg);
+}
+html[data-ck-chrome="sketch"] .ck-btn:active:not(:disabled),
+html[data-ck-chrome="sketch"] .ck-actionbar-btn:active:not(:disabled) {
+  transform: translate(1px, 2px) rotate(0.6deg);
+  box-shadow: 0 1px 0 var(--ck-text-primary);
+}
+
+html[data-ck-chrome="sketch"] .ck-btn--primary,
+html[data-ck-chrome="sketch"] .ck-actionbar-btn--primary {
+  background: var(--ck-accent);
+  color: #FFFEF9;
+  box-shadow: 2px 3px 0 var(--ck-text-primary);
+}
+html[data-ck-chrome="sketch"] .ck-btn--primary:hover:not(:disabled) {
+  background: var(--ck-accent-hover);
+}
+
+html[data-ck-chrome="sketch"] .ck-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 5px;
+  text-decoration-color: var(--ck-text-primary);
+}
+html[data-ck-chrome="sketch"] .ck-btn--ghost:hover:not(:disabled) {
+  background: transparent;
+  transform: rotate(-0.4deg);
+  color: var(--ck-accent);
+  text-decoration-color: var(--ck-accent);
+}
+
+/* ---------- Inputs — wavy underline ---------- */
+html[data-ck-chrome="sketch"] .ck-input,
+html[data-ck-chrome="sketch"] .ck-textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--ck-text-primary);
+  border-radius: 0;
+  padding-left: 2px;
+  padding-right: 2px;
+  box-shadow: none;
+  font-family: var(--ck-font-sketch-display);
+  font-size: 17px;
+  color: var(--ck-text-primary);
+}
+html[data-ck-chrome="sketch"] .ck-input::placeholder,
+html[data-ck-chrome="sketch"] .ck-textarea::placeholder {
+  color: var(--ck-text-tertiary);
+  font-style: italic;
+}
+html[data-ck-chrome="sketch"] .ck-input:focus-visible,
+html[data-ck-chrome="sketch"] .ck-textarea:focus-visible {
+  outline: none;
+  border-bottom-color: var(--ck-accent) !important;
+  border-bottom-width: 3px;
+  box-shadow: none !important;
+}
+
+/* ---------- Cards — drawn rectangles with second-stroke shadow */
+html[data-ck-chrome="sketch"] .ck-card {
+  background: var(--ck-bg-surface);
+  border: 2px solid var(--ck-text-primary);
+  border-radius: 10px 14px 12px 16px / 14px 10px 16px 12px;
+  box-shadow: 3px 4px 0 var(--ck-text-primary);
+  overflow: visible;
+}
+html[data-ck-chrome="sketch"] .ck-card__head {
+  background: transparent;
+  border-bottom: none;
+  padding: 16px 20px 8px;
+  font-family: var(--ck-font-sketch-display);
+  font-weight: 600;
+  font-size: 18px;
+  position: relative;
+}
+/* Hand-drawn underline beneath card head — single wobbly stroke */
+html[data-ck-chrome="sketch"] .ck-card__head::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 4px;
+  height: 2px;
+  background: var(--ck-text-primary);
+  border-radius: 2px;
+  filter: var(--ck-sketch-wobble);
+  opacity: 0.65;
+}
+html[data-ck-chrome="sketch"] .ck-card__foot {
+  background: transparent;
+  border-top: none;
+  padding: 8px 20px 16px;
+  position: relative;
+}
+html[data-ck-chrome="sketch"] .ck-card__foot::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 0;
+  height: 2px;
+  background: var(--ck-text-primary);
+  border-radius: 2px;
+  filter: var(--ck-sketch-wobble);
+  opacity: 0.5;
+}
+
+/* ---------- Tags — drawn ovals with hatch-fill bg ---------- */
+html[data-ck-chrome="sketch"] [data-ck-tag] {
+  background: transparent !important;
+  border: 2px solid var(--ck-text-primary) !important;
+  border-radius: 999px !important;
+  padding: 4px 12px !important;
+  font-family: var(--ck-font-sketch-display) !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  box-shadow: 1px 2px 0 var(--ck-text-primary) !important;
+  color: var(--ck-text-primary) !important;
+  display: inline-block !important;
+  transform: rotate(-1.5deg);
+}
+html[data-ck-chrome="sketch"] [data-ck-tag][data-tone="accent"] {
+  background:
+    repeating-linear-gradient(45deg,
+      var(--ck-sketch-blue) 0 3px,
+      transparent 3px 7px) !important;
+  background-color: rgba(74, 144, 226, 0.22) !important;
+}
+html[data-ck-chrome="sketch"] [data-ck-tag][data-tone="success"] {
+  background:
+    repeating-linear-gradient(45deg,
+      var(--ck-sketch-green) 0 3px,
+      transparent 3px 7px) !important;
+  background-color: rgba(111, 207, 151, 0.25) !important;
+}
+html[data-ck-chrome="sketch"] [data-ck-tag][data-tone="warning"] {
+  background:
+    repeating-linear-gradient(45deg,
+      var(--ck-sketch-orange) 0 3px,
+      transparent 3px 7px) !important;
+  background-color: rgba(242, 153, 74, 0.25) !important;
+}
+html[data-ck-chrome="sketch"] [data-ck-tag][data-tone="critical"] {
+  background:
+    repeating-linear-gradient(45deg,
+      var(--ck-sketch-red) 0 3px,
+      transparent 3px 7px) !important;
+  background-color: rgba(229, 75, 75, 0.25) !important;
+}
+
+/* ---------- Layout chrome ---------- */
+html[data-ck-chrome="sketch"] [data-ck-leftnav] {
+  background: var(--ck-bg-sidebar) !important;
+  border-right: 2px solid var(--ck-text-primary);
+}
+html[data-ck-chrome="sketch"] [data-ck-topbar] {
+  background: var(--ck-bg-canvas) !important;
+  border-bottom: 2px solid var(--ck-text-primary);
+}
+
+/* NavItem — highlighter underline on active */
+html[data-ck-chrome="sketch"] [data-ck-navitem] {
+  background: transparent !important;
+  border-radius: 8px 10px 9px 11px !important;
+  font-family: var(--ck-font-sketch-display) !important;
+  font-weight: 600 !important;
+  font-size: 17px !important;
+  color: var(--ck-text-primary) !important;
+}
+html[data-ck-chrome="sketch"] [data-ck-navitem]:not([data-active="true"]):hover {
+  background: var(--ck-bg-muted) !important;
+}
+/* Active state: translucent yellow highlighter slash through the
+   item. Combined with a hand-drawn second-stroke shadow. */
+html[data-ck-chrome="sketch"] [data-ck-navitem][data-active="true"] {
+  background:
+    linear-gradient(180deg, transparent 0%, transparent 30%,
+      var(--ck-sketch-hi-yellow) 30%, var(--ck-sketch-hi-yellow) 78%,
+      transparent 78%, transparent 100%) !important;
+  color: var(--ck-text-primary) !important;
+  font-weight: 700 !important;
+  box-shadow: 2px 2px 0 var(--ck-text-primary) !important;
+  border: 2px solid var(--ck-text-primary) !important;
+}
+
+/* Search trigger */
+html[data-ck-chrome="sketch"] [data-ck-search-trigger] {
+  background: var(--ck-bg-surface) !important;
+  border: 2px solid var(--ck-text-primary) !important;
+  border-radius: 8px 10px 9px 11px !important;
+  box-shadow: 2px 3px 0 var(--ck-text-primary) !important;
+  color: var(--ck-text-secondary) !important;
+  font-family: var(--ck-font-sketch-display) !important;
+  font-size: 15px;
+}
+
+/* Action bar */
+html[data-ck-chrome="sketch"] [data-ck-actionbar] {
+  background: var(--ck-bg-surface) !important;
+  border: 2px solid var(--ck-text-primary);
+  border-radius: 14px 18px 16px 20px / 18px 14px 20px 16px;
+  box-shadow: 4px 5px 0 var(--ck-text-primary);
+}
+
+/* Modal — drawn plate, no glass blur */
+html[data-ck-chrome="sketch"] [role="dialog"] > div:first-child {
+  background: rgba(26, 26, 26, 0.45);
+  backdrop-filter: none;
+}
+html[data-ck-chrome="sketch"] [role="dialog"] > div > div {
+  background: var(--ck-bg-surface) !important;
+  border: 2px solid var(--ck-text-primary);
+  border-radius: 14px 18px 16px 20px;
+  box-shadow: 5px 6px 0 var(--ck-text-primary);
+  font-family: var(--ck-font-sketch-body);
+}
+
+/* Code blocks — drawn plate */
+html[data-ck-chrome="sketch"] pre {
+  background: var(--ck-bg-surface) !important;
+  border: 2px solid var(--ck-text-primary);
+  border-radius: 8px 12px 10px 14px;
+  box-shadow: 3px 4px 0 var(--ck-text-primary);
+  font-family: "Comic Mono", "Cascadia Code", var(--ck-font-mono);
+}
+html[data-ck-chrome="sketch"] code {
+  background: var(--ck-sketch-hi-yellow) !important;
+  color: var(--ck-text-primary) !important;
+  padding: 1px 6px;
+  border-radius: 3px 5px 4px 6px;
+  font-family: "Comic Mono", "Cascadia Code", var(--ck-font-mono);
+}
+
+/* HR — wobbly hand-drawn divider, not a CSS line */
+html[data-ck-chrome="sketch"] hr {
+  border: none;
+  height: 3px;
+  background: var(--ck-text-primary);
+  border-radius: 3px;
+  filter: var(--ck-sketch-wobble-strong);
+  margin: 28px 0;
+  opacity: 0.65;
+}
+
+/* Highlighter helper — apply .ck-sketch-hl to mark important text
+   with a translucent yellow swipe behind it. */
+.ck-sketch-hl {
+  background:
+    linear-gradient(180deg, transparent 0%, transparent 30%,
+      var(--ck-sketch-hi-yellow, rgba(242, 201, 76, 0.42)) 30%,
+      var(--ck-sketch-hi-yellow, rgba(242, 201, 76, 0.42)) 80%,
+      transparent 80%, transparent 100%);
+  padding: 0 4px;
+}
+
+/* Animated stroke-on for SVG paths — opt-in via .ck-sketch-drawon
+   on a path. The stroke "draws on" from start to end in ~500ms. */
+@keyframes ck-sketch-drawon {
+  from { stroke-dashoffset: var(--ck-sketch-len, 800); }
+  to   { stroke-dashoffset: 0; }
+}
+.ck-sketch-drawon {
+  stroke-dasharray: var(--ck-sketch-len, 800);
+  animation: ck-sketch-drawon 600ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ck-sketch-drawon {
+    animation: none;
+    stroke-dasharray: none;
+  }
+}
