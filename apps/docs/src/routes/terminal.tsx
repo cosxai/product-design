@@ -179,7 +179,7 @@ export function TerminalPage() {
         }}
       >
 {`~/projects/cosx
-├── ui-kit/
+├── product-design/
 │   ├── packages/
 │   │   └── ui/
 │   │       ├── src/
@@ -233,7 +233,7 @@ export function TerminalPage() {
           <tbody>
             {[
               { id: "a3f2c81", owner: "ben@cosx", path: "~/projects/cosx/SKILL.md", size: "8.4 kB" },
-              { id: "1d8e0fa", owner: "ada@cosx", path: "~/projects/cosx/ui-kit/", size: "—" },
+              { id: "1d8e0fa", owner: "ada@cosx", path: "~/projects/cosx/product-design/", size: "—" },
               { id: "9c2b4e6", owner: "ada@cosx", path: "~/projects/cosx/deck-kit/", size: "—" },
             ].map((r) => (
               <tr key={r.id} style={{ borderTop: "1px solid var(--ck-border-subtle)" }}>

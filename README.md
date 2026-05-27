@@ -7,7 +7,7 @@ cmd+k command palette · PWA scaffolding.
 ## Structure
 
 ```
-ui-kit/
+product-design/
   packages/
     ui/                       # the library — @cosx/ui
       src/
@@ -96,12 +96,12 @@ document.documentElement.style.setProperty("--ck-accent-dark-override", "#34D399
 
 ## Lift-out (when graduating to own repo)
 
-The `ui-kit/` directory is already a complete repo — root
+The `product-design/` directory is already a complete repo — root
 `package.json`, workspace config, both packages self-contained.
 
 ```sh
 # 1. Copy the directory out
-cp -r ui-kit/ ../cosx-ui/
+cp -r product-design/ ../cosx-ui/
 cd ../cosx-ui
 
 # 2. Initialise a fresh git repo
