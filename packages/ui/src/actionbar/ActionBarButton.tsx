@@ -16,22 +16,26 @@ import { cn } from "../lib/cn";
 //               muted-accent bg; the head just needs the
 //               foreground to read as accent.
 
+// Optional props use `| undefined` (rather than bare `T?`) so that callers
+// can forward potentially-undefined values from upstream optional sources
+// (e.g. `ActionBarItem.active`, which is itself optional). Compatible with
+// `exactOptionalPropertyTypes: true` consumers.
 export interface ActionBarButtonProps {
-  icon?: ReactNode;
+  icon?: ReactNode | undefined;
   label: string;
   onClick: () => void;
-  active?: boolean;
-  title?: string;
-  variant?: "ghost" | "primary" | "soft";
-  disabled?: boolean;
-  hint?: string;
+  active?: boolean | undefined;
+  title?: string | undefined;
+  variant?: "ghost" | "primary" | "soft" | undefined;
+  disabled?: boolean | undefined;
+  hint?: string | undefined;
   // Optional chevron — used by group heads to signal disclosure.
-  chevron?: "right";
+  chevron?: "right" | undefined;
   // 180° rotation when true (▸ becomes ◂ — reads as "close").
-  chevronRotated?: boolean;
+  chevronRotated?: boolean | undefined;
   // Hide label below md viewport (768 px). Default true.
-  responsiveLabel?: boolean;
-  style?: CSSProperties;
+  responsiveLabel?: boolean | undefined;
+  style?: CSSProperties | undefined;
 }
 
 export function ActionBarButton({

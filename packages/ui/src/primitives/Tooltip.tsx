@@ -96,7 +96,12 @@ export function Tooltip({
   if (!content && !alwaysRender) return children;
 
   const child = children;
-  const clonedTrigger = cloneElement(child, {
+  // cloneElement's `Partial<P>` signature isn't compatible with the
+  // `T | undefined` event-handler types in HTMLAttributes once
+  // `exactOptionalPropertyTypes: true` is on. The runtime behaviour is fine —
+  // React happily accepts these props on any host element. We narrow via
+  // unknown to silence the type system on a known React-types limitation.
+  const clonedProps = {
     ref: (el: HTMLElement | null) => {
       triggerRef.current = el;
       const childRef = (child as unknown as { ref?: React.Ref<HTMLElement> }).ref;
@@ -121,7 +126,11 @@ export function Tooltip({
       child.props.onBlur?.(e);
       hide();
     },
-  } as React.HTMLAttributes<HTMLElement> & { ref: React.Ref<HTMLElement> });
+  };
+  const clonedTrigger = cloneElement(
+    child,
+    clonedProps as unknown as Parameters<typeof cloneElement>[1],
+  );
 
   const tooltipStyle: CSSProperties = {
     position: "fixed",
