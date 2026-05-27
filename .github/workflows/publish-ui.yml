@@ -1,0 +1,55 @@
+name: Publish @cosx/ui
+
+# Triggers:
+#   - git tag `ui-v*` (e.g. ui-v0.1.0, ui-v0.2.0) → publish to npm
+#   - manual workflow_dispatch → publish current main as override
+#
+# Pre-reqs:
+#   1. cosx org claimed on npmjs.com (one-time)
+#   2. NPM_TOKEN secret in repo settings (Automation token from npmjs)
+#   3. packages/ui/package.json `version` bumped to match the tag
+#
+# Tag flow:
+#   cd product-design/packages/ui
+#   # bump version in package.json (e.g. 0.1.0 → 0.2.0)
+#   git commit -am "release(ui): v0.2.0"
+#   git tag ui-v0.2.0
+#   git push origin main --tags
+
+on:
+  push:
+    tags:
+      - 'ui-v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write   # for npm provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm --filter @cosx/ui typecheck
+
+      - name: Publish
+        run: pnpm publish --filter @cosx/ui --access public --no-git-checks --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
