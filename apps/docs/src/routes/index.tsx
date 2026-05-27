@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import { Button, Card, Kbd, Tag } from "@cosx/ui";
+import { Button, Card, Kbd, Tag } from "@cosxai/ui";
 
 export function OverviewPage() {
   return (
     <>
-      <h1>@cosx/ui</h1>
+      <h1>@cosxai/ui</h1>
       <p className="docs-summary">
         A portable, shadcn-style component kit extracted from a
         working product. Tokens, layout shell, dialogs, floating

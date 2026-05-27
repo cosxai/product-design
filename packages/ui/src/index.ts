@@ -3,7 +3,7 @@
 // /primitives, /layout, /actionbar, /command, /dialogs, /hooks,
 // /theme, /pwa, /lib. As the kit grows, each phase adds exports
 // here. Consumers pull individual modules (`import { Button }
-// from "@cosx/ui"`) or copy source files directly per the
+// from "@cosxai/ui"`) or copy source files directly per the
 // shadcn-style distribution model.
 
 export * from "./primitives";

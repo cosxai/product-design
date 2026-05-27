@@ -1,4 +1,4 @@
-# @cosx/ui — internal component library
+# @cosxai/ui — internal component library
 
 A portable, shadcn-style component kit extracted from a working
 product. Tokens · layout shell · dialogs · floating action bar ·
@@ -9,7 +9,7 @@ cmd+k command palette · PWA scaffolding.
 ```
 product-design/
   packages/
-    ui/                       # the library — @cosx/ui
+    ui/                       # the library — @cosxai/ui
       src/
         styles/               # fonts, tokens, base CSS + utility classes
         primitives/           # Button, Card, Tag, Input, Checkbox, …
@@ -34,7 +34,7 @@ pnpm install
 pnpm dev        # boots apps/docs at http://localhost:5173
 ```
 
-The docs app imports `@cosx/ui` via workspace protocol — editing
+The docs app imports `@cosxai/ui` via workspace protocol — editing
 files under `packages/ui` hot-reloads in the demo immediately.
 
 ## Distribution model
@@ -42,7 +42,7 @@ files under `packages/ui` hot-reloads in the demo immediately.
 shadcn-style: source-first. Two consumption modes:
 
 1. **Workspace dep** (during dev or in another monorepo): add
-   `"@cosx/ui": "workspace:*"` (or git URL after lift-out).
+   `"@cosxai/ui": "workspace:*"` (or git URL after lift-out).
 2. **Copy-paste** (for projects that want full ownership): copy
    the relevant files under `packages/ui/src/` into your project's
    `src/components/ui/` and adjust import paths.
@@ -61,8 +61,8 @@ Two orthogonal axes:
 | `data-ck-chrome` | `classic` · `seamless` · *(custom)* | `seamless` | Visual style |
 
 ```tsx
-import { ThemeProvider } from "@cosx/ui";
-import "@cosx/ui/styles.css";
+import { ThemeProvider } from "@cosxai/ui";
+import "@cosxai/ui/styles.css";
 
 <ThemeProvider defaultTheme="system" defaultChrome="seamless">
   <App />
@@ -72,7 +72,7 @@ import "@cosx/ui/styles.css";
 Pre-mount inline script (prevents white-flash on dark sessions):
 
 ```tsx
-import { getInlineThemeScript } from "@cosx/ui";
+import { getInlineThemeScript } from "@cosxai/ui";
 // at build time:
 const script = getInlineThemeScript({ defaultChrome: "seamless" });
 // inject into index.html <head>

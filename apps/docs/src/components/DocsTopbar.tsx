@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useTheme, Topbar, Breadcrumb, Button } from "@cosx/ui";
+import { useTheme, Topbar, Breadcrumb, Button } from "@cosxai/ui";
 
 // Now built from the kit's own <Topbar> + <Breadcrumb>. The
 // docs-site-specific bit is the theme/chrome toggle in the right
@@ -36,7 +36,7 @@ function pathToCrumbs(pathname: string): string[] {
 export function DocsTopbar() {
   const { theme, toggleTheme, chrome, setChrome } = useTheme();
   const { pathname } = useLocation();
-  const crumbs = ["@cosx/ui", ...pathToCrumbs(pathname)];
+  const crumbs = ["@cosxai/ui", ...pathToCrumbs(pathname)];
   return (
     <Topbar
       left={<Breadcrumb items={crumbs} />}

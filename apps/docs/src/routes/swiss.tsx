@@ -1,4 +1,4 @@
-import { Button, Card, Tag, useTheme } from "@cosx/ui";
+import { Button, Card, Tag, useTheme } from "@cosxai/ui";
 
 // /swiss — demo for the Swiss / International Typographic chrome.
 // The page itself works under any chrome, but the visual language
@@ -360,7 +360,7 @@ export function SwissPage() {
           color: "var(--ck-text-tertiary)",
         }}
       >
-        <span>@cosx/ui — Swiss / international typographic</span>
+        <span>@cosxai/ui — Swiss / international typographic</span>
         <span>01 / 01</span>
       </div>
     </>

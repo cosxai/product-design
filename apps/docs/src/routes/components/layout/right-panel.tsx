@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, RightSidebarPanel } from "@cosx/ui";
+import { Button, RightSidebarPanel } from "@cosxai/ui";
 
 export function RightPanelPage() {
   const [open, setOpen] = useState(false);

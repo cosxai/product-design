@@ -1,20 +1,31 @@
-name: Publish @cosx/ui
+name: Publish @cosxai/ui
 
 # Triggers:
 #   - git tag `ui-v*` (e.g. ui-v0.1.0, ui-v0.2.0) → publish to npm
-#   - manual workflow_dispatch → publish current main as override
+#   - manual workflow_dispatch → publish current main
 #
-# Pre-reqs:
-#   1. cosx org claimed on npmjs.com (one-time)
-#   2. NPM_TOKEN secret in repo settings (Automation token from npmjs)
-#   3. packages/ui/package.json `version` bumped to match the tag
+# Authentication: npm Trusted Publishing (OIDC). No NPM_TOKEN required.
 #
-# Tag flow:
+# One-time setup on npmjs.com:
+#   1. Sign in as a maintainer of the @cosxai org
+#   2. Org Settings → Trusted Publishers → Add publisher
+#      - Publisher: GitHub Actions
+#      - Organization: cosxai
+#      - Repository:   product-design
+#      - Workflow:     publish-ui.yml
+#      - Environment:  (leave blank)
+#      - Package name pattern: @cosxai/ui  (or @cosxai/* for the whole scope)
+#   3. Done — no token to copy, no secret to paste
+#
+# Release flow:
 #   cd product-design/packages/ui
 #   # bump version in package.json (e.g. 0.1.0 → 0.2.0)
 #   git commit -am "release(ui): v0.2.0"
 #   git tag ui-v0.2.0
 #   git push origin main --tags
+#
+# npm verifies the OIDC token from this workflow run matches the
+# trusted-publisher config and publishes automatically with provenance.
 
 on:
   push:
@@ -24,7 +35,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write   # for npm provenance
+  id-token: write   # required for OIDC trusted publishing + provenance
 
 jobs:
   publish:
@@ -47,9 +58,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Typecheck
-        run: pnpm --filter @cosx/ui typecheck
+        run: pnpm --filter @cosxai/ui typecheck
 
-      - name: Publish
-        run: pnpm publish --filter @cosx/ui --access public --no-git-checks --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish (Trusted Publishing — OIDC, no token)
+        run: pnpm publish --filter @cosxai/ui --access public --no-git-checks --provenance

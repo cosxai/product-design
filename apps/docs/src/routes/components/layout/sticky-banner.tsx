@@ -1,4 +1,4 @@
-import { Button, StickyBanner } from "@cosx/ui";
+import { Button, StickyBanner } from "@cosxai/ui";
 
 export function StickyBannerPage() {
   return (

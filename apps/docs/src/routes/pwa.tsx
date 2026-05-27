@@ -1,4 +1,4 @@
-import { InstallPromptBanner } from "@cosx/ui";
+import { InstallPromptBanner } from "@cosxai/ui";
 
 export function PwaPage() {
   return (
@@ -26,7 +26,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        // Copy from @cosx/ui's manifest.template.json,
+        // Copy from @cosxai/ui's manifest.template.json,
         // fill in your name / colours / icon paths.
         name: "Your App Name",
         short_name: "AppName",
@@ -53,7 +53,7 @@ export default defineConfig({
       <p>
         From your app's entry point (<code>main.tsx</code>):
       </p>
-      <pre><code>{`import { registerSW, useDialogs } from "@cosx/ui";
+      <pre><code>{`import { registerSW, useDialogs } from "@cosxai/ui";
 
 // Inside a top-level component where useDialogs() is available,
 // or call registerSW() with your own callbacks.
@@ -107,7 +107,7 @@ registerSW({
         served domain, not localhost):
       </p>
       <InstallPromptBanner
-        title="Install @cosx/ui docs"
+        title="Install @cosxai/ui docs"
         message="Demo of the kit's banner — only shows on a real PWA-eligible page."
       />
       <p style={{ fontSize: 13, color: "var(--ck-text-tertiary)" }}>

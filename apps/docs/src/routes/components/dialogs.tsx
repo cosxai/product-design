@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, useDialogs } from "@cosx/ui";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, useDialogs } from "@cosxai/ui";
 
 export function DialogsPage() {
   const { confirm, prompt, toast } = useDialogs();

@@ -1,5 +1,5 @@
 /* Docs-app local styles — only the per-page content well + code
-   block visuals. Layout chrome is now provided by @cosx/ui's
+   block visuals. Layout chrome is now provided by @cosxai/ui's
    <Shell> + <LeftNavRail> + <Topbar>. */
 
 * { box-sizing: border-box; }

@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ThemeProvider, DialogsProvider, ActionBarProvider, CommandProvider } from "@cosx/ui";
-import "@cosx/ui/styles.css";
+import { ThemeProvider, DialogsProvider, ActionBarProvider, CommandProvider } from "@cosxai/ui";
+import "@cosxai/ui/styles.css";
 import "./styles.css";
 import { App } from "./App";
 import { OverviewPage } from "./routes/index";

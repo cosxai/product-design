@@ -10,7 +10,7 @@ import {
   Textarea,
   Checkbox,
   ToggleSwitch,
-} from "@cosx/ui";
+} from "@cosxai/ui";
 
 // One scrollable page documenting all foundation primitives. Each
 // section: one-line description + live demo. Keeps the kit's surface

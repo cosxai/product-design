@@ -1,4 +1,4 @@
-/* @cosx/ui — single stylesheet consumers import.
+/* @cosxai/ui — single stylesheet consumers import.
    Order matters: fonts → tokens → base → component CSS →
    chrome variants. Each chrome-* file is scoped to a
    `html[data-ck-chrome="<name>"]` selector so it's a no-op

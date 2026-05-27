@@ -1,4 +1,4 @@
-import { Breadcrumb } from "@cosx/ui";
+import { Breadcrumb } from "@cosxai/ui";
 
 export function BreadcrumbPage() {
   return (

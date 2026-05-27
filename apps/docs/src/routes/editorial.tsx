@@ -8,7 +8,7 @@ import {
   RunningMarginalia,
   RomanSection,
   EditorialSpotlight,
-} from "@cosx/ui";
+} from "@cosxai/ui";
 
 // /editorial — full demo of the Editorial Collage chrome.
 //

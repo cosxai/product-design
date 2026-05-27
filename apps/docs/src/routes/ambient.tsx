@@ -9,7 +9,7 @@ import {
   CommandInput,
   SuperbarStrip,
   AmbientBackdrop,
-} from "@cosx/ui";
+} from "@cosxai/ui";
 
 // /ambient — demo for the Ambient Glass chrome. Calm, glass-y,
 // dark-first productivity feel inspired by Superlist / Linear /

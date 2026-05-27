@@ -1,4 +1,4 @@
-import { Button, Tooltip, PageHeader, Tag, relativeTime, formatDate, formatTimestamp } from "@cosx/ui";
+import { Button, Tooltip, PageHeader, Tag, relativeTime, formatDate, formatTimestamp } from "@cosxai/ui";
 
 export function BonusPage() {
   const now = Date.now();
@@ -118,7 +118,7 @@ export function BonusPage() {
           <span>formatDate(undefined) → "{formatDate(undefined)}"</span>
         </div>
       </div>
-      <pre><code>{`import { relativeTime, formatDate, formatTimestamp } from "@cosx/ui";
+      <pre><code>{`import { relativeTime, formatDate, formatTimestamp } from "@cosxai/ui";
 
 relativeTime(Date.now() - 60_000)      // "1m ago"
 formatDate(1700000000000)              // locale date

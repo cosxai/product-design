@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter @cosx/docs dev",
-    "build": "pnpm --filter @cosx/docs build",
-    "preview": "pnpm --filter @cosx/docs preview",
+    "dev": "pnpm --filter @cosxai/docs dev",
+    "build": "pnpm --filter @cosxai/docs build",
+    "preview": "pnpm --filter @cosxai/docs preview",
     "typecheck": "pnpm -r typecheck"
   },
   "packageManager": "pnpm@9.12.0"

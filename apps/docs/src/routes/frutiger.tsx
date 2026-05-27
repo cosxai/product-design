@@ -9,7 +9,7 @@ import {
   useDialogs,
   GlossyOrb,
   SkyBackdrop,
-} from "@cosx/ui";
+} from "@cosxai/ui";
 
 // /frutiger — demo for the Frutiger Aero / Glossy Revival chrome.
 // Sky-blue canvas, glossy candy buttons, glass cards, lime pop

@@ -8,7 +8,7 @@ import {
   Marquee,
   Sticker,
   useTheme,
-} from "@cosx/ui";
+} from "@cosxai/ui";
 import { useState } from "react";
 
 // /neobrutalism — demo for the neobrutalism chrome. Same pattern

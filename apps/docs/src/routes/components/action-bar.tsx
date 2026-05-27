@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Kbd, useActionBarItems, useDialogs, useKeyboardHotkey } from "@cosx/ui";
+import { Kbd, useActionBarItems, useDialogs, useKeyboardHotkey } from "@cosxai/ui";
 
 // Live action-bar demo page. Items registered here appear in the
 // bar at the bottom of the screen for as long as this page is

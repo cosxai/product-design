@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Kbd, useCommandSource, useCommandPalette, useDialogs } from "@cosx/ui";
+import { Kbd, useCommandSource, useCommandPalette, useDialogs } from "@cosxai/ui";
 
 // The palette + cmd+k handler are mounted at App level. This page
 // just registers some extra "Action" commands so users can see

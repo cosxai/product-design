@@ -1,5 +1,5 @@
 {
-  "name": "@cosx/docs",
+  "name": "@cosxai/docs",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@cosx/ui": "workspace:*",
+    "@cosxai/ui": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.0.0"

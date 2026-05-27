@@ -14,7 +14,7 @@ export function InstallationPage() {
       </p>
       <pre><code>{`// apps/docs/package.json
 "dependencies": {
-  "@cosx/ui": "workspace:*"
+  "@cosxai/ui": "workspace:*"
 }`}</code></pre>
 
       <h2>2. Copy source files (shadcn-style)</h2>
@@ -31,10 +31,10 @@ export function InstallationPage() {
       <h2>4. Import the stylesheet</h2>
       <p>One CSS import at your app root pulls in fonts, tokens, and base.</p>
       <pre><code>{`// main.tsx
-import "@cosx/ui/styles.css";`}</code></pre>
+import "@cosxai/ui/styles.css";`}</code></pre>
 
       <h2>5. Wrap in &lt;ThemeProvider&gt;</h2>
-      <pre><code>{`import { ThemeProvider } from "@cosx/ui";
+      <pre><code>{`import { ThemeProvider } from "@cosxai/ui";
 
 createRoot(root).render(
   <ThemeProvider defaultTheme="system">

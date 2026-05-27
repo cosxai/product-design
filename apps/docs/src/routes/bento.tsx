@@ -1,4 +1,4 @@
-import { Button, Tag, useTheme, BentoGrid, BentoCell } from "@cosx/ui";
+import { Button, Tag, useTheme, BentoGrid, BentoCell } from "@cosxai/ui";
 
 // /bento — demo for the Bento Grid chrome. Apple product page
 // aesthetic: mixed-size cards arranged on a 12-column grid,

@@ -5,7 +5,7 @@ import {
   useTheme,
   BrailleSpinner,
   AsciiBox,
-} from "@cosx/ui";
+} from "@cosxai/ui";
 
 // /terminal — demo for the Terminal / Monospace Maximalist chrome.
 // The page works under any chrome; the visual language only fully

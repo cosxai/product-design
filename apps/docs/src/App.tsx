@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useMemo } from "react";
-import { Shell, ActionBar, CommandPalette, useCommandSource } from "@cosx/ui";
+import { Shell, ActionBar, CommandPalette, useCommandSource } from "@cosxai/ui";
 import { DocsSidebar } from "./components/DocsSidebar";
 import { DocsTopbar } from "./components/DocsTopbar";
 import { DocsOnThisPage } from "./components/DocsOnThisPage";

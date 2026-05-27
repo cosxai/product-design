@@ -8,7 +8,7 @@ import {
   useNavRailState,
   useTheme,
   useCommandPalette,
-} from "@cosx/ui";
+} from "@cosxai/ui";
 
 // Docs site's left navigation. Dogfoods <LeftNavRail> +
 // <NavSection> + <NavItem> + <NavSearchTrigger> + <Avatar>.
@@ -138,8 +138,8 @@ export function DocsSidebar() {
         // wordmark filling the bar vertically.
         <NavLink
           to="/"
-          aria-label="@cosx/ui"
-          title="@cosx/ui"
+          aria-label="@cosxai/ui"
+          title="@cosxai/ui"
           style={{
             display: "flex",
             alignItems: "center",
@@ -148,7 +148,7 @@ export function DocsSidebar() {
         >
           <img
             src={logoSrc}
-            alt="@cosx/ui"
+            alt="@cosxai/ui"
             style={{ height: collapsed ? 22 : 22, width: "auto", display: "block" }}
           />
         </NavLink>
@@ -267,7 +267,7 @@ function Footer({
           color: "var(--ck-text-tertiary)",
         }}
       >
-        <span style={{ opacity: 0.6 }}>@cosx/ui · v0.0.0</span>
+        <span style={{ opacity: 0.6 }}>@cosxai/ui · v0.0.0</span>
         {!forcedByViewport && (
           <CollapseToggle collapsed={false} onClick={onToggleCollapsed} />
         )}

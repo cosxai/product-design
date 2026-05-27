@@ -9,7 +9,7 @@ import {
   RisoStamp,
   Misregister,
   Halftone,
-} from "@cosx/ui";
+} from "@cosxai/ui";
 
 // /riso — demo for the Risograph / Zine Print chrome. DIY print
 // culture as a digital aesthetic: paper canvas, 2-3 fluorescent

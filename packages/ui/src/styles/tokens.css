@@ -1,5 +1,5 @@
 /* ============================================================
-   @cosx/ui — design tokens
+   @cosxai/ui — design tokens
    Variables only. No selectors that target consumer markup,
    no app-specific overrides (those belong in the consumer).
    Two axes: theme (light | dark) via html[data-ck-theme], chrome

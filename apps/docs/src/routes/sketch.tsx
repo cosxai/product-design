@@ -11,7 +11,7 @@ import {
   StickyNote,
   RoughArrow,
   HandUnderline,
-} from "@cosx/ui";
+} from "@cosxai/ui";
 
 // /sketch — demo for the Hand-drawn / Sketchy chrome. Excalidraw /
 // tldraw / Whimsical pen-on-paper aesthetic: wobbly lines, hatch

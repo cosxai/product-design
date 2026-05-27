@@ -1,4 +1,4 @@
-import { Button } from "@cosx/ui";
+import { Button } from "@cosxai/ui";
 
 export function ButtonPage() {
   return (

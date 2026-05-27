@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { useTheme, Button, Tag } from "@cosx/ui";
-import type { Chrome } from "@cosx/ui";
+import { useTheme, Button, Tag } from "@cosxai/ui";
+import type { Chrome } from "@cosxai/ui";
 
 // One control panel for everything theming-related. Mounts the
 // built-in chrome toggles, an accent-override picker, and the
