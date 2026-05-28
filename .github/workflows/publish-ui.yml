@@ -72,4 +72,9 @@ jobs:
 
       - name: Publish (Trusted Publishing — OIDC, no token)
         working-directory: packages/ui
-        run: npm publish --access public --provenance
+        # NOTE: `--provenance` was dropped because npm's provenance
+        # statement requires the source repository to be PUBLIC on
+        # GitHub ("Unsupported GitHub Actions source repository
+        # visibility: internal"). The repo is currently internal;
+        # add `--provenance` back if/when it's made public.
+        run: npm publish --access public
