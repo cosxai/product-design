@@ -76,7 +76,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       style={{
         flex: hasAddon ? "1 1 auto" : undefined,
         minWidth: 0,
-        height: hasAddon ? "100%" : 34,
+        height: hasAddon ? "100%" : 36,
         padding: "0 12px",
         font: "400 13px/1 var(--ck-font-sans)",
         background: "var(--ck-bg-surface)",
@@ -115,7 +115,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           style={{
             display: "flex",
             alignItems: "stretch",
-            height: 34,
+            height: 36,
             background: "var(--ck-bg-surface)",
             border: fieldBorder,
             borderRadius: fieldRadius,

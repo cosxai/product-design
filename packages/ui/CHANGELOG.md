@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.2.1 (2026-05-28)
+## 0.2.2 (2026-05-28)
+
+> Note: `ui-v0.2.1` exists as a git tag but was never published to
+> npm (publish workflow waiting for OTP at the time the fixes below
+> were folded in). Consumers should ignore 0.2.1 — use 0.2.2.
 
 - **fix**: `Input` addon (`prefix` / `suffix`) visual contrast.
   Previously the addon shared the input's `--ck-bg-surface`
@@ -9,6 +13,10 @@
   field. Switched to `--ck-bg-muted` (the canonical "recessed
   slab" token) and removed the divider — the bg shift carries the
   separation across every chrome and dark variant.
+- **fix**: `Input` default height 34 → 36 px to line up with the
+  default `Button` height (also 36 px under editorial; matches the
+  shadcn/ui + Mantine convention). The previous 2 px short-fall
+  made the field read as a size smaller than buttons next to it.
 
 ## 0.2.0 (2026-05-28)
 
