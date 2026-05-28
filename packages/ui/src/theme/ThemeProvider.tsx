@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { ThemeContext } from "./theme-context";
+import { BUILTIN_CHROMES } from "./types";
 import type { Theme, Chrome, ThemeContextValue } from "./types";
 
 const DEFAULT_THEME_KEY = "ck-theme";
@@ -63,7 +64,12 @@ export function ThemeProvider({
     return stored ?? preferredTheme(defaultTheme);
   });
   const [chrome, setChromeState] = useState<Chrome>(() => {
-    const stored = readStored<Chrome>(chromeStorageKey, ["classic", "seamless"]);
+    // Allow every built-in chrome out of localStorage. Custom strings
+    // (the `(string & {})` half of the Chrome union) are not
+    // persisted across reloads — consumers that ship custom chromes
+    // can opt-in via a separate localStorage write upstream of this
+    // provider if they want persistence.
+    const stored = readStored<Chrome>(chromeStorageKey, BUILTIN_CHROMES);
     return stored ?? defaultChrome;
   });
 

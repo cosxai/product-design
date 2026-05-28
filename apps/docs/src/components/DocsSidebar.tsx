@@ -97,7 +97,6 @@ const GROUPS: NavGroup[] = [
       { to: "/swiss", label: "Swiss chrome", icon: <Dot /> },
       { to: "/terminal", label: "Terminal chrome", icon: <Dot /> },
       { to: "/bento", label: "Bento Grid chrome", icon: <Dot /> },
-      { to: "/frutiger", label: "Frutiger Aero chrome", icon: <Dot /> },
       { to: "/riso", label: "Risograph chrome", icon: <Dot /> },
       { to: "/sketch", label: "Hand-drawn chrome", icon: <Dot /> },
     ],

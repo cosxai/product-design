@@ -26,7 +26,6 @@ import { AmbientPage } from "./routes/ambient";
 import { SwissPage } from "./routes/swiss";
 import { TerminalPage } from "./routes/terminal";
 import { BentoPage } from "./routes/bento";
-import { FrutigerPage } from "./routes/frutiger";
 import { RisoPage } from "./routes/riso";
 import { SketchPage } from "./routes/sketch";
 
@@ -82,7 +81,6 @@ const router = createBrowserRouter([
       { path: "swiss", element: <SwissPage /> },
       { path: "terminal", element: <TerminalPage /> },
       { path: "bento", element: <BentoPage /> },
-      { path: "frutiger", element: <FrutigerPage /> },
       { path: "riso", element: <RisoPage /> },
       { path: "sketch", element: <SketchPage /> },
     ],

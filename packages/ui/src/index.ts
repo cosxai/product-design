@@ -21,6 +21,5 @@ export * from "./neobrutalism";
 export * from "./ambient";
 export * from "./terminal";
 export * from "./bento";
-export * from "./frutiger";
 export * from "./riso";
 export * from "./sketch";

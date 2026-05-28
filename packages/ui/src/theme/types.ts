@@ -6,12 +6,29 @@
 
 export type Theme = "light" | "dark";
 
+// BUILTIN_CHROMES is the source of truth for "chromes the kit ships
+// with". The Chrome union below, the ThemeProvider localStorage
+// validator, and the pre-mount inline script all key off this
+// constant so adding (or removing) a chrome is a one-place change.
+export const BUILTIN_CHROMES = [
+  "classic",
+  "seamless",
+  "editorial",
+  "neobrutalism",
+  "ambient",
+  "swiss",
+  "terminal",
+  "bento",
+  "riso",
+  "sketch",
+] as const;
+
 // Built-in chromes ship with the kit; custom strings are also
 // allowed at runtime (the kit just stamps the value onto
 // `data-ck-chrome`, your CSS supplies the overrides). The
 // `(string & {})` trick preserves autocomplete for the built-ins
 // while widening the union to any string for custom chromes.
-export type Chrome = "classic" | "seamless" | "editorial" | "neobrutalism" | "ambient" | "swiss" | "terminal" | "bento" | "frutiger" | "riso" | "sketch" | (string & {});
+export type Chrome = (typeof BUILTIN_CHROMES)[number] | (string & {});
 
 export interface ThemeContextValue {
   theme: Theme;

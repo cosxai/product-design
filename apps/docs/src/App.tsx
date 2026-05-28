@@ -38,7 +38,6 @@ export function App() {
       { key: "nav:swiss", group: "Advanced", label: "Swiss chrome", run: ({ close }: { close: () => void }) => { navigate("/swiss"); close(); } },
       { key: "nav:terminal", group: "Advanced", label: "Terminal chrome", run: ({ close }: { close: () => void }) => { navigate("/terminal"); close(); } },
       { key: "nav:bento", group: "Advanced", label: "Bento Grid chrome", run: ({ close }: { close: () => void }) => { navigate("/bento"); close(); } },
-      { key: "nav:frutiger", group: "Advanced", label: "Frutiger Aero chrome", run: ({ close }: { close: () => void }) => { navigate("/frutiger"); close(); } },
       { key: "nav:riso", group: "Advanced", label: "Risograph chrome", run: ({ close }: { close: () => void }) => { navigate("/riso"); close(); } },
       { key: "nav:sketch", group: "Advanced", label: "Hand-drawn chrome", run: ({ close }: { close: () => void }) => { navigate("/sketch"); close(); } },
     ],

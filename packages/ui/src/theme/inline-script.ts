@@ -1,3 +1,4 @@
+import { BUILTIN_CHROMES } from "./types";
 import type { Theme, Chrome } from "./types";
 
 // Pre-mount inline script generator. Paste the returned string
@@ -22,6 +23,9 @@ export function getInlineThemeScript(opts: {
   const c = JSON.stringify(opts.chromeStorageKey ?? "ck-chrome");
   const dt = JSON.stringify(opts.defaultTheme ?? "system");
   const dc = JSON.stringify(opts.defaultChrome ?? "seamless");
+  // Inline the allowlist so the runtime check is a single
+  // Array.indexOf — matches ThemeProvider's readStored behaviour.
+  const allowed = JSON.stringify(BUILTIN_CHROMES);
   return `(function(){try{
     var t=localStorage.getItem(${t});
     if(t!=="light"&&t!=="dark"){
@@ -30,7 +34,7 @@ export function getInlineThemeScript(opts: {
     }
     document.documentElement.setAttribute("data-ck-theme",t);
     var c=localStorage.getItem(${c});
-    if(c!=="classic"&&c!=="seamless")c=${dc};
+    if(${allowed}.indexOf(c)<0)c=${dc};
     document.documentElement.setAttribute("data-ck-chrome",c);
   }catch(e){}})();`;
 }
