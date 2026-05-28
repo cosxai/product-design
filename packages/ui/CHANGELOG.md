@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1 (2026-05-28)
+
+- **fix**: `Input` addon (`prefix` / `suffix`) visual contrast.
+  Previously the addon shared the input's `--ck-bg-surface`
+  background and relied on a hard `1px` divider for separation,
+  which read as a vertical cut across an otherwise homogeneous
+  field. Switched to `--ck-bg-muted` (the canonical "recessed
+  slab" token) and removed the divider — the bg shift carries the
+  separation across every chrome and dark variant.
+
 ## 0.2.0 (2026-05-28)
 
 - **breaking**: remove `frutiger` chrome. The preset's tokens, CSS,

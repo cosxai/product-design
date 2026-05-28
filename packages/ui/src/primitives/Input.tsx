@@ -38,10 +38,15 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
 const ADDON_STYLE = {
   display: "inline-flex",
   alignItems: "center",
-  padding: "0 10px",
+  padding: "0 12px",
   font: "400 13px/1 var(--ck-font-mono, var(--ck-font-sans))",
-  color: "var(--ck-text-tertiary)",
-  background: "var(--ck-bg-subtle, transparent)",
+  color: "var(--ck-text-secondary)",
+  // `--ck-bg-muted` is the canonical "slightly recessed slab"
+  // background — gives the addon visible separation from the input
+  // (`--ck-bg-surface`) without needing a hard divider line. The
+  // bg shift carries across all chromes; tokens.css defines a
+  // muted tone per chrome (light + dark).
+  background: "var(--ck-bg-muted)",
   whiteSpace: "nowrap" as const,
   userSelect: "none" as const,
 };
@@ -118,25 +123,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           }}
         >
           {prefix != null && (
-            <span
-              className="ck-input-addon ck-input-addon--prefix"
-              style={{
-                ...ADDON_STYLE,
-                borderRight: "1px solid var(--ck-border-subtle)",
-              }}
-            >
+            <span className="ck-input-addon ck-input-addon--prefix" style={ADDON_STYLE}>
               {prefix}
             </span>
           )}
           {inputEl}
           {suffix != null && (
-            <span
-              className="ck-input-addon ck-input-addon--suffix"
-              style={{
-                ...ADDON_STYLE,
-                borderLeft: "1px solid var(--ck-border-subtle)",
-              }}
-            >
+            <span className="ck-input-addon ck-input-addon--suffix" style={ADDON_STYLE}>
               {suffix}
             </span>
           )}
