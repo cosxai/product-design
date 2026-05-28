@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.2.6 (2026-05-28)
+
+- **fix**: `Select` popover was clipped by ancestors with
+  `overflow: hidden` (Card, Drawer, Dialog). Popover now renders
+  via `createPortal` to `document.body` with `position: fixed`
+  computed against the trigger's bounding rect — escapes any
+  parent's clip box and stacks above sibling content. Closes on
+  page scroll to avoid drifting off the trigger.
+- **feat**: `Select` gains `searchable` + `searchPlaceholder`.
+  When `searchable={true}` the popover renders a search input
+  pinned at the top that filters options by case-insensitive
+  label substring. Keyboard model on the input matches Radix /
+  shadcn Combobox: Arrows navigate filtered list, Enter commits
+  highlighted, Esc closes, Tab advances focus.
+
 ## 0.2.5 (2026-05-28)
 
 - **feat**: new `Select` primitive. Custom listbox (NOT native

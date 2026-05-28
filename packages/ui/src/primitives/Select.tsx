@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -10,33 +11,55 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 
 import { cn } from "../lib/cn";
 
 // Custom listbox-pattern select. We deliberately do NOT use native
 // <select> — browsers refuse to style the popup, so terminal /
-// editorial / swiss etc. would punch through with macOS/Win blue and
-// break the visual contract. Trade-off: ~200 LOC of state +
-// keyboard handling we'd otherwise get for free.
+// editorial / swiss etc. would punch through with macOS/Win blue
+// and break the visual contract.
+//
+// Two modes via `searchable`:
+//
+//   searchable=false (default)
+//     Trigger button. Keyboard handlers live on the trigger.
+//     Typeahead (A-Z / 0-9) jumps to next matching label.
+//     Right for ≤ ~10 short options.
+//
+//   searchable=true
+//     Trigger button + a search input pinned at the top of the
+//     popover. Focus moves to the search input on open; the
+//     listbox below filters by case-insensitive label substring.
+//     Right for long lists (countries, currencies, time zones,
+//     user pickers).
+//
+// Popover ALWAYS renders via createPortal to document.body so it
+// escapes Card / Drawer / Dialog parents whose overflow:hidden
+// would otherwise clip it. Position is computed against the
+// trigger's bounding rect and recomputed on resize; we
+// intentionally close on scroll to avoid the "popover drifts off
+// the trigger" failure mode (matches Radix / Headless UI default).
 //
 // Keyboard model (mirrors ARIA 1.2 combobox-as-listbox spec):
-//   Space / Enter on the trigger    → open
-//   ArrowDown / ArrowUp             → open (highlight first / last)
-//   ArrowDown / ArrowUp (open)      → move highlight
-//   Home / End (open)               → first / last option
-//   Enter (open)                    → commit highlighted option
-//   Escape (open)                   → close, restore previous value
-//   Tab                             → close + advance focus
-//   A-Z / 0-9 (open or closed)      → jump to next option whose label
-//                                     starts with that character
-//                                     (typeahead; 500 ms reset window)
-//
-// Layout model:
-//   - Trigger is a styled <button> that LOOKS like .ck-input
-//   - Popover is absolutely positioned beneath the trigger
-//   - We do NOT portal — keeps the markup simple. If a parent has
-//     `overflow: hidden` that clips the popover, wrap the Select
-//     in a sibling rather than mounting it inside that container.
+//   trigger CLOSED:
+//     Space / Enter             → open
+//     ArrowDown / ArrowUp       → open (first / last)
+//     A-Z / 0-9 (!searchable)   → open + typeahead
+//   open, !searchable, on trigger:
+//     ArrowDown / ArrowUp       → move highlight
+//     Home / End                → first / last
+//     Enter                     → commit highlighted
+//     Escape                    → close
+//     Tab                       → close, focus advances
+//     A-Z / 0-9                 → typeahead (500 ms reset window)
+//   open, searchable, on search input:
+//     Typing                    → filter
+//     ArrowDown / ArrowUp       → move highlight inside filtered list
+//     Home / End                → first / last in filtered list
+//     Enter                     → commit highlighted
+//     Escape                    → close
+//     Tab                       → close, focus advances
 
 export interface SelectOption {
   value: string;
@@ -63,6 +86,12 @@ export interface SelectProps {
   className?: string | undefined;
   // Max height of the popover. Long lists scroll inside.
   maxOptionsHeight?: number | undefined;
+  // Show a search input pinned at the top of the popover. Filters
+  // options by case-insensitive label substring. Recommended for
+  // lists > ~10 items.
+  searchable?: boolean | undefined;
+  // Placeholder for the search input (when searchable).
+  searchPlaceholder?: string | undefined;
 }
 
 const TRIGGER_BASE_STYLE: CSSProperties = {
@@ -83,6 +112,17 @@ const TRIGGER_BASE_STYLE: CSSProperties = {
   transition: "border-color var(--ck-dur-fast) var(--ck-ease)",
 };
 
+// Visual gap between the trigger's bottom edge and the popover's
+// top edge. Matches Radix / Headless UI default; small enough to
+// read as "attached", large enough not to feel sticky.
+const POPOVER_GAP = 4;
+
+interface PopoverRect {
+  top: number;
+  left: number;
+  width: number;
+}
+
 export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select(
   {
     value,
@@ -99,6 +139,8 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     id,
     className,
     maxOptionsHeight = 280,
+    searchable = false,
+    searchPlaceholder = "Search…",
   },
   ref,
 ) {
@@ -107,17 +149,28 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
   const listboxId = `${autoId}-listbox`;
 
   const [open, setOpen] = useState(false);
-  // Highlighted index while the popover is open. -1 = nothing
-  // highlighted; first open with no selection lands on 0.
   const [highlight, setHighlight] = useState(-1);
+  const [query, setQuery] = useState("");
+  const [rect, setRect] = useState<PopoverRect | null>(null);
+
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const popoverRef = useRef<HTMLDivElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const optionRefs = useRef<(HTMLLIElement | null)[]>([]);
-  // Typeahead buffer + reset timer for "press a letter to jump".
   const typeaheadRef = useRef<{ buffer: string; resetAt: number }>({
     buffer: "",
     resetAt: 0,
   });
+
+  // Filtered options when searchable; identical otherwise. Filter
+  // by case-insensitive label substring. Disabled options remain
+  // visible but unselectable; consumers can pre-filter their
+  // options array if they want them hidden when search is non-empty.
+  const filteredOptions = useMemo(() => {
+    if (!searchable || query.trim() === "") return options;
+    const q = query.trim().toLowerCase();
+    return options.filter((o) => o.label.toLowerCase().includes(q));
+  }, [searchable, options, query]);
 
   const selectedIndex = useMemo(
     () => options.findIndex((o) => o.value === value),
@@ -134,18 +187,49 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     [ref],
   );
 
-  // Close on outside click + Esc.
+  const computeRect = useCallback((): PopoverRect | null => {
+    const el = triggerRef.current;
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return {
+      top: r.bottom + POPOVER_GAP,
+      left: r.left,
+      width: r.width,
+    };
+  }, []);
+
+  // Position the popover on open + on window resize. Close on
+  // page scroll — keeps the popover from drifting off the trigger
+  // while the user pages around.
+  useLayoutEffect(() => {
+    if (!open) return;
+    setRect(computeRect());
+  }, [open, computeRect]);
+
   useEffect(() => {
     if (!open) return;
-    const onDocClick = (e: MouseEvent) => {
+    const onResize = () => setRect(computeRect());
+    const onScroll = () => setOpen(false);
+    window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, true);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll, true);
+    };
+  }, [open, computeRect]);
+
+  // Close on outside click + Esc (Esc handled in onKey below).
+  useEffect(() => {
+    if (!open) return;
+    const onDocMouseDown = (e: MouseEvent) => {
       const t = e.target as Node | null;
       if (!t) return;
       if (triggerRef.current?.contains(t)) return;
       if (popoverRef.current?.contains(t)) return;
       setOpen(false);
     };
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
+    document.addEventListener("mousedown", onDocMouseDown);
+    return () => document.removeEventListener("mousedown", onDocMouseDown);
   }, [open]);
 
   // Auto-scroll highlighted option into view inside the popover.
@@ -155,14 +239,49 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     if (el) el.scrollIntoView({ block: "nearest" });
   }, [open, highlight]);
 
-  // When opening, seed the highlight to the currently selected option
-  // so the user lands on what they've already chosen.
+  // Focus management on open:
+  //   searchable=true → focus the search input
+  //   searchable=false → trigger keeps focus (kbd handler lives there)
+  useEffect(() => {
+    if (!open) return;
+    if (searchable) {
+      // requestAnimationFrame to let the portal mount before focusing.
+      const raf = requestAnimationFrame(() => searchInputRef.current?.focus());
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [open, searchable]);
+
+  // When the filtered list changes (user types), reset highlight
+  // to the first selectable option. Otherwise the highlight could
+  // point at an index that no longer exists.
+  useEffect(() => {
+    if (!open) return;
+    if (filteredOptions.length === 0) {
+      setHighlight(-1);
+      return;
+    }
+    // Try to keep the existing selection visible; else first
+    // non-disabled option.
+    const selectedInFiltered = filteredOptions.findIndex((o) => o.value === value);
+    if (selectedInFiltered >= 0) {
+      setHighlight(selectedInFiltered);
+    } else {
+      const firstEnabled = filteredOptions.findIndex((o) => !o.disabled);
+      setHighlight(firstEnabled >= 0 ? firstEnabled : 0);
+    }
+  }, [open, filteredOptions, value]);
+
   const openPopover = useCallback(
     (startHighlight?: number) => {
       if (disabled) return;
       setOpen(true);
+      setQuery("");
       setHighlight(
-        startHighlight !== undefined ? startHighlight : selectedIndex >= 0 ? selectedIndex : 0,
+        startHighlight !== undefined
+          ? startHighlight
+          : selectedIndex >= 0
+            ? selectedIndex
+            : 0,
       );
     },
     [disabled, selectedIndex],
@@ -171,44 +290,39 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
   const closePopover = useCallback(() => {
     setOpen(false);
     setHighlight(-1);
-    // Re-focus the trigger so keyboard users stay on context.
+    setQuery("");
     triggerRef.current?.focus();
   }, []);
 
   const commit = useCallback(
     (idx: number) => {
-      const opt = options[idx];
+      const opt = filteredOptions[idx];
       if (!opt || opt.disabled) return;
       onChange(opt.value);
       closePopover();
     },
-    [options, onChange, closePopover],
+    [filteredOptions, onChange, closePopover],
   );
 
   // Move highlight skipping disabled rows.
   const moveHighlight = useCallback(
     (delta: 1 | -1, from?: number) => {
-      const n = options.length;
+      const n = filteredOptions.length;
       if (n === 0) return;
       let i = (from ?? highlight) + delta;
-      // Loop max n times to avoid infinite hunt when ALL options
-      // are disabled.
       for (let attempt = 0; attempt < n; attempt++) {
         if (i < 0) i = n - 1;
         if (i >= n) i = 0;
-        if (!options[i]?.disabled) {
+        if (!filteredOptions[i]?.disabled) {
           setHighlight(i);
           return;
         }
         i += delta;
       }
     },
-    [options, highlight],
+    [filteredOptions, highlight],
   );
 
-  // Typeahead — press a letter to jump to the next option whose
-  // label starts with that letter (or the typed prefix, if pressed
-  // within the reset window).
   const typeahead = useCallback(
     (char: string) => {
       const now = Date.now();
@@ -218,21 +332,20 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
       t.resetAt = now + 500;
 
       const start = highlight >= 0 ? highlight : 0;
-      const n = options.length;
+      const n = filteredOptions.length;
       for (let off = 1; off <= n; off++) {
         const idx = (start + off) % n;
-        const o = options[idx];
+        const o = filteredOptions[idx];
         if (o && !o.disabled && o.label.toLowerCase().startsWith(t.buffer)) {
           setHighlight(idx);
           return;
         }
       }
-      // No prefix match — try single-char from current.
       if (t.buffer.length > 1) {
         t.buffer = char.toLowerCase();
         for (let off = 1; off <= n; off++) {
           const idx = (start + off) % n;
-          const o = options[idx];
+          const o = filteredOptions[idx];
           if (o && !o.disabled && o.label.toLowerCase().startsWith(t.buffer)) {
             setHighlight(idx);
             return;
@@ -240,9 +353,11 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         }
       }
     },
-    [options, highlight],
+    [filteredOptions, highlight],
   );
 
+  // Keyboard handler for the trigger (non-searchable mode + closed
+  // state in searchable mode).
   const onTriggerKey = (e: KeyboardEvent<HTMLButtonElement>) => {
     if (disabled) return;
     if (!open) {
@@ -261,21 +376,20 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         openPopover(options.length - 1);
         return;
       }
-      if (e.key.length === 1 && /[a-z0-9]/i.test(e.key)) {
+      if (!searchable && e.key.length === 1 && /[a-z0-9]/i.test(e.key)) {
         openPopover();
         typeahead(e.key);
         return;
       }
       return;
     }
-    // Open
+    // Open + on trigger (only happens when !searchable).
     if (e.key === "Escape") {
       e.preventDefault();
       closePopover();
       return;
     }
     if (e.key === "Tab") {
-      // Close but DON'T preventDefault — let focus advance.
       setOpen(false);
       setHighlight(-1);
       return;
@@ -312,8 +426,216 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     }
   };
 
+  // Keyboard handler for the search input (searchable mode, open).
+  const onSearchKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closePopover();
+      return;
+    }
+    if (e.key === "Tab") {
+      setOpen(false);
+      setHighlight(-1);
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      moveHighlight(1);
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      moveHighlight(-1);
+      return;
+    }
+    if (e.key === "Home") {
+      e.preventDefault();
+      moveHighlight(1, -1);
+      return;
+    }
+    if (e.key === "End") {
+      e.preventDefault();
+      moveHighlight(-1, filteredOptions.length);
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (highlight >= 0) commit(highlight);
+      return;
+    }
+    // Plain typing flows to the input value via React's onChange.
+  };
+
   const triggerLabel = selectedOption ? selectedOption.label : placeholder ?? "Select…";
   const showPlaceholder = !selectedOption;
+
+  const popoverNode = open && rect && (
+    <div
+      ref={popoverRef}
+      className="ck-select-popover"
+      style={{
+        position: "fixed",
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        zIndex: 1000,
+        background: "var(--ck-bg-surface)",
+        border: "1px solid var(--ck-border-strong)",
+        borderRadius: "var(--ck-radius-sm)",
+        boxShadow: "var(--ck-shadow-3, 0 16px 48px rgba(0,0,0,0.12))",
+        // Popover constrained vertically by maxOptionsHeight + an
+        // allowance for the search row. The listbox itself scrolls.
+        maxHeight: maxOptionsHeight + (searchable ? 48 : 0),
+        display: "flex",
+        flexDirection: "column",
+        padding: 4,
+      }}
+    >
+      {searchable && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "4px 6px",
+            borderBottom: "1px solid var(--ck-border-subtle)",
+            marginBottom: 4,
+          }}
+        >
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+            style={{ color: "var(--ck-text-tertiary)", marginRight: 6, flexShrink: 0 }}
+          >
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            ref={searchInputRef}
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={onSearchKey}
+            placeholder={searchPlaceholder}
+            aria-autocomplete="list"
+            aria-controls={listboxId}
+            aria-activedescendant={
+              highlight >= 0 ? `${listboxId}-opt-${highlight}` : undefined
+            }
+            className="ck-select-search"
+            style={{
+              flex: "1 1 auto",
+              minWidth: 0,
+              height: 28,
+              padding: "0 4px",
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              color: "var(--ck-text-primary)",
+              font: "400 13px/1 var(--ck-font-sans)",
+            }}
+          />
+        </div>
+      )}
+      <ul
+        id={listboxId}
+        role="listbox"
+        aria-labelledby={triggerId}
+        style={{
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
+          overflowY: "auto",
+          maxHeight: maxOptionsHeight,
+        }}
+      >
+        {filteredOptions.map((opt, i) => {
+          const selected = opt.value === value;
+          const highlighted = i === highlight;
+          return (
+            <li
+              ref={(el) => {
+                optionRefs.current[i] = el;
+              }}
+              key={opt.value}
+              id={`${listboxId}-opt-${i}`}
+              role="option"
+              aria-selected={selected}
+              aria-disabled={opt.disabled}
+              onMouseEnter={() => !opt.disabled && setHighlight(i)}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => commit(i)}
+              className={cn(
+                "ck-select-option",
+                selected && "ck-select-option--selected",
+                highlighted && "ck-select-option--active",
+                opt.disabled && "ck-select-option--disabled",
+              )}
+              style={{
+                padding: "8px 10px",
+                borderRadius: "calc(var(--ck-radius-sm) - 2px)",
+                cursor: opt.disabled ? "not-allowed" : "pointer",
+                color: opt.disabled
+                  ? "var(--ck-text-tertiary)"
+                  : "var(--ck-text-primary)",
+                background: highlighted ? "var(--ck-bg-muted)" : "transparent",
+                font: "400 13px/1.2 var(--ck-font-sans)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+                transition: "background var(--ck-dur-fast) var(--ck-ease)",
+              }}
+            >
+              <span
+                style={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {opt.label}
+              </span>
+              {selected && (
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                  style={{ color: "var(--ck-accent)", flexShrink: 0 }}
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              )}
+            </li>
+          );
+        })}
+        {filteredOptions.length === 0 && (
+          <li
+            role="presentation"
+            style={{
+              padding: "8px 10px",
+              color: "var(--ck-text-tertiary)",
+              font: "400 13px/1.2 var(--ck-font-sans)",
+            }}
+          >
+            {searchable && query.trim() !== "" ? "No matches" : "No options"}
+          </li>
+        )}
+      </ul>
+    </div>
+  );
 
   return (
     <div
@@ -323,7 +645,6 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         flexDirection: "column",
         gap: 6,
         width: fit === "full" ? "100%" : undefined,
-        position: "relative",
       }}
     >
       {label && (
@@ -336,9 +657,6 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         </label>
       )}
 
-      {/* Hidden native input mirrors the value so plain <form> POSTs
-          still carry the field. Consumers using the controlled value
-          directly can ignore this. */}
       {name && <input type="hidden" name={name} value={value} required={required} />}
 
       <button
@@ -366,7 +684,13 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
           opacity: disabled ? 0.55 : 1,
         }}
       >
-        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <span
+          style={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
           {triggerLabel}
         </span>
         <svg
@@ -390,113 +714,6 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         </svg>
       </button>
 
-      {open && (
-        <div
-          ref={popoverRef}
-          className="ck-select-popover"
-          style={{
-            position: "absolute",
-            top: "calc(100% + 4px)",
-            left: 0,
-            right: 0,
-            zIndex: 50,
-            background: "var(--ck-bg-surface)",
-            border: "1px solid var(--ck-border-strong)",
-            borderRadius: "var(--ck-radius-sm)",
-            boxShadow: "var(--ck-shadow-3, 0 16px 48px rgba(0,0,0,0.12))",
-            maxHeight: maxOptionsHeight,
-            overflowY: "auto",
-            padding: 4,
-          }}
-        >
-          <ul
-            id={listboxId}
-            role="listbox"
-            aria-labelledby={triggerId}
-            style={{ listStyle: "none", margin: 0, padding: 0 }}
-          >
-            {options.map((opt, i) => {
-              const selected = opt.value === value;
-              const highlighted = i === highlight;
-              return (
-                <li
-                  ref={(el) => {
-                    optionRefs.current[i] = el;
-                  }}
-                  key={opt.value}
-                  role="option"
-                  aria-selected={selected}
-                  aria-disabled={opt.disabled}
-                  onMouseEnter={() => !opt.disabled && setHighlight(i)}
-                  onMouseDown={(e) => {
-                    // Prevent the trigger from losing focus before
-                    // commit (otherwise the popover closes via
-                    // outside-click before onClick fires).
-                    e.preventDefault();
-                  }}
-                  onClick={() => commit(i)}
-                  className={cn(
-                    "ck-select-option",
-                    selected && "ck-select-option--selected",
-                    highlighted && "ck-select-option--active",
-                    opt.disabled && "ck-select-option--disabled",
-                  )}
-                  style={{
-                    padding: "8px 10px",
-                    borderRadius: "calc(var(--ck-radius-sm) - 2px)",
-                    cursor: opt.disabled ? "not-allowed" : "pointer",
-                    color: opt.disabled
-                      ? "var(--ck-text-tertiary)"
-                      : "var(--ck-text-primary)",
-                    background: highlighted
-                      ? "var(--ck-bg-muted)"
-                      : "transparent",
-                    font: "400 13px/1.2 var(--ck-font-sans)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                    transition: "background var(--ck-dur-fast) var(--ck-ease)",
-                  }}
-                >
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {opt.label}
-                  </span>
-                  {selected && (
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden
-                      style={{ color: "var(--ck-accent)", flexShrink: 0 }}
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  )}
-                </li>
-              );
-            })}
-            {options.length === 0 && (
-              <li
-                role="presentation"
-                style={{
-                  padding: "8px 10px",
-                  color: "var(--ck-text-tertiary)",
-                  font: "400 13px/1.2 var(--ck-font-sans)",
-                }}
-              >
-                No options
-              </li>
-            )}
-          </ul>
-        </div>
-      )}
-
       {(helper || error) && (
         <div
           style={{
@@ -507,6 +724,10 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
           {error ?? helper}
         </div>
       )}
+
+      {typeof document !== "undefined" && popoverNode
+        ? createPortal(popoverNode, document.body)
+        : null}
     </div>
   );
 });
