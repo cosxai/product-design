@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.7 (2026-05-28)
+
+- **fix**: `Select` popover used to close on ANY scroll event
+  (including the option list's own internal scroll), so a user
+  trying to scroll through a long list would see the popover
+  vanish under their cursor. Scrolls that originate inside the
+  popover are now filtered out; outer / page scrolls reposition
+  the popover against the trigger instead of closing it.
+
 ## 0.2.6 (2026-05-28)
 
 - **fix**: `Select` popover was clipped by ancestors with

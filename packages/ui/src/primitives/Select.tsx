@@ -37,9 +37,10 @@ import { cn } from "../lib/cn";
 // Popover ALWAYS renders via createPortal to document.body so it
 // escapes Card / Drawer / Dialog parents whose overflow:hidden
 // would otherwise clip it. Position is computed against the
-// trigger's bounding rect and recomputed on resize; we
-// intentionally close on scroll to avoid the "popover drifts off
-// the trigger" failure mode (matches Radix / Headless UI default).
+// trigger's bounding rect and re-computed on page scroll + window
+// resize so the popover tracks the trigger. Scrolls INSIDE the
+// popover (the option list / search input) are filtered out — only
+// outer scrolls reposition.
 //
 // Keyboard model (mirrors ARIA 1.2 combobox-as-listbox spec):
 //   trigger CLOSED:
@@ -208,8 +209,19 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
 
   useEffect(() => {
     if (!open) return;
-    const onResize = () => setRect(computeRect());
-    const onScroll = () => setOpen(false);
+    const reposition = () => {
+      const r = computeRect();
+      if (r) setRect(r);
+    };
+    const onResize = reposition;
+    const onScroll = (e: Event) => {
+      // Scrolls INSIDE the popover (the option list / search input)
+      // must not re-trigger positioning — they're not page scrolls.
+      // capture=true catches them before they bubble; we filter here.
+      const target = e.target as Node | null;
+      if (target && popoverRef.current?.contains(target)) return;
+      reposition();
+    };
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScroll, true);
     return () => {
