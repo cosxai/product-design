@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.4 (2026-05-28)
+
+- **fix**: bare `<a>` elements now default to `--ck-accent` (with
+  a clean 1 px underline + `var(--ck-accent-hover)` on hover) and
+  hold accent through the `:visited` state. Without this rule the
+  browser's default visited-purple bled through every chrome —
+  visible on terminal (green-on-black landed indigo-on-black) and
+  editorial (coral landed purple). Components that style their own
+  anchors (`NavItem`, `TopBar` nav, breadcrumbs) keep winning via
+  more-specific selectors; this is a strictly-additive base rule.
+
 ## 0.2.3 (2026-05-28)
 
 - **fix**: `Input` with `prefix` / `suffix` rendered with no left
