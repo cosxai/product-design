@@ -17,6 +17,22 @@ body {
   transition: background-color 200ms var(--ck-ease), color 200ms var(--ck-ease);
 }
 
+/* Anchor — defaults to the active chrome's accent + a clean
+   underline. Without this rule, the browser's visited-link
+   purple bleeds through any theme (most notably terminal /
+   editorial). Components that want different styling (NavItem,
+   TopBar nav, breadcrumbs, in-card secondary links) override
+   locally with a more-specific selector. */
+a {
+  color: var(--ck-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition: color var(--ck-dur-fast) var(--ck-ease);
+}
+a:hover { color: var(--ck-accent-hover); }
+a:visited { color: var(--ck-accent); }
+
 /* ---------- Typography utilities ---------- */
 .ck-h1 { font: 500 32px/1.2 var(--ck-font-sans); letter-spacing: -0.01em; color: var(--ck-text-primary); margin: 0; }
 .ck-h2 { font: 500 24px/1.3 var(--ck-font-sans); letter-spacing: -0.005em; color: var(--ck-text-primary); margin: 0; }
