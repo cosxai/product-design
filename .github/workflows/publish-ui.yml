@@ -72,9 +72,9 @@ jobs:
 
       - name: Publish (Trusted Publishing — OIDC, no token)
         working-directory: packages/ui
-        # NOTE: `--provenance` was dropped because npm's provenance
-        # statement requires the source repository to be PUBLIC on
-        # GitHub ("Unsupported GitHub Actions source repository
-        # visibility: internal"). The repo is currently internal;
-        # add `--provenance` back if/when it's made public.
-        run: npm publish --access public
+        # --provenance signs the published tarball with a sigstore
+        # statement linking it to this repo + workflow run + commit
+        # SHA. Downstream consumers can verify on sigstore.dev that
+        # the artifact really came from a known build of known
+        # source. Requires the source repo to be PUBLIC on GitHub.
+        run: npm publish --access public --provenance
