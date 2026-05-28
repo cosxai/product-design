@@ -116,6 +116,31 @@ html[data-ck-chrome="seamless"] .ck-card__foot {
   color: var(--ck-text-tertiary);
 }
 
+/* ---------- Select (custom listbox — never native <select>) ----------
+   The trigger LOOKS like .ck-input so chrome restyles cascade
+   uniformly. Chromes that want a different vibe (terminal squared,
+   sketch hand-drawn, swiss underline-only) override at their own
+   scope. */
+.ck-select-trigger:focus-visible {
+  border-color: var(--ck-accent) !important;
+  box-shadow: 0 0 0 3px var(--ck-accent-muted);
+}
+.ck-select-trigger--disabled {
+  cursor: not-allowed !important;
+}
+.ck-select-popover {
+  animation: ck-popover-enter 140ms var(--ck-ease) both;
+  transform-origin: top center;
+}
+.ck-select-option--active {
+  /* Inline style already paints --ck-bg-muted; this class hook is
+     left for chrome overrides that want to draw a left-border or
+     other indicator on the active row. */
+}
+.ck-select-option--selected {
+  font-weight: 500;
+}
+
 /* ---------- ActionBar — button row inside <ActionBar> ---------- */
 .ck-actionbar-btn {
   display: inline-flex;

@@ -107,6 +107,34 @@ html[data-ck-chrome="terminal"] .ck-textarea:focus-visible {
   box-shadow: none !important;
 }
 
+/* Select trigger + popover — mirror the input look so a chrome
+   feels consistent across form controls. */
+html[data-ck-chrome="terminal"] .ck-select-trigger {
+  background: var(--ck-bg-surface-2);
+  border: 1px solid var(--ck-border-subtle) !important;
+  border-radius: 2px !important;
+  font-family: var(--ck-font-mono);
+  color: var(--ck-text-primary);
+}
+html[data-ck-chrome="terminal"] .ck-select-trigger:focus-visible {
+  outline: none;
+  border-color: var(--ck-border-strong) !important;
+  border-top-color: var(--ck-accent) !important;
+  box-shadow: none !important;
+}
+html[data-ck-chrome="terminal"] .ck-select-popover {
+  background: var(--ck-bg-surface-2);
+  border: 1px solid var(--ck-border-strong);
+  border-radius: 2px;
+  font-family: var(--ck-font-mono);
+}
+html[data-ck-chrome="terminal"] .ck-select-option {
+  border-radius: 0;
+}
+html[data-ck-chrome="terminal"] .ck-select-option--active {
+  background: var(--ck-bg-muted) !important;
+}
+
 /* ===== Cards ================================================ */
 
 html[data-ck-chrome="terminal"] .ck-card {

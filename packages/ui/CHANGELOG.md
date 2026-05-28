@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.2.5 (2026-05-28)
+
+- **feat**: new `Select` primitive. Custom listbox (NOT native
+  `<select>`) so the popup styling actually responds to chrome
+  overrides — native `<select>` popups are browser-locked on every
+  OS, which used to punch through the design system with macOS
+  blue on terminal/editorial dark mode.
+  - Trigger renders the same shape as `Input`; chromes that restyle
+    `.ck-input` automatically pick up `.ck-select-trigger` siblings.
+  - ARIA combobox / listbox roles; full keyboard support
+    (Space/Enter open, Arrows + Home/End navigate, Enter commits,
+    Esc closes restoring previous value, Tab advances, A-Z/0-9
+    typeahead with 500 ms reset).
+  - Optional `name` prop emits a hidden `<input>` so plain `<form>`
+    submits still carry the value.
+  - Terminal chrome override included; other chromes inherit
+    sensible defaults via token consumption (extend at the chrome
+    file as their look diverges).
+
 ## 0.2.4 (2026-05-28)
 
 - **fix**: bare `<a>` elements now default to `--ck-accent` (with
