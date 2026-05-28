@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.3 (2026-05-28)
+
+- **fix**: `Input` with `prefix` / `suffix` rendered with no left
+  padding under the `swiss` chrome — swiss strips `padding-left`
+  from `.ck-input` for the underline-only standalone look, but
+  that made the input text collide with the addon slab. Restored
+  padding for the `.ck-input--with-addon` variant; the swiss
+  underline is now drawn on the OUTER wrap so the whole field
+  (addons + input) reads as one underlined bar.
+
 ## 0.2.2 (2026-05-28)
 
 > Note: `ui-v0.2.1` exists as a git tag but was never published to

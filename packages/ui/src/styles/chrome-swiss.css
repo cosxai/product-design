@@ -75,7 +75,12 @@ html[data-ck-chrome="swiss"] .ck-btn--ghost:hover:not(:disabled) {
 
 /* ===== Inputs — bottom-border-only (canonical Swiss form) === */
 
-html[data-ck-chrome="swiss"] .ck-input,
+/* :not(.ck-input--with-addon) — when the input is inside a
+   prefix/suffix wrapper the wrapper carries the border + padding,
+   and stripping the input's own padding makes the placeholder
+   collide with the addon. The addon variant gets the swiss
+   underline only at the OUTER wrap level (rule further down). */
+html[data-ck-chrome="swiss"] .ck-input:not(.ck-input--with-addon),
 html[data-ck-chrome="swiss"] .ck-textarea {
   background: transparent !important;
   border: none !important;
@@ -86,12 +91,32 @@ html[data-ck-chrome="swiss"] .ck-textarea {
   color: var(--ck-text-primary);
   transition: border-bottom-color 120ms ease, border-bottom-width 120ms ease;
 }
-html[data-ck-chrome="swiss"] .ck-input:focus-visible,
+html[data-ck-chrome="swiss"] .ck-input:not(.ck-input--with-addon):focus-visible,
 html[data-ck-chrome="swiss"] .ck-textarea:focus-visible {
   outline: none;
   border-bottom-color: var(--ck-text-primary) !important;
   border-bottom-width: 2px !important;
   box-shadow: none !important;
+}
+
+/* Addon variant — flatten the wrapper to the swiss underline-only
+   form so the whole field (input + addons) reads as one bar. The
+   inner .ck-input keeps its default padding; the wrap loses its
+   side / top borders and its corner radius. */
+html[data-ck-chrome="swiss"] .ck-input-addon-wrap {
+  border: none !important;
+  border-bottom: 1px solid var(--ck-border-subtle) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+html[data-ck-chrome="swiss"] .ck-input-addon-wrap:focus-within {
+  border-bottom-color: var(--ck-text-primary) !important;
+  border-bottom-width: 2px !important;
+}
+/* Recess the addon further so the slab still reads against the
+   underlined input column. */
+html[data-ck-chrome="swiss"] .ck-input-addon {
+  background: var(--ck-bg-muted) !important;
 }
 
 /* ===== Cards — rules-only sectioning ======================== */
