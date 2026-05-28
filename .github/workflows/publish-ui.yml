@@ -60,5 +60,16 @@ jobs:
       - name: Typecheck
         run: pnpm --filter @cosxai/ui typecheck
 
+      # npm Trusted Publishing (OIDC handshake) requires npm CLI
+      # >= 11.5.0. pnpm 9 bundles npm 10.x and does NOT perform the
+      # OIDC exchange itself, so publishing via `pnpm publish` falls
+      # through as an anonymous request and npm answers 404
+      # ("OIDC token not bound to any trusted publisher"). Upgrade
+      # the system npm and publish from packages/ui directly with
+      # `npm publish` — npm handles the OIDC handshake natively.
+      - name: Upgrade npm for OIDC Trusted Publishing
+        run: npm install -g npm@latest
+
       - name: Publish (Trusted Publishing — OIDC, no token)
-        run: pnpm publish --filter @cosxai/ui --access public --no-git-checks --provenance
+        working-directory: packages/ui
+        run: npm publish --access public --provenance
