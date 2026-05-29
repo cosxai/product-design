@@ -70,7 +70,7 @@ export function ActionBarButton({
         ...style,
       }}
     >
-      {icon}
+      {icon != null && <span className="ck-actionbar-icon">{icon}</span>}
       <span className={responsiveLabel ? "ck-actionbar-label" : undefined}>
         {label}
       </span>

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.8 (2026-05-29)
+
+- **feat**: `ActionBarButton` wraps the `icon` prop in a
+  `.ck-actionbar-icon` span. Lifts unicode glyphs (◐ ☀ ☾ ◇) to
+  16 px and applies a 1 px optical-centre nudge so they read on
+  par with the heavier label text. Callers can drop any local
+  wrappers and pass icons as bare strings / SVG nodes.
+
 ## 0.2.7 (2026-05-28)
 
 - **fix**: `Select` popover used to close on ANY scroll event

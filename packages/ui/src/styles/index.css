@@ -172,6 +172,22 @@ html[data-ck-chrome="seamless"] .ck-card__foot {
   cursor: not-allowed;
 }
 
+/* Icon glyph wrapper — sized larger than the button's 13 px label
+   text so unicode symbols (◐ ☀ ☾ ◇) and small SVGs read clearly.
+   ActionBarButton wraps the icon prop in this span automatically;
+   callers don't need to opt in. The 1 px upward translate
+   compensates for geometric glyphs sitting about 1 px below their
+   em-box centre — flex centring otherwise leaves them looking
+   slightly low next to the heavier label text. */
+.ck-actionbar-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
 /* Hide labels below 768 px (the standard md breakpoint).
    Icons + tooltips remain — the bar's still informative on phones. */
 @media (max-width: 767px) {
