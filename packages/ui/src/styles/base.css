@@ -4,6 +4,19 @@
    this file being loaded, but consumers should import it to get
    the cross-fade theme transitions and reduced-motion handling. */
 
+/* Inheritance-friendly box-sizing — modern reset best practice.
+   Without it, `min-height: 100vh` + padding silently extends the
+   element BEYOND the viewport (default `content-box` makes padding
+   stack ON TOP of the declared min-height), introducing a sneaky
+   scroll on any consumer page that combines those two properties.
+   Every modern reset (Eric Meyer 2014, Tailwind preflight,
+   Bootstrap, modern-normalize) ships this — @cosxai/ui matches. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   background: var(--ck-bg-canvas);

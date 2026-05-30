@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.9 (2026-05-30)
+
+- **fix**: Add a global `*, *::before, *::after { box-sizing: border-box }`
+  reset to `base.css`. Every modern CSS reset ships this; without it,
+  `min-height: 100vh` + padding extends elements beyond the viewport
+  (default `content-box` stacks padding on top of the declared min-height)
+  and creates a sneaky scroll on any consumer page that combines those
+  two properties. Caught in mesh's `body.mesh-auth-page` where a green
+  flash alert pushed a reset-password page slightly past 100vh and the
+  whole page became scrollable. Consumers using Tailwind preflight
+  already had this rule via Tailwind; consumers without it (like mesh's
+  embedded auth pages) now pick it up here.
+
 ## 0.2.8 (2026-05-29)
 
 - **feat**: `ActionBarButton` wraps the `icon` prop in a
