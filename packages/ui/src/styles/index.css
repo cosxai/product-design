@@ -33,6 +33,7 @@
   color: var(--ck-text-primary);
   cursor: pointer;
   white-space: nowrap;
+  text-decoration: none;
   transition: background var(--ck-dur-fast) var(--ck-ease), border-color var(--ck-dur-fast) var(--ck-ease);
 }
 

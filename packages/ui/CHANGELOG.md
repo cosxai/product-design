@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.10 (2026-05-30)
+
+- **fix**: Add `text-decoration: none` to `.ck-btn` so `<a class="ck-btn">`
+  CTAs render flat instead of inheriting the browser's default
+  anchor underline. Consumers using Tailwind preflight had this
+  masked because Tailwind resets `<a>` decoration globally; mesh's
+  embedded auth pages (no Tailwind) surfaced the underline on the
+  verify-email success page's "Continue to [Product] →" anchor.
+
 ## 0.2.9 (2026-05-30)
 
 - **fix**: Add a global `*, *::before, *::after { box-sizing: border-box }`
