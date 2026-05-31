@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type ReactNode,
 } from "react";
 import { ActionBarContext } from "./actionbar-context";
 import { ActionBarButton } from "./ActionBarButton";
@@ -229,8 +230,29 @@ export function ActionBar({
     setPos({ type: "default" });
   }, [storageKey]);
 
-  // ----- Entries (flat vs group) -----
-  const entries = useMemo(() => buildEntries(items), [items]);
+  // ----- Entries (flat vs group), partitioned by slot -----
+  // Items default to the leading slot. Trailing items render after a
+  // flex spacer so they pin to the right edge regardless of
+  // registration order — system status indicators (sync, identity,
+  // connection) belong here, where page items registering later
+  // can't shuffle them. buildEntries runs per slot so category
+  // grouping stays slot-local (a category split across slots is an
+  // edge case we intentionally don't fold across the spacer).
+  const { leadingEntries, trailingEntries } = useMemo(() => {
+    const leading: ActionBarItem[] = [];
+    const trailing: ActionBarItem[] = [];
+    for (const it of items) {
+      (it.slot === "trailing" ? trailing : leading).push(it);
+    }
+    return {
+      leadingEntries: buildEntries(leading),
+      trailingEntries: buildEntries(trailing),
+    };
+  }, [items]);
+  const entries = useMemo(
+    () => [...leadingEntries, ...trailingEntries],
+    [leadingEntries, trailingEntries],
+  );
 
   // Cleanup stale expansion if the corresponding group disappears.
   useEffect(() => {
@@ -377,49 +399,65 @@ export function ActionBar({
         </button>
       ) : null}
 
-      {/* Entries: flat items + group heads with disclosure regions. */}
-      {entries.map((entry) => {
-        if (entry.kind === "flat" && entry.item) {
-          return (
-            <ActionBarButton
-              key={entry.expansionKey}
-              icon={entry.item.icon}
-              label={entry.item.label}
-              title={entry.item.title}
-              active={entry.item.active}
-              disabled={entry.item.disabled}
-              variant={entry.item.variant}
-              hint={entry.item.hint}
-              onClick={entry.item.onClick}
-            />
-          );
-        }
-        const cat = entry.category!;
-        const catDef = categories[cat];
-        const hasActiveChild = entry.groupItems!.some((it) => it.active);
-        const isOpen = expandedKey === entry.expansionKey;
-        return (
-          <ActionBarMenuGroup
-            key={entry.expansionKey}
-            label={catDef?.label ?? cat}
-            icon={catDef?.icon}
-            hasActiveChild={hasActiveChild}
-            isOpen={isOpen}
-            onToggle={() =>
-              setExpandedKey(isOpen ? null : entry.expansionKey)
-            }
-            items={entry.groupItems!}
-            onItemClicked={(it) => {
-              it.onClick();
-              if (!it.keepGroupOpenOnClick) {
-                setExpandedKey(null);
-              }
-            }}
-          />
-        );
-      })}
+      {/* Leading entries — flat items + group heads with disclosure regions. */}
+      {leadingEntries.map(renderEntry)}
+
+      {/* Spacer pushes trailing entries to the right edge of the bar.
+          Only rendered when there's at least one trailing entry, so the
+          bar still hugs its content tightly when no trailing slot is in
+          use. */}
+      {trailingEntries.length > 0 && (
+        <span
+          aria-hidden
+          data-ck-actionbar-spacer
+          style={{ flex: "1 1 auto", minWidth: 12 }}
+        />
+      )}
+
+      {/* Trailing entries — pin to the right edge regardless of
+          registration order. Same rendering rules as leading. */}
+      {trailingEntries.map(renderEntry)}
     </div>
   );
+
+  function renderEntry(entry: BuildEntry): ReactNode {
+    if (entry.kind === "flat" && entry.item) {
+      return (
+        <ActionBarButton
+          key={entry.expansionKey}
+          icon={entry.item.icon}
+          label={entry.item.label}
+          title={entry.item.title}
+          active={entry.item.active}
+          disabled={entry.item.disabled}
+          variant={entry.item.variant}
+          hint={entry.item.hint}
+          onClick={entry.item.onClick}
+        />
+      );
+    }
+    const cat = entry.category!;
+    const catDef = categories[cat];
+    const hasActiveChild = entry.groupItems!.some((it) => it.active);
+    const isOpen = expandedKey === entry.expansionKey;
+    return (
+      <ActionBarMenuGroup
+        key={entry.expansionKey}
+        label={catDef?.label ?? cat}
+        icon={catDef?.icon}
+        hasActiveChild={hasActiveChild}
+        isOpen={isOpen}
+        onToggle={() => setExpandedKey(isOpen ? null : entry.expansionKey)}
+        items={entry.groupItems!}
+        onItemClicked={(it) => {
+          it.onClick();
+          if (!it.keepGroupOpenOnClick) {
+            setExpandedKey(null);
+          }
+        }}
+      />
+    );
+  }
 }
 
 const leftEdgeButtonStyle: CSSProperties = {

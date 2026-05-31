@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 (2026-05-31)
+
+- **feat(actionbar)**: `ActionBarItem` gains a `slot?: 'leading' |
+  'trailing'` field. Trailing items render after a flex spacer so
+  they pin to the right edge of the bar regardless of registration
+  order — system status indicators (sync, identity, connection)
+  belong here, where page items registering later can't shuffle
+  them. Default `'leading'` preserves existing behavior; this is a
+  purely additive change. Exports `ActionBarItemSlot` from the
+  bucket index. Driven by product-meta needing a stable home for
+  the SWR sync-status indicator on dash AND inside workspace SPAs.
+
 ## 0.2.10 (2026-05-30)
 
 - **fix**: Add `text-decoration: none` to `.ck-btn` so `<a class="ck-btn">`
