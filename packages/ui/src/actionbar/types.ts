@@ -7,6 +7,16 @@ import type { ReactNode } from "react";
 
 export type ActionBarItemVariant = "ghost" | "primary" | "soft";
 
+// Slot anchor — which edge of the bar the item gravitates toward.
+// `leading` (default) keeps existing behavior: items pack from the
+// drag grip outward in registration order. `trailing` pins the item
+// to the right edge with a flex spacer separating it from the
+// leading group, regardless of registration order. Use trailing for
+// system status indicators (sync, connection, identity) that need a
+// stable visual home and shouldn't be shuffled by page items
+// registering after them.
+export type ActionBarItemSlot = "leading" | "trailing";
+
 export interface ActionBarItem {
   // React key for the rendered button. Stable across rerenders.
   key: string;
@@ -33,6 +43,10 @@ export interface ActionBarItem {
   // (e.g. for items whose post-click state changes the label
   // and should stay visible).
   keepGroupOpenOnClick?: boolean;
+  // Slot anchor. Defaults to `leading`. Trailing items render after
+  // a flex spacer so they pin to the right edge regardless of
+  // registration order — system status indicators belong here.
+  slot?: ActionBarItemSlot;
 }
 
 // Category definition — declared at the provider level. Drives

@@ -84,6 +84,19 @@ export function ActionBarPage() {
         icon: <Dot />,
         onClick: () => toast({ kind: "info", message: "Pretend present mode toggled." }),
       },
+      // ----- Trailing slot — pins to the right edge regardless of
+      // registration order. Use for system status indicators
+      // (sync, identity, connection) whose visual home shouldn't
+      // be shuffled by page items registering after them. -----
+      {
+        key: "sync-status",
+        label: "Synced",
+        title: "Synced (system status — pinned to the right via slot: 'trailing')",
+        icon: <StatusDot color="var(--ck-status-success, #16a34a)" />,
+        slot: "trailing" as const,
+        onClick: () =>
+          toast({ kind: "info", message: "Trailing item — pretend sync popover." }),
+      },
     ],
     [commentMode, translating, editing, toast],
   );
@@ -143,6 +156,15 @@ export function ActionBarPage() {
           <strong>Hotkeys</strong> — <Kbd>C</Kbd>, <Kbd>T</Kbd>, <Kbd>P</Kbd>.
           Try them inside the input below — they're suppressed (focus
           guard).
+        </li>
+        <li>
+          <strong>Trailing slot</strong> — the green "Synced" dot on
+          the far right is registered with{" "}
+          <code>slot: "trailing"</code>. It's pinned to the right edge
+          via a flex spacer and stays there even though it was
+          registered AFTER the other items. Use this for system status
+          indicators whose visual home shouldn't be shuffled by page
+          items.
         </li>
       </ul>
 
@@ -245,6 +267,23 @@ function Dot() {
         borderRadius: "50%",
         background: "currentColor",
         opacity: 0.5,
+      }}
+    />
+  );
+}
+
+function StatusDot({ color }: { color: string }) {
+  // Stronger filled dot for trailing-slot status indicators — distinct
+  // from the generic outlined Dot so the demo communicates "system
+  // state" at a glance.
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        width: 8,
+        height: 8,
+        borderRadius: "50%",
+        background: color,
       }}
     />
   );

@@ -8,6 +8,7 @@ export { useActionBarItems, useActionBarItemsContext } from "./useActionBarItems
 export type {
   ActionBarItem,
   ActionBarItemVariant,
+  ActionBarItemSlot,
   ActionBarCategory,
   ActionBarCategories,
 } from "./types";
