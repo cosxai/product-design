@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.2 (2026-05-31)
+
+- **fix(actionbar)**: bar now renders when the only consumer is
+  `useActionBarStatusDot` (no items registered). The empty-state
+  guard previously checked `items.length === 0` only, so a
+  status-dot-only surface would render nothing.
+
 ## 0.3.1 (2026-05-31)
 
 - **feat(actionbar)**: bar-intrinsic `statusDot` slot at the right

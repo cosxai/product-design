@@ -276,7 +276,11 @@ export function ActionBar({
   }, [expandedKey, setExpandedKey]);
 
   // ----- Empty state -----
-  if (items.length === 0) return null;
+  // Bar renders when EITHER any page item is registered OR the
+  // status dot is set. Without the statusDot check, an app whose
+  // only consumer is `useActionBarStatusDot` (e.g. a system-status-
+  // only surface) would never see the bar at all.
+  if (items.length === 0 && !statusDot) return null;
 
   // ----- Collapsed handle (phone only) -----
   if (isPhone && collapsibleOnPhone && collapsed) {
