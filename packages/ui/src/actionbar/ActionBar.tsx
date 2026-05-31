@@ -346,7 +346,15 @@ export function ActionBar({
               bottom: pos.bottom,
             }),
         height: BAR_HEIGHT,
-        padding: "0 6px 0 0",
+        // Symmetric horizontal padding so the bar's interior content
+        // area is centred. Previously only the right side had 6px
+        // padding (legacy from when the right edge held normal items
+        // and the left edge was an interactive grip), which made the
+        // grip sit flush against the left curve while the rightmost
+        // element (now the status dot) had visible breathing room.
+        // The asymmetry pushed the leading items a few pixels left of
+        // the bar's true centre.
+        padding: "0 6px",
         display: "flex",
         alignItems: "center",
         gap: 4,
@@ -431,7 +439,7 @@ export function ActionBar({
         <span
           aria-hidden
           data-ck-actionbar-spacer
-          style={{ flex: "1 1 auto", minWidth: 12 }}
+          style={{ flex: "1 1 auto", minWidth: 0 }}
         />
       )}
 

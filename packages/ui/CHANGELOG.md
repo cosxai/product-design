@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.4 (2026-05-31)
+
+- **fix(actionbar)**: bar now has symmetric horizontal padding
+  (`0 6px` instead of `0 6px 0 0`). Previously the right-only padding
+  pushed the leading items a few pixels left of the bar's true
+  centre — the grip touched the left curve while the rightmost
+  element (now the status dot) had visible breathing room. With
+  0.3.3's leading spacer the imbalance was small but visible.
+- **fix(actionbar)**: leading + trailing spacers now both use
+  `minWidth: 0` instead of `0` and `12` respectively. Cosmetic
+  alignment — `0` is the right neutral value for a spacer that's
+  expected to grow into available room rather than enforce a
+  minimum gap.
+
 ## 0.3.3 (2026-05-31)
 
 - **fix(actionbar)**: leading items centre between the grip and the
