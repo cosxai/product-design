@@ -403,6 +403,23 @@ export function ActionBar({
         </button>
       ) : null}
 
+      {/* Balancing leading spacer — only present when the right side
+          holds ONLY a status dot (no trailing items). With a left
+          and right spacer of equal flex weight, the leading items
+          centre between the grip and the status dot. Without this,
+          a solo leading item (e.g. just "Theme · Light") looks
+          left-anchored next to the grip with a visible gap before
+          the dot, which reads as unbalanced. When trailing items ARE
+          present, they take that role on the right and the leading
+          group goes back to its natural left-anchored packing. */}
+      {leadingEntries.length > 0 && trailingEntries.length === 0 && statusDot && (
+        <span
+          aria-hidden
+          data-ck-actionbar-spacer="leading"
+          style={{ flex: "1 1 auto", minWidth: 0 }}
+        />
+      )}
+
       {/* Leading entries — flat items + group heads with disclosure regions. */}
       {leadingEntries.map(renderEntry)}
 

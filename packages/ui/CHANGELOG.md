@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.3 (2026-05-31)
+
+- **fix(actionbar)**: leading items centre between the grip and the
+  status dot when no trailing items are present. Previously a solo
+  leading item (e.g. "Theme · Light") visually packed next to the
+  grip leaving an unbalanced gap before the status dot. Now a
+  balancing flex spacer is inserted to the LEFT of the leading
+  group whenever it's the only content + the right side holds only
+  a status dot. When trailing items ARE present, they retain their
+  right-anchor role and leading goes back to natural left packing.
+
 ## 0.3.2 (2026-05-31)
 
 - **fix(actionbar)**: bar now renders when the only consumer is
