@@ -146,7 +146,7 @@ export function ActionBar({
   if (!ctx) {
     throw new Error("<ActionBar> must be inside <ActionBarProvider>");
   }
-  const { items, categories, expandedKey, setExpandedKey } = ctx;
+  const { items, categories, expandedKey, setExpandedKey, statusDot } = ctx;
   const vp = useViewport();
   const isPhone = vp.isPhone;
 
@@ -402,11 +402,11 @@ export function ActionBar({
       {/* Leading entries — flat items + group heads with disclosure regions. */}
       {leadingEntries.map(renderEntry)}
 
-      {/* Spacer pushes trailing entries to the right edge of the bar.
-          Only rendered when there's at least one trailing entry, so the
-          bar still hugs its content tightly when no trailing slot is in
-          use. */}
-      {trailingEntries.length > 0 && (
+      {/* Spacer pushes whatever is right-aligned (trailing entries +/or
+          the bar-intrinsic status dot) to the right edge. Only rendered
+          when there IS something on the right, so the bar still hugs
+          its content tightly when neither is in use. */}
+      {(trailingEntries.length > 0 || statusDot) && (
         <span
           aria-hidden
           data-ck-actionbar-spacer
@@ -417,6 +417,35 @@ export function ActionBar({
       {/* Trailing entries — pin to the right edge regardless of
           registration order. Same rendering rules as leading. */}
       {trailingEntries.map(renderEntry)}
+
+      {/* Status dot — bar-intrinsic chrome at the right edge,
+          mirroring the left-edge drag grip. Consumer-controlled via
+          `useActionBarStatusDot()`. Visual: a small coloured dot in
+          a 28×BAR_HEIGHT slot. Renders as a button when an onClick
+          is provided; otherwise a plain span (no interactive
+          affordances). */}
+      {statusDot &&
+        (statusDot.onClick ? (
+          <button
+            type="button"
+            onClick={statusDot.onClick}
+            aria-label={statusDot.title ?? "Status"}
+            title={statusDot.title ?? "Status"}
+            data-ck-actionbar-status-dot
+            style={rightEdgeButtonStyle}
+          >
+            <StatusDotGlyph color={statusDot.color} pulse={statusDot.pulse} />
+          </button>
+        ) : (
+          <span
+            aria-label={statusDot.title ?? "Status"}
+            title={statusDot.title ?? "Status"}
+            data-ck-actionbar-status-dot
+            style={rightEdgeButtonStyle}
+          >
+            <StatusDotGlyph color={statusDot.color} pulse={statusDot.pulse} />
+          </span>
+        ))}
     </div>
   );
 
@@ -472,3 +501,49 @@ const leftEdgeButtonStyle: CSSProperties = {
   color: "var(--ck-text-tertiary)",
   borderRadius: 0,
 };
+
+// Right-edge button — mirrors leftEdgeButtonStyle in dimensions, used
+// for the status dot. Cursor stays default for the non-interactive
+// span variant; the interactive (onClick) path is a real <button>
+// that picks up :hover / :focus styles from base.css.
+const rightEdgeButtonStyle: CSSProperties = {
+  ...leftEdgeButtonStyle,
+};
+
+// StatusDotGlyph — the actual coloured circle, sized to read at par
+// with the grip's six-dot icon. Pulse via a shared keyframe injected
+// at module scope (one stylesheet entry; idempotent across mounts).
+interface StatusDotGlyphProps {
+  color: string;
+  pulse?: boolean | undefined;
+}
+function StatusDotGlyph({ color, pulse }: StatusDotGlyphProps) {
+  return (
+    <span
+      aria-hidden
+      style={{
+        display: "inline-block",
+        width: 8,
+        height: 8,
+        borderRadius: "50%",
+        background: color,
+        animation: pulse ? "ck-actionbar-status-pulse 1.4s ease-in-out infinite" : undefined,
+      }}
+    />
+  );
+}
+
+// One global stylesheet entry for the pulse keyframe. Injected once
+// on first import. Idempotent — re-imports check by id.
+if (typeof document !== "undefined") {
+  const STYLE_ID = "ck-actionbar-status-pulse";
+  if (!document.getElementById(STYLE_ID)) {
+    const el = document.createElement("style");
+    el.id = STYLE_ID;
+    el.textContent = `@keyframes ck-actionbar-status-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.45; }
+      }`;
+    document.head.appendChild(el);
+  }
+}

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { ActionBarContext } from "./actionbar-context";
-import type { ActionBarItem, ActionBarCategories } from "./types";
+import type { ActionBarItem, ActionBarCategories, ActionBarStatusDot } from "./types";
 
 // Provider for the action-bar registry + expansion state +
 // category catalog. Mount once near the app root, inside the
@@ -23,6 +23,7 @@ export function ActionBarProvider({
 }: ActionBarProviderProps) {
   const [sources, setSources] = useState<Record<string, ActionBarItem[]>>({});
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
+  const [statusDot, setStatusDot] = useState<ActionBarStatusDot | null>(null);
 
   const register = useCallback((sourceKey: string, items: ActionBarItem[]) => {
     setSources((prev) => {
@@ -64,8 +65,10 @@ export function ActionBarProvider({
       categories,
       expandedKey,
       setExpandedKey,
+      statusDot,
+      setStatusDot,
     }),
-    [register, unregister, items, categories, expandedKey],
+    [register, unregister, items, categories, expandedKey, statusDot],
   );
 
   return (

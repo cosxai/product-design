@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.1 (2026-05-31)
+
+- **feat(actionbar)**: bar-intrinsic `statusDot` slot at the right
+  edge, mirroring the left-edge drag grip. Registered via
+  `useActionBarStatusDot({color, title?, onClick?, pulse?} | null)`.
+  Unlike `useActionBarItems`, the status dot is system chrome — not
+  page-level content — so the API is a single hook with last-call-
+  wins semantics (no source-key fan-out). Driven by `product-meta`
+  needing a fixed sync indicator that visually anchors to the bar
+  rather than registering as a registry item (the trailing slot
+  worked but conflated system status with page actions). Exports
+  `ActionBarStatusDot` type + `useActionBarStatusDot` hook.
+
 ## 0.3.0 (2026-05-31)
 
 - **feat(actionbar)**: `ActionBarItem` gains a `slot?: 'leading' |

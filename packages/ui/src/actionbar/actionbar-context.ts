@@ -1,10 +1,11 @@
 import { createContext } from "react";
-import type { ActionBarItem, ActionBarCategories } from "./types";
+import type { ActionBarItem, ActionBarCategories, ActionBarStatusDot } from "./types";
 
-// Registry + expansion + category catalog. Items are pushed by
-// pages through useActionBarItems(); categories are declared at
-// the provider level (passed as a prop). expandedKey tracks which
-// group is currently open (one at a time).
+// Registry + expansion + category catalog + status-dot slot. Items are
+// pushed by pages through useActionBarItems(); the status dot is
+// pushed by a separate hook (useActionBarStatusDot) because it's
+// bar-intrinsic chrome, not page-level content. expandedKey tracks
+// which group is currently open (one at a time).
 
 export interface ActionBarContextValue {
   register: (sourceKey: string, items: ActionBarItem[]) => void;
@@ -18,6 +19,10 @@ export interface ActionBarContextValue {
   // Which group head is currently expanded. null = none.
   expandedKey: string | null;
   setExpandedKey: (key: string | null) => void;
+  // Bar-intrinsic right-edge status indicator. null when no consumer
+  // has registered one. Last call to setStatusDot wins.
+  statusDot: ActionBarStatusDot | null;
+  setStatusDot: (dot: ActionBarStatusDot | null) => void;
 }
 
 export const ActionBarContext = createContext<ActionBarContextValue | null>(null);

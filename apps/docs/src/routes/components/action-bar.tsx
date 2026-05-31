@@ -1,5 +1,11 @@
 import { useMemo, useState } from "react";
-import { Kbd, useActionBarItems, useDialogs, useKeyboardHotkey } from "@cosxai/ui";
+import {
+  Kbd,
+  useActionBarItems,
+  useActionBarStatusDot,
+  useDialogs,
+  useKeyboardHotkey,
+} from "@cosxai/ui";
 
 // Live action-bar demo page. Items registered here appear in the
 // bar at the bottom of the screen for as long as this page is
@@ -85,22 +91,36 @@ export function ActionBarPage() {
         onClick: () => toast({ kind: "info", message: "Pretend present mode toggled." }),
       },
       // ----- Trailing slot — pins to the right edge regardless of
-      // registration order. Use for system status indicators
-      // (sync, identity, connection) whose visual home shouldn't
-      // be shuffled by page items registering after them. -----
+      // registration order. Use for *page* actions that should sit
+      // at the right (e.g. "Save", "Preview"); system status
+      // affordances belong on the bar-intrinsic statusDot slot
+      // instead (see below). -----
       {
-        key: "sync-status",
-        label: "Synced",
-        title: "Synced (system status — pinned to the right via slot: 'trailing')",
-        icon: <StatusDot color="var(--ck-status-success, #16a34a)" />,
+        key: "preview",
+        label: "Preview",
+        title: "Preview (system status — pinned to the right via slot: 'trailing')",
+        icon: <Dot />,
         slot: "trailing" as const,
         onClick: () =>
-          toast({ kind: "info", message: "Trailing item — pretend sync popover." }),
+          toast({ kind: "info", message: "Trailing item — pretend preview action." }),
       },
     ],
     [commentMode, translating, editing, toast],
   );
   useActionBarItems("docs:action-bar-demo", items);
+
+  // Bar-intrinsic status dot — mirrors the left-edge drag grip.
+  // Sits at the far right, after any trailing items. The colour
+  // tells the visitor the system is healthy without competing with
+  // the page actions; the title surfaces detail on hover; the
+  // click is wired here to demo, but consumers in the wild typically
+  // open a popover anchored elsewhere.
+  useActionBarStatusDot({
+    color: "var(--ck-status-success, #16a34a)",
+    title: "All good — synced",
+    onClick: () =>
+      toast({ kind: "success", message: "Status dot clicked — pretend popover." }),
+  });
 
   useKeyboardHotkey("c", () => setCommentMode((v) => !v));
   useKeyboardHotkey("t", () => setTranslating((v) => !v));
@@ -158,13 +178,19 @@ export function ActionBarPage() {
           guard).
         </li>
         <li>
-          <strong>Trailing slot</strong> — the green "Synced" dot on
-          the far right is registered with{" "}
-          <code>slot: "trailing"</code>. It's pinned to the right edge
-          via a flex spacer and stays there even though it was
-          registered AFTER the other items. Use this for system status
-          indicators whose visual home shouldn't be shuffled by page
-          items.
+          <strong>Trailing slot</strong> — the "Preview" item is
+          registered with <code>slot: "trailing"</code>. It's pinned to
+          the right edge via a flex spacer and stays there even though
+          it was registered AFTER the other items. Use this for page
+          actions you want anchored right (Preview, Save, …).
+        </li>
+        <li>
+          <strong>Status dot</strong> — the small green dot at the far
+          right is bar-intrinsic chrome (not a registry item),
+          registered via <code>useActionBarStatusDot()</code>. It
+          mirrors the left-edge drag grip — left says "grab this",
+          right says "here's how the system is". Hover for the title,
+          click to fire the consumer's handler.
         </li>
       </ul>
 
@@ -272,19 +298,3 @@ function Dot() {
   );
 }
 
-function StatusDot({ color }: { color: string }) {
-  // Stronger filled dot for trailing-slot status indicators — distinct
-  // from the generic outlined Dot so the demo communicates "system
-  // state" at a glance.
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        width: 8,
-        height: 8,
-        borderRadius: "50%",
-        background: color,
-      }}
-    />
-  );
-}
