@@ -19,19 +19,31 @@
      generic family so 中文 / 日本語 / 한국어 don't drop to the
      browser's last-resort glyph (renders as tofu on locked-down
      hosts). Browsers do per-character fallback — Latin hits
-     Geist/Playfair, CJK hits the matching system serif/sans. We
-     deliberately don't load a Noto SC web font here: every modern
-     OS ships PingFang SC (macOS / iOS), Microsoft YaHei
-     (Windows), or Source Han Sans (Android / ChromeOS), and the
-     extra ~150KB Google Fonts request to serve users a font they
-     already have is bad citizenship. */
+     Geist/Playfair, CJK hits the next matching family in the stack.
+
+     Serif slot ALSO carries Noto Serif SC as a web-font fallback
+     (loaded via fonts.css). Reason: the editorial chrome's display
+     heading uses Playfair Display, a high-contrast modern serif —
+     pairing it with PingFang SC / SimSun (the system *sans-serif*
+     CJK fallbacks) reads as a style break. Adobe/Google's Noto Serif
+     SC matches Playfair's serif vocabulary cross-platform without
+     depending on the user having Songti SC / STSong / Source Han
+     Serif SC installed locally. Cost is lazy: subset .woff2 only
+     downloads when a CJK character is actually rendered (per
+     fonts.css's unicode-range mechanism); pure-Latin pages pay only
+     the small CSS file.
+
+     Sans + mono slots stay system-only — system sans CJK
+     (PingFang SC / Microsoft YaHei) is what users expect for UI
+     copy, and the visual mismatch concern doesn't apply when the
+     Latin half is also a clean grotesk. */
   --ck-font-sans: "Geist", "Inter", system-ui, -apple-system,
                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
                   "Source Han Sans SC", sans-serif;
   --ck-font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo,
                   "Sarasa Mono SC", monospace;
-  --ck-font-serif: "Playfair Display", "GT Sectra", "Canela", Georgia,
-                   "Songti SC", "STSong", "Source Han Serif SC", serif;
+  --ck-font-serif: "Playfair Display", "Noto Serif SC", "GT Sectra", "Canela",
+                   Georgia, "Songti SC", "STSong", "Source Han Serif SC", serif;
   --ck-font-display: var(--ck-font-sans);
 
   /* ---------- Radii / motion ---------- */

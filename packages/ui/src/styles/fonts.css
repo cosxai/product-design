@@ -2,7 +2,11 @@
    Loaded from Google Fonts CDN — Geist + Geist Mono cover the
    default sans/mono slots; Playfair Display drives the editorial
    chrome's display heading; Caveat covers the sketch chrome's
-   handwritten display. All four are SIL OFL — free to redistribute.
+   handwritten display; Noto Serif SC is the matching CJK serif for
+   the editorial heading so a name like "本杰明 Zoë" renders Latin in
+   Playfair Display and Chinese in Noto Serif SC without leaking to
+   PingFang SC / SimSun (sans-serif system fallbacks that mis-pair
+   with the editorial high-contrast serif). All five are SIL OFL.
 
    Why Google Fonts CDN over self-hosting:
      1. Self-hosted /fonts/*.otf had to be shipped per-consumer
@@ -16,9 +20,17 @@
      3. font-display=swap means the system fallback paints first,
         the web font upgrades on arrival — no FOIT.
 
+   Bandwidth shape — Noto Serif SC is the only large family in the
+   set (CJK fonts dwarf Latin by character count). Google Fonts ships
+   it as ~100 unicode-range subsets; the browser only fetches a
+   subset when a character in its range is rendered. Pure-Latin
+   pages pay the CSS file (~5-10KB gzip) but no .woff2 — pages with
+   Chinese names pay an additional ~200-400KB of subset binaries
+   spread across the few CJK ranges they actually use.
+
    For offline / enterprise deploys that block Google Fonts, a
    consumer can override --ck-font-sans/serif/mono in tokens.css
    to fall back entirely to the system-font slot at the tail of
    each stack. */
 
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..700&family=Playfair+Display:wght@400..900&family=Caveat:wght@400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..700&family=Playfair+Display:wght@400..900&family=Caveat:wght@400..700&family=Noto+Serif+SC:wght@400..900&display=swap");

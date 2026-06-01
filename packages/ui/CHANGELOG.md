@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.1 (2026-06-01)
+
+- **feat(fonts)**: add Noto Serif SC to the editorial-chrome `--ck-font-serif`
+  fallback stack so CJK names render in a serif matching Playfair Display
+  rather than the system *sans-serif* CJK fallback (PingFang SC / SimSun) the
+  browser would otherwise pick. Names like "本杰明 Zoë" now read as one
+  coherent typographic line cross-platform without depending on the user
+  having Songti SC / Source Han Serif SC installed locally.
+
+  Bandwidth shape: Noto Serif SC ships from Google Fonts as ~100
+  unicode-range subsets. Pure-Latin pages pay only the CSS file (~5-10KB
+  gzip) — no .woff2 binaries fetch. Pages with Chinese names pay an
+  additional ~200-400KB of CJK subset binaries (only the ranges they use).
+  Sans + mono slots intentionally stay system-only — PingFang SC /
+  Microsoft YaHei is what users expect for UI body copy.
+
 ## 0.4.0 (2026-06-01)
 
 - **feat(fonts)**: load Geist + Geist Mono + Playfair Display + Caveat from
