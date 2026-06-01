@@ -13,10 +13,25 @@
      serif (editorial body), and display (headlines). By default
      display = sans so headings inherit the same neutral grotesk;
      editorial chrome overrides display → serif to flip headlines
-     to a high-contrast serif without touching component code. */
-  --ck-font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
-  --ck-font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --ck-font-serif: "Playfair Display", "GT Sectra", "Canela", Georgia, serif;
+     to a high-contrast serif without touching component code.
+
+     Each stack ends with CJK system-font fallbacks before the
+     generic family so 中文 / 日本語 / 한국어 don't drop to the
+     browser's last-resort glyph (renders as tofu on locked-down
+     hosts). Browsers do per-character fallback — Latin hits
+     Geist/Playfair, CJK hits the matching system serif/sans. We
+     deliberately don't load a Noto SC web font here: every modern
+     OS ships PingFang SC (macOS / iOS), Microsoft YaHei
+     (Windows), or Source Han Sans (Android / ChromeOS), and the
+     extra ~150KB Google Fonts request to serve users a font they
+     already have is bad citizenship. */
+  --ck-font-sans: "Geist", "Inter", system-ui, -apple-system,
+                  "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+                  "Source Han Sans SC", sans-serif;
+  --ck-font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo,
+                  "Sarasa Mono SC", monospace;
+  --ck-font-serif: "Playfair Display", "GT Sectra", "Canela", Georgia,
+                   "Songti SC", "STSong", "Source Han Serif SC", serif;
   --ck-font-display: var(--ck-font-sans);
 
   /* ---------- Radii / motion ---------- */
