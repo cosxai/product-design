@@ -1,22 +1,24 @@
-/* @font-face declarations for the kit's default sans + mono.
-   Consumer projects supply the OTF/WOFF2 files under /fonts/ (the
-   library's public/fonts/ directory is a reference copy for when
-   the kit is consumed standalone). Swap out for your own brand
-   stack by overriding --ck-font-sans / --ck-font-mono after
-   importing this file. */
+/* Web-font loading for the kit's typographic vocabulary.
+   Loaded from Google Fonts CDN — Geist + Geist Mono cover the
+   default sans/mono slots; Playfair Display drives the editorial
+   chrome's display heading; Caveat covers the sketch chrome's
+   handwritten display. All four are SIL OFL — free to redistribute.
 
-@font-face {
-  font-family: "Geist";
-  src: url("/fonts/Geist-Regular.otf") format("opentype");
-  font-weight: 400 700;
-  font-style: normal;
-  font-display: swap;
-}
+   Why Google Fonts CDN over self-hosting:
+     1. Self-hosted /fonts/*.otf had to be shipped per-consumer
+        (the previous setup), and consumers that forgot returned
+        SPA index.html for the font URL, surfacing a noisy
+        "Failed to decode downloaded font" warning in every
+        production console.
+     2. The CDN handles font-display, variable-font subsetting,
+        and per-browser format selection automatically; we just
+        consume the @import.
+     3. font-display=swap means the system fallback paints first,
+        the web font upgrades on arrival — no FOIT.
 
-@font-face {
-  font-family: "Geist Mono";
-  src: url("/fonts/GeistMono-Regular.otf") format("opentype");
-  font-weight: 400 600;
-  font-style: normal;
-  font-display: swap;
-}
+   For offline / enterprise deploys that block Google Fonts, a
+   consumer can override --ck-font-sans/serif/mono in tokens.css
+   to fall back entirely to the system-font slot at the tail of
+   each stack. */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..700&family=Playfair+Display:wght@400..900&family=Caveat:wght@400..700&display=swap");

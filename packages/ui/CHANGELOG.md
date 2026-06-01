@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.0 (2026-06-01)
+
+- **feat(fonts)**: load Geist + Geist Mono + Playfair Display + Caveat from
+  Google Fonts CDN instead of the prior self-hosted `@font-face` blocks.
+  Closes a long-standing "Failed to decode downloaded font: …/fonts/Geist-Regular.otf"
+  warning that fired on every page load in consumer SPAs that didn't ship
+  the OTF files under their `/fonts/` route (the Cloudflare SPA fallback
+  was returning index.html with `Content-Type: text/html` and the browser's
+  font decoder was rejecting it). Consumers no longer need to provision
+  `public/fonts/` themselves.
+- **feat(fonts)**: append CJK system-font fallbacks to `--ck-font-sans` /
+  `--ck-font-mono` / `--ck-font-serif`. Names containing 中文 / 日本語 /
+  한국어 (e.g. "本杰明 Zoë") now render in the matching serif/sans
+  system font (PingFang SC on macOS, Microsoft YaHei on Windows, etc.)
+  instead of dropping into the browser's last-resort glyph. No new web
+  font is loaded — every modern OS already ships at least one of the
+  listed CJK families.
+
 ## 0.3.4 (2026-05-31)
 
 - **fix(actionbar)**: bar now has symmetric horizontal padding
