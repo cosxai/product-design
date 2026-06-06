@@ -117,6 +117,30 @@ html[data-ck-chrome="seamless"] .ck-card__foot {
   color: var(--ck-text-tertiary);
 }
 
+/* ---------- Input + Textarea disabled state ----------
+   Native :disabled styling is barely perceptible on a cream / dark
+   surface, which made disabled fields read as editable in
+   product-meta's settings (the email field in particular). Match
+   the .ck-btn:disabled treatment so consumers don't have to
+   reapply the same opacity / cursor pattern at every call site.
+
+   The addon-wrap variant uses :has(:disabled) so a wrapping
+   .ck-input-addon-wrap also dims when its inner <input> is disabled
+   — otherwise the slug input dims but its ".meta.test.cosx.dev"
+   suffix stays at full opacity, which looks broken. :has() is
+   supported across all evergreen browsers since 2023; pre-1.0 we
+   don't need a polyfill. */
+.ck-input:disabled,
+.ck-textarea:disabled,
+.ck-input-addon-wrap:has(:disabled) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.ck-input:disabled,
+.ck-textarea:disabled {
+  background: var(--ck-bg-muted, var(--ck-bg-surface));
+}
+
 /* ---------- Select (custom listbox — never native <select>) ----------
    The trigger LOOKS like .ck-input so chrome restyles cascade
    uniformly. Chromes that want a different vibe (terminal squared,

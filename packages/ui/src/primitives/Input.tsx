@@ -98,6 +98,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         flexDirection: "column",
         gap: 6,
         width: fit === "full" ? "100%" : undefined,
+        // minWidth: 0 lets a parent flex container shrink this
+        // wrapper past the inner addon-wrap's nowrap suffix content.
+        // Without it, a long suffix (e.g. ".meta.test.cosx.dev")
+        // sets a min-content floor that pushes the form wider than
+        // its mobile viewport. Per-page CSS workarounds in consumer
+        // apps only cover their own scope; fixing it at the primitive
+        // catches every page.
+        minWidth: 0,
       }}
     >
       {label && (

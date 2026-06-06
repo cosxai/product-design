@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.4.2 (2026-06-06)
+
+- **fix(input)**: add `minWidth: 0` to the `.ck-input-field` wrapper so it
+  can shrink past its inner `.ck-input-addon-wrap`'s nowrap suffix when
+  hosted inside a flex/grid parent. Long suffixes (e.g. `.meta.test.cosx.dev`)
+  previously set a min-content floor that pushed the field past mobile
+  viewports — product-meta's onboarding (`CreateWorkspace`, `ActivatePersonal`)
+  and the workspace-name form on Landing all overflowed on iPhone Pro
+  widths. Per-page CSS workarounds in consumer apps only covered one
+  shell scope; fixing it at the primitive catches every page.
+- **fix(input)**: real disabled visual on `.ck-input` / `.ck-textarea` —
+  `opacity: 0.55`, `cursor: not-allowed`, muted background. Mirrors the
+  existing `.ck-btn:disabled` treatment. Disabled inputs on a cream /
+  dark canvas were previously almost indistinguishable from editable
+  ones (the QA report flagged this for product-meta's Profile Email
+  field which is read-only pending the email-change verification flow).
+  The `.ck-input-addon-wrap:has(:disabled)` selector dims the suffix /
+  prefix along with the input so a disabled `slug + suffix` stack reads
+  as one disabled unit. `:has()` is supported across all evergreen
+  browsers since 2023.
+
 ## 0.4.1 (2026-06-01)
 
 - **feat(fonts)**: add Noto Serif SC to the editorial-chrome `--ck-font-serif`
