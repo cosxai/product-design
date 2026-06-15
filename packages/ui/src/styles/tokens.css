@@ -195,12 +195,18 @@ html[data-ck-chrome="editorial"] {
   --ck-text-disabled:  #C9C3B5;
   --ck-text-inverse:   #ECE6D6;
 
-  /* Coral is THE accent. Ochre lives in --ck-warning for
+  /* Coral is THE editorial accent. Ochre lives in --ck-warning for
      secondary "guest star" use (the brief says one accent only;
-     ochre repurposes the warning slot since its tone matches). */
-  --ck-accent:         #E96E50;
-  --ck-accent-hover:   #D85A3E;
-  --ck-accent-active:  #C44D34;
+     ochre repurposes the warning slot since its tone matches).
+     Runtime brand override flows through --ck-accent-light-override
+     just like the default :root chain — coral is the FALLBACK, not
+     a hardcode. hover/active derive via the same color-mix formula
+     so brand colour cascades to the full accent family. Muted /
+     border keep editorial's softer 14% / 40% (vs base 8% / 35%) so
+     the editorial "watercolour wash" feel survives a brand swap. */
+  --ck-accent:         var(--ck-accent-light-override, #E96E50);
+  --ck-accent-hover:   color-mix(in oklab, var(--ck-accent), black 10%);
+  --ck-accent-active:  color-mix(in oklab, var(--ck-accent), black 18%);
   --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 14%, transparent);
   --ck-accent-border:  color-mix(in oklab, var(--ck-accent) 40%, transparent);
   --ck-border-focus:   var(--ck-accent);
@@ -734,7 +740,7 @@ html[data-ck-chrome="riso"] {
      associates with the aesthetic. Override per-app for blue /
      yellow / orange-led palettes. */
   --ck-accent:        var(--ck-accent-light-override, #FF48B0);
-  --ck-accent-hover:  #E63A9D;
+  --ck-accent-hover:  color-mix(in oklab, var(--ck-accent), black 10%);
   --ck-accent-muted:  color-mix(in oklab, var(--ck-accent) 14%, transparent);
   --ck-accent-border: color-mix(in oklab, var(--ck-accent) 50%, transparent);
 
@@ -798,7 +804,7 @@ html[data-ck-theme="dark"][data-ck-chrome="riso"] {
   --ck-text-inverse:   #14131A;
 
   --ck-accent: var(--ck-accent-dark-override, var(--ck-accent-light-override, #FF6FBF));
-  --ck-accent-hover: #FF8FCC;
+  --ck-accent-hover: color-mix(in oklab, var(--ck-accent), white 10%);
 
   --ck-shadow-1: 0 1px 0 rgba(0, 0, 0, 0.6);
   --ck-shadow-2: 3px 3px 0 var(--ck-riso-blue);
@@ -846,9 +852,9 @@ html[data-ck-chrome="sketch"] {
   --ck-sketch-hi-green:  rgba(111, 207, 151, 0.32);
 
   --ck-accent:        var(--ck-accent-light-override, var(--ck-sketch-blue));
-  --ck-accent-hover:  #3A78C8;
-  --ck-accent-muted:  rgba(74, 144, 226, 0.16);
-  --ck-accent-border: rgba(74, 144, 226, 0.5);
+  --ck-accent-hover:  color-mix(in oklab, var(--ck-accent), black 10%);
+  --ck-accent-muted:  color-mix(in oklab, var(--ck-accent) 16%, transparent);
+  --ck-accent-border: color-mix(in oklab, var(--ck-accent) 50%, transparent);
 
   /* Handwriting fonts — Caveat / Patrick Hand / Kalam are common
      Google Fonts; Comic Sans MS is the universal fallback that

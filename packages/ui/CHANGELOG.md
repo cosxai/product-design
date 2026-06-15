@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.3 (2026-06-15)
+
+- **fix(tokens)**: respect the documented `--ck-accent-light-override` /
+  `--ck-accent-dark-override` brand-override knob in every chrome that
+  hardcoded accent shades. Previously `editorial`, `riso`, and `sketch`
+  set `--ck-accent` to a literal hex (and `--ck-accent-hover` / `-active`
+  to hand-tuned shades), which silently bypassed the override chain —
+  consumer apps stamping their brand colour via the documented mechanism
+  saw chrome stay on the platform palette. Each chrome now sets its
+  signature colour as the `var(--ck-accent-light-override, <chrome
+  default>)` fallback and derives hover/active via `color-mix(in oklab,
+  var(--ck-accent), black 10% / 18%)` (matching the default `:root`
+  formula). Sketch additionally swaps two `rgba(... blue-literal ...)`
+  muted/border values for `color-mix(var(--ck-accent) NN%, transparent)`
+  so they track the brand. Net: stamping `--ck-accent-light-override` on
+  `documentElement.style` now cascades to the whole accent family across
+  every chrome, single source of truth restored. Consumer impact:
+  product-meta's `BrandProvider` can drop its accent-family mirror
+  workaround (a98324f) and go back to stamping just the override knob.
+
 ## 0.4.2 (2026-06-06)
 
 - **fix(input)**: add `minWidth: 0` to the `.ck-input-field` wrapper so it
