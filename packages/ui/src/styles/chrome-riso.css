@@ -86,7 +86,10 @@ html[data-ck-chrome="riso"] .ck-actionbar-btn:active:not(:disabled) {
 html[data-ck-chrome="riso"] .ck-btn--primary,
 html[data-ck-chrome="riso"] .ck-actionbar-btn--primary {
   background: var(--ck-accent);
-  color: #1A1A1A;
+  /* Defaults to near-black to pair with riso's pink ink accent;
+     consumer apps may stamp --ck-accent-fg when overriding
+     --ck-accent-light-override. */
+  color: var(--ck-accent-fg, #1A1A1A);
   box-shadow: 3px 3px 0 var(--ck-riso-blue);
 }
 html[data-ck-chrome="riso"] .ck-btn--primary:hover:not(:disabled),

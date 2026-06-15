@@ -42,7 +42,10 @@ html[data-ck-chrome="neobrutalism"] .ck-actionbar-btn:active:not(:disabled) {
 
 html[data-ck-chrome="neobrutalism"] .ck-btn--primary {
   background: var(--ck-accent);
-  color: #000;
+  /* Defaults to black to pair with neobrutalism's saturated pastel
+     accent; consumer apps may stamp --ck-accent-fg when overriding
+     --ck-accent-light-override. */
+  color: var(--ck-accent-fg, #000);
 }
 html[data-ck-chrome="neobrutalism"] .ck-btn--primary:hover:not(:disabled) {
   background: var(--ck-accent);

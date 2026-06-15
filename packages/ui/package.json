@@ -1,6 +1,6 @@
 {
   "name": "@cosxai/ui",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "COSX design system — React 19 component primitives shared across product-meta and other consumers",
   "license": "UNLICENSED",
   "type": "module",

@@ -82,7 +82,10 @@ html[data-ck-chrome="sketch"] .ck-actionbar-btn:active:not(:disabled) {
 html[data-ck-chrome="sketch"] .ck-btn--primary,
 html[data-ck-chrome="sketch"] .ck-actionbar-btn--primary {
   background: var(--ck-accent);
-  color: #FFFEF9;
+  /* Defaults to paper-white to pair with sketch's blue ink accent;
+     consumer apps may stamp --ck-accent-fg when overriding
+     --ck-accent-light-override. */
+  color: var(--ck-accent-fg, #FFFEF9);
   box-shadow: 2px 3px 0 var(--ck-text-primary);
 }
 html[data-ck-chrome="sketch"] .ck-btn--primary:hover:not(:disabled) {

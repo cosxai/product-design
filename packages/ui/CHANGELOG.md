@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.4.4 (2026-06-15)
+
+- **fix(chrome)**: primary-button text colour now reads from
+  `var(--ck-accent-fg, <chrome default>)` in editorial / ambient /
+  sketch / riso / neobrutalism chromes. Previously every chrome
+  hardcoded its text color to pair with its OWN signature accent
+  (editorial near-black on coral; ambient white on saturated blue;
+  sketch paper-white on sketch-blue; riso near-black on pink;
+  neobrutalism black on pastel). When a consumer stamped a runtime
+  brand override via `--ck-accent-light-override`, the accent
+  background flipped to the brand colour but the text stayed on
+  the chrome default — a dark brand colour against a chrome's
+  near-black text yielded illegible buttons (e.g. editorial coral
+  → `#0F0F0F` text was fine, but brand `#000000` → `#0F0F0F` text
+  was invisible). Consumer apps can now compute a contrast-aware
+  foreground colour from the chosen accent (e.g. via WCAG relative
+  luminance) and stamp `--ck-accent-fg` alongside the override knob,
+  and every chrome respects it. Without an override the chrome's
+  documented default fg still applies, so no visual change for
+  in-the-box usage. Swiss chrome already used `var(--ck-bg-canvas)`
+  for primary text (not tied to accent), so it's untouched.
+
 ## 0.4.3 (2026-06-15)
 
 - **fix(tokens)**: respect the documented `--ck-accent-light-override` /

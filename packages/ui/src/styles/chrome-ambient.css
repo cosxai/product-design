@@ -60,7 +60,10 @@ html[data-ck-chrome="ambient"] .ck-actionbar-btn {
 }
 html[data-ck-chrome="ambient"] .ck-btn--primary {
   background: var(--ck-accent);
-  color: #FFFFFF;
+  /* Defaults to white to pair with ambient's deep saturated accents;
+     consumer apps may stamp --ck-accent-fg when overriding
+     --ck-accent-light-override (e.g. light brand → dark text). */
+  color: var(--ck-accent-fg, #FFFFFF);
   border: none;
   box-shadow: var(--ck-shadow-1);
 }

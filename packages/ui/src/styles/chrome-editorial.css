@@ -29,7 +29,10 @@ html[data-ck-chrome="editorial"] .ck-actionbar-btn {
 html[data-ck-chrome="editorial"] .ck-btn--primary,
 html[data-ck-chrome="editorial"] .ck-actionbar-btn--primary {
   background: var(--ck-accent);
-  color: #0F0F0F;
+  /* Defaults to near-black to pair with coral; consumer apps may
+     stamp --ck-accent-fg to a different colour when overriding
+     --ck-accent-light-override (e.g. dark brand → white text). */
+  color: var(--ck-accent-fg, #0F0F0F);
 }
 html[data-ck-chrome="editorial"] .ck-btn--primary:hover,
 html[data-ck-chrome="editorial"] .ck-actionbar-btn--primary:hover {
