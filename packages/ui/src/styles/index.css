@@ -188,9 +188,18 @@ html[data-ck-chrome="seamless"] .ck-card__foot {
 /* Children inside an open disclosure group sit on top of the wrapper's
    --ck-accent-muted pill. The default gray hover above reads as a hue
    collision against the coral/indigo wrapper — swap in an accent-blended
-   overlay so the hover signal stays in the accent family. */
+   overlay so the hover signal stays in the accent family.
+
+   30% blend (was 18% in 0.4.5): 18% layered onto an --ck-accent-muted
+   wrapper (already 8–14% accent depending on chrome) composites to
+   ~30% effective saturation. At that low saturation translucent
+   orange / coral / blue all read as washed-out salmon — the hover
+   loses its hue identity against the solid --ck-accent text right
+   beside it. 30% pushes the overlay past the "dilution reads as
+   pink" inflection so the workspace's actual brand colour is
+   recognisable.  */
 .ck-actionbar-group--open .ck-actionbar-btn:hover:not(:disabled):not(.ck-actionbar-btn--primary) {
-  background: color-mix(in oklab, var(--ck-accent) 18%, transparent);
+  background: color-mix(in oklab, var(--ck-accent) 30%, transparent);
 }
 .ck-actionbar-btn--primary {
   background: var(--ck-accent);

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.6 (2026-06-20)
+
+- **fix(actionbar)**: ActionBarMenuGroup child-button hover bumps
+  from 18% accent blend to 30%. The 18% overlay introduced in 0.4.5
+  layered on top of the wrapper's `--ck-accent-muted` (already
+  8–14% accent per chrome) composited to roughly 30% effective
+  saturation — at that low saturation a translucent orange / coral /
+  blue all wash out to salmon, so the hover lost its hue identity
+  next to the solid `--ck-accent` text it sits beside. 30% pushes
+  the overlay past the "dilution reads as pink" point so the
+  workspace's actual brand colour is recognisable on hover.
+
 ## 0.4.5 (2026-06-20)
 
 - **fix(actionbar)**: child-button hover state inside an open
