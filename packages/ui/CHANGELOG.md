@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.5 (2026-06-20)
+
+- **fix(actionbar)**: child-button hover state inside an open
+  disclosure group now uses an accent-blended overlay instead of
+  neutral `--ck-bg-muted` gray. The default `.ck-actionbar-btn:hover`
+  rule paints gray; that's correct for buttons sitting on the app
+  background, but the disclosure wrapper paints itself
+  `--ck-accent-muted` (a coral / indigo pill in editorial / base
+  chromes) while open, so child hover was stacking gray on top of
+  the brand-tinted pill — visually muddy and the hover signal lost
+  its hue. `ActionBarMenuGroup` now stamps a
+  `ck-actionbar-group--open` class on its wrapper while expanded;
+  a scoped rule overrides the child hover to
+  `color-mix(in oklab, var(--ck-accent) 18%, transparent)` so the
+  hover stays in the accent family. Closed groups + standalone
+  buttons are untouched. Consumers don't need to change anything —
+  bump the dep version and the fix lands.
+
 ## 0.4.4 (2026-06-15)
 
 - **fix(chrome)**: primary-button text colour now reads from
