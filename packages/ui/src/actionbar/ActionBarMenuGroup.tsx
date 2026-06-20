@@ -53,6 +53,16 @@ export function ActionBarMenuGroup({
   return (
     <div
       ref={wrapperRef}
+      // ck-actionbar-group--open scopes a deeper hover tint to the
+      // children while the disclosure is open. The default
+      // .ck-actionbar-btn:hover uses --ck-bg-muted (gray) — fine when
+      // a button sits on app background, but reads muddy when stacked
+      // on top of this wrapper's --ck-accent-muted pill. The chrome
+      // sheet replaces the gray with an accent-blended overlay only
+      // for that scope so the hover signal stays in the accent hue.
+      className={
+        isOpen ? "ck-actionbar-group ck-actionbar-group--open" : "ck-actionbar-group"
+      }
       style={{
         display: "inline-flex",
         alignItems: "center",

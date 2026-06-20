@@ -185,6 +185,13 @@ html[data-ck-chrome="seamless"] .ck-card__foot {
 .ck-actionbar-btn:hover:not(:disabled):not(.ck-actionbar-btn--primary) {
   background: var(--ck-bg-muted);
 }
+/* Children inside an open disclosure group sit on top of the wrapper's
+   --ck-accent-muted pill. The default gray hover above reads as a hue
+   collision against the coral/indigo wrapper — swap in an accent-blended
+   overlay so the hover signal stays in the accent family. */
+.ck-actionbar-group--open .ck-actionbar-btn:hover:not(:disabled):not(.ck-actionbar-btn--primary) {
+  background: color-mix(in oklab, var(--ck-accent) 18%, transparent);
+}
 .ck-actionbar-btn--primary {
   background: var(--ck-accent);
   color: var(--ck-text-inverse);
