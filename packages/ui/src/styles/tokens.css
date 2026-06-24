@@ -104,6 +104,13 @@
   --ck-shadow-1: 0 1px 2px rgba(10, 14, 26, 0.04);
   --ck-shadow-2: 0 4px 12px rgba(10, 14, 26, 0.06), 0 1px 2px rgba(10, 14, 26, 0.04);
   --ck-shadow-3: 0 16px 48px rgba(10, 14, 26, 0.12), 0 4px 12px rgba(10, 14, 26, 0.06);
+  /* Overlay shadow — for floating surfaces (Modal cards, command
+     palettes) that need to read as "lifted above the page" rather
+     than "card on a page". Roughly 2× the punch of shadow-3 so the
+     hierarchy is unambiguous over a blurred backdrop. */
+  --ck-shadow-overlay:
+    0 32px 80px rgba(10, 14, 26, 0.22),
+    0 8px 24px rgba(10, 14, 26, 0.12);
 
   /* Layout vars — owned by layout primitives. Default 0 so pages
      that don't mount the rails don't reserve space. */
@@ -141,6 +148,9 @@ html[data-ck-theme="dark"] {
   --ck-shadow-1: none;
   --ck-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.4);
   --ck-shadow-3: 0 24px 64px rgba(0, 0, 0, 0.5);
+  --ck-shadow-overlay:
+    0 32px 80px rgba(0, 0, 0, 0.65),
+    0 12px 24px rgba(0, 0, 0, 0.45);
   --ck-glow-accent: 0 0 32px color-mix(in srgb, var(--ck-accent) 25%, transparent);
 }
 
@@ -221,6 +231,14 @@ html[data-ck-chrome="editorial"] {
   --ck-shadow-1: none;
   --ck-shadow-2: none;
   --ck-shadow-3: 0 2px 0 rgba(15, 15, 15, 0.04);
+  /* Overlays (Modal) are the one place editorial chrome breaks its
+     hairline rule — a modal needs to read as physically lifted off
+     the page so the user can tell it took over. Stays cool-toned
+     and a touch more diffuse than the default to fit the editorial
+     palette. */
+  --ck-shadow-overlay:
+    0 32px 80px rgba(15, 15, 15, 0.28),
+    0 8px 24px rgba(15, 15, 15, 0.14);
 }
 
 /* Dark editorial — coherent dark mode: charcoal canvas + lifted
@@ -255,6 +273,14 @@ html[data-ck-theme="dark"][data-ck-chrome="editorial"] {
      without going neon. */
   --ck-accent-muted:   color-mix(in oklab, var(--ck-accent) 22%, transparent);
   --ck-accent-border:  color-mix(in oklab, var(--ck-accent) 44%, transparent);
+
+  /* Editorial-light's overlay is paper-coloured shadow; on charcoal
+     it disappears. Override with a darker overlay matched to the
+     dark surface palette. Same specificity as the editorial-light
+     block, so the explicit dark-editorial selector wins. */
+  --ck-shadow-overlay:
+    0 32px 80px rgba(0, 0, 0, 0.7),
+    0 12px 24px rgba(0, 0, 0, 0.5);
 }
 
 /* ---------- Neobrutalism chrome — thick 2 px borders, hard

@@ -97,8 +97,15 @@ export function Modal({
           maxHeight: "calc(100vh - 32px)",
           background: "var(--ck-bg-surface)",
           border: "1px solid var(--ck-border-subtle)",
-          borderRadius: "var(--ck-radius-md)",
-          boxShadow: "var(--ck-shadow-3)",
+          // Modal cards lift on the `-lg` radius rather than the
+          // page's default `-md` so the corners read as softer than
+          // the cards underneath them — supports the "this took
+          // over" cue alongside the deeper overlay shadow.
+          borderRadius: "var(--ck-radius-lg)",
+          // Overlay shadow > shadow-3. shadow-3 was tuned for cards
+          // sitting on a page; a modal needs to read as physically
+          // lifted off the page, not as another tier of card.
+          boxShadow: "var(--ck-shadow-overlay)",
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
@@ -129,7 +136,11 @@ export function ModalHeader({ title, subtitle, onClose, titleId }: ModalHeaderPr
   return (
     <header
       style={{
-        padding: "16px 20px",
+        // Editorial-modal breathing room: matches the 24-px gutter
+        // ModalBody / ModalFooter ship so a Modal renders as one
+        // coherent column of 24-px insets rather than three slots
+        // with different paddings.
+        padding: "20px 24px",
         borderBottom: "1px solid var(--ck-border-subtle)",
         display: "flex",
         alignItems: "flex-start",
@@ -196,7 +207,7 @@ export function ModalHeader({ title, subtitle, onClose, titleId }: ModalHeaderPr
 
 export function ModalBody({ children }: { children: ReactNode }) {
   return (
-    <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "20px" }}>
+    <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "20px 24px 24px" }}>
       {children}
     </div>
   );
@@ -206,7 +217,7 @@ export function ModalFooter({ children }: { children: ReactNode }) {
   return (
     <footer
       style={{
-        padding: "14px 20px",
+        padding: "16px 24px",
         borderTop: "1px solid var(--ck-border-subtle)",
         display: "flex",
         justifyContent: "flex-end",

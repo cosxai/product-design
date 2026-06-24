@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.10 (2026-06-24)
+
+- **feat(tokens)**: New `--ck-shadow-overlay` token for floating
+  surfaces that need to read as "lifted off the page" rather than
+  "card on a page". Default light value ~2× the punch of shadow-3
+  (32-px blur on the soft layer + 8-px blur on the tight layer);
+  per-chrome overrides for dark, editorial light, and dark-editorial
+  so the shadow stays legible on charcoal surfaces.
+- **fix(Modal)**: Bump card to `--ck-radius-lg` (12 px) + the new
+  `--ck-shadow-overlay`, and stretch slot paddings to a unified
+  24-px gutter (`20px 24px` header, `20px 24px 24px` body,
+  `16px 24px` footer). Consumers reported the previous chrome read
+  as "another tier of card" — these changes give the modal an
+  unambiguous hierarchy step above the page.
+
 ## 0.4.9 (2026-06-24)
 
 - **fix(Modal)**: Bump backdrop blur from 2 px to 8 px so the page
