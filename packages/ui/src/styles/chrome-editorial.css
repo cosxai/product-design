@@ -116,6 +116,18 @@ html[data-ck-chrome="editorial"] [data-ck-leftnav] {
   border-right-color: var(--ck-border-subtle);
 }
 
+/* Nav-item hover — match the actionbar / button hover token so
+   every interactive surface in the editorial chrome reads as
+   actionable on pointer enter. The sketch / ambient / riso / etc.
+   chromes have always carried this rule; editorial was the only
+   gap (consumers saw rail items as static even though they're
+   navigable). Active rows keep their accent-muted background from
+   the base NavItem inline style, so the `:not([data-active="true"])`
+   guard is the same shape the other chromes use. */
+html[data-ck-chrome="editorial"] [data-ck-navitem]:not([data-active="true"]):hover {
+  background: var(--ck-bg-muted);
+}
+
 /* Topbar — flatten to the paper, lose the bottom border (the
    folio rule under it is the visual divider in editorial). */
 html[data-ck-chrome="editorial"] [data-ck-topbar] {

@@ -161,6 +161,14 @@ export function ModalHeader({ title, subtitle, onClose, titleId }: ModalHeaderPr
           type="button"
           onClick={onClose}
           aria-label="Close"
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background =
+              "var(--ck-bg-muted)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background =
+              "transparent";
+          }}
           style={{
             border: "none",
             background: "transparent",
@@ -168,7 +176,10 @@ export function ModalHeader({ title, subtitle, onClose, titleId }: ModalHeaderPr
             cursor: "pointer",
             fontSize: 18,
             lineHeight: 1,
-            padding: 2,
+            padding: 4,
+            borderRadius: "var(--ck-radius-sm, 4px)",
+            transition:
+              "background var(--ck-dur-fast) var(--ck-ease)",
           }}
         >
           ×

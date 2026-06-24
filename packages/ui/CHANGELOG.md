@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.8 (2026-06-24)
+
+- **fix(chrome-editorial)**: NavItem rows in the LeftNavRail now get a
+  hover background like every other chrome. Editorial was the only one
+  missing the `[data-ck-navitem]:not([data-active="true"]):hover` rule
+  — rail items read as static even though they're navigable, which
+  product-meta consumers noticed against the cards / actionbar items
+  that DO tint on hover. Sketch / ambient / riso / neobrutalism /
+  terminal already had the equivalent rule; this brings editorial up
+  to parity using the shared `--ck-bg-muted` token.
+- **fix(Modal)**: ModalHeader's close `×` button picks up a
+  `--ck-bg-muted` background on hover + a subtle border-radius. The
+  previous styles only set color + cursor, so the corner control
+  looked like static decoration. Same hover token + transition as the
+  rest of the kit's interactive surfaces so the affordance reads
+  consistently across light / dark / chrome variants.
+
 ## 0.4.7 (2026-06-24)
 
 - **fix(actionbar)**: `useActionBarItems` no longer freezes the
