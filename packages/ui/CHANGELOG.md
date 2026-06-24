@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.9 (2026-06-24)
+
+- **fix(Modal)**: Bump backdrop blur from 2 px to 8 px so the page
+  surface visibly drops out of focus when a modal opens. The earlier
+  value read as "barely there" — consumers cross-referencing
+  agent-dataroom (4 px `backdrop-blur-sm`) asked for distinctly
+  more separation; 8 px lands on the "the world stopped" side of
+  the curve while still letting the surface tint show through.
+  Also adds the `-webkit-` prefix so Safari < 18 (and any WebKit
+  embed) gets the same effect instead of falling through to no
+  blur at all.
+
 ## 0.4.8 (2026-06-24)
 
 - **fix(chrome-editorial)**: NavItem rows in the LeftNavRail now get a

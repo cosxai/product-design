@@ -72,7 +72,12 @@ export function Modal({
         position: "fixed",
         inset: 0,
         background: "rgba(10, 14, 26, 0.6)",
-        backdropFilter: "blur(2px)",
+        // Pull the page surface noticeably out of focus behind the
+        // modal — agent-dataroom's `backdrop-blur-sm` (4px) reads as
+        // a hint; 8px reads as a clear "the world stopped". The card
+        // sits above the blurred layer, so the content stays crisp.
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
