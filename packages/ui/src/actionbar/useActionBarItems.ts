@@ -1,15 +1,33 @@
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect } from "react";
 import { ActionBarContext } from "./actionbar-context";
 import type { ActionBarItem } from "./types";
 
 // Register a set of items into the global action-bar registry.
 // Auto-unregisters on unmount + on sourceKey change.
 //
-// `items` is the live array — pass a useMemo'd array to avoid
-// re-registration thrash. The provider's register() does shallow
-// equality, so passing a NEW array with identical refs is fine,
-// but a NEW array with all-new item objects (from inline JSX
-// blocks) will re-register every render.
+// **Pass a `useMemo`'d array.** The effect re-registers whenever
+// the array identity changes; the provider's `register()` then
+// dedups by item-by-item identity, so a fresh array with identical
+// item refs is cheap (state stays === and no re-render fires) but
+// a fresh array with NEW item objects (e.g. consumers whose
+// onClick closures captured updated state) does re-register —
+// downstream renders pick up the fresh handlers.
+//
+// Inline-array consumers (`useActionBarItems(key, [{...}])`)
+// will allocate new items every render and loop infinitely
+// through `register → setState → re-render → register`. The
+// useMemo on the caller side is what keeps that loop bounded
+// to "items whose deps actually changed".
+//
+// Previous versions wrapped items in a local `useMemo` keyed by
+// `[items.length, items.map(i => i.key).join('|')]`. That gate
+// suppressed identity updates whenever the keys + length stayed
+// stable, which is precisely the case for a selection-mode
+// toolbar whose buttons are fixed but whose onClicks close over
+// changing state — they ended up registered ONCE with the first
+// render's closures and never refreshed, shipping stale state to
+// every subsequent click. The gate is gone; the provider's
+// shallow item-identity dedup is the single source of truth.
 //
 // **Important**: the useEffect deps below intentionally do NOT
 // include the ctx object itself — only its stable function refs
@@ -27,15 +45,10 @@ export function useActionBarItems(sourceKey: string, items: ActionBarItem[]) {
     throw new Error("useActionBarItems must be used within <ActionBarProvider>");
   }
   const { register, unregister } = ctx;
-  const memo = useMemo(
-    () => items,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [items.length, items.map((i) => i.key).join("|")],
-  );
   useEffect(() => {
-    register(sourceKey, memo);
+    register(sourceKey, items);
     return () => unregister(sourceKey);
-  }, [register, unregister, sourceKey, memo]);
+  }, [register, unregister, sourceKey, items]);
 }
 
 export function useActionBarItemsContext() {

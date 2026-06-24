@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.4.7 (2026-06-24)
+
+- **fix(actionbar)**: `useActionBarItems` no longer freezes the
+  registered items on first mount when the array length + item
+  `key`s are stable. Previously the hook wrapped the caller's
+  array in `useMemo(() => items, [items.length, keys.join('|')])`
+  to throttle re-registration; that gate suppressed identity
+  updates whenever length + keys matched, which is exactly the
+  case for a selection-mode toolbar with fixed buttons whose
+  `onClick`s close over changing state (e.g. the current selection
+  set). The registered items kept their first render's closures,
+  so every click after the first shipped stale state to the
+  consumer — observed in product-meta as Trash bulk-restore +
+  bulk-purge sending only the first-selected id even when the
+  user had picked many. The gate is gone; the provider's existing
+  shallow item-identity dedup in `register()` is now the single
+  source of truth. Consumers MUST `useMemo` their items array
+  (already in the JSDoc) — without it, every render allocates new
+  item objects and the effect loops `register → setState →
+  re-render → register`. The hook docstring now spells out the
+  trade-off explicitly.
+
 ## 0.4.6 (2026-06-20)
 
 - **fix(actionbar)**: ActionBarMenuGroup child-button hover bumps
