@@ -76,6 +76,7 @@ export function ActionBarButton({
       </span>
       {hint && (
         <span
+          className="ck-actionbar-hint"
           style={{
             color: isPrimary ? "rgba(255,255,255,0.7)" : "var(--ck-text-tertiary)",
             font: "500 11px/1 var(--ck-font-mono)",

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.11 (2026-06-25)
+
+- **fix(ActionBar)**: The keyboard-shortcut `hint` badge stayed
+  visible on phone-width viewports even though the matching label
+  had already collapsed via `@media (max-width: 767px)`. Result:
+  on a phone, the bar read as `[icon] C` instead of just `[icon]`
+  — a dangling badge advertising a shortcut nobody can press
+  without a keyboard. Tag the hint span with `ck-actionbar-hint`
+  and add it to the same `display: none` media rule.
+
 ## 0.4.10 (2026-06-24)
 
 - **feat(tokens)**: New `--ck-shadow-overlay` token for floating

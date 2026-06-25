@@ -229,10 +229,13 @@ html[data-ck-chrome="seamless"] .ck-card__foot {
   transform: translateY(-1px);
 }
 
-/* Hide labels below 768 px (the standard md breakpoint).
-   Icons + tooltips remain — the bar's still informative on phones. */
+/* Hide labels + keyboard-shortcut hints below 768 px (the standard
+   md breakpoint). Icons + tooltips remain — the bar's still
+   informative on phones, and there's no physical keyboard so the
+   shortcut badge has nothing to advertise. */
 @media (max-width: 767px) {
-  .ck-actionbar-label {
+  .ck-actionbar-label,
+  .ck-actionbar-hint {
     display: none;
   }
 }
