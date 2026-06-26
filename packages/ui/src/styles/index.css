@@ -39,6 +39,30 @@
 
 .ck-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Loading spinner — rendered inside a Button when its `loading`
+   prop is true. CSS-only ring (1.5px stroke, 720ms linear spin).
+   `currentColor` inherits the variant's foreground so the spinner
+   reads on primary / secondary / ghost / icon without per-variant
+   overrides. Reduced-motion users get a slower spin instead of a
+   frozen ring (which would read as broken). */
+.ck-btn-spinner {
+  width: 0.85em;
+  height: 0.85em;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: -0.1em;
+  flex-shrink: 0;
+  animation: ck-btn-spin 720ms linear infinite;
+}
+@keyframes ck-btn-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ck-btn-spinner { animation-duration: 2400ms; }
+}
+
 .ck-btn--primary {
   background: var(--ck-accent);
   color: var(--ck-text-inverse);
