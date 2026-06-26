@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.5.0 (2026-06-26)
+
+- **feat(Button)**: New `loading?: boolean` prop. When true the
+  button renders a leading CSS ring spinner (`.ck-btn-spinner`
+  inherits `currentColor` so it reads on every variant), is set
+  natively `disabled`, and exposes `aria-busy="true"`. Distinct
+  from `disabled` — `disabled` means "you can't take this action
+  right now", `loading` means "we're already taking this action".
+  Wire both together for async submits behind form validation:
+  `<Button disabled={!name.trim()} loading={submitting}>`.
+- **refactor(Button)**: `forwardRef` to the underlying `<button>`
+  so consumers can wire focus management (e.g. autoFocus on dialog
+  mount). Was a Phase 0 stub; aligns with the
+  `.claude/rules/code-style.md` `forwardRef-for-all-interactive-
+  elements` rule.
+
 ## 0.4.11 (2026-06-25)
 
 - **fix(ActionBar)**: The keyboard-shortcut `hint` badge stayed

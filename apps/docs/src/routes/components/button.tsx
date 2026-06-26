@@ -21,10 +21,23 @@ export function ButtonPage() {
       </div>
 
       <h2>Disabled</h2>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24 }}>
         <Button variant="primary" disabled>Primary</Button>
         <Button variant="secondary" disabled>Secondary</Button>
         <Button variant="ghost" disabled>Ghost</Button>
+      </div>
+
+      <h2>Loading</h2>
+      <p className="docs-summary">
+        Pass <code>loading</code> while an async submit is in flight.
+        The button renders a leading ring spinner, becomes natively
+        <code> disabled</code>, and sets <code>aria-busy</code> so AT
+        consumers hear the state.
+      </p>
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+        <Button variant="primary" loading>Saving…</Button>
+        <Button variant="secondary" loading>Cancelling</Button>
+        <Button variant="ghost" loading>Refreshing</Button>
       </div>
     </>
   );
