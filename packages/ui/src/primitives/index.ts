@@ -24,3 +24,5 @@ export { Tooltip } from "./Tooltip";
 export type { TooltipProps } from "./Tooltip";
 export { PageHeader } from "./PageHeader";
 export type { PageHeaderProps } from "./PageHeader";
+export { MentionCombobox, findActiveMentionStart, extractQuery } from "./MentionCombobox";
+export type { MentionComboboxProps, MentionComboboxHandle } from "./MentionCombobox";
