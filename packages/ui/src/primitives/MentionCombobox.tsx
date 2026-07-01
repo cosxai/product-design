@@ -568,12 +568,19 @@ const overlayStyle: React.CSSProperties = {
   zIndex: 0,
 };
 
+// chipStyle must NOT add any horizontal or vertical space (no
+// padding, no margin, no border) — the textarea's underlying
+// `@Ben Zhang` glyphs occupy the natural text width, and any extra
+// width on the overlay chip would shift every character after it
+// out of alignment with the textarea's caret. Instead we lean on
+// background + color + a tight border-radius to convey "chip"
+// without adding layout. `font-weight` stays at the inherited
+// value for the same reason: heavier weight changes glyph advance
+// widths and drifts the trailing text by a sub-pixel per character.
 const chipStyle: React.CSSProperties = {
-  padding: "0 4px",
-  borderRadius: 4,
+  borderRadius: 3,
   background: "var(--ck-accent-soft, rgba(37, 99, 235, 0.12))",
   color: "var(--ck-accent, #2563eb)",
-  fontWeight: 500,
 };
 
 const listboxStyle: React.CSSProperties = {

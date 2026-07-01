@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1 (2026-07-01)
+
+- **fix(MentionCombobox)**: Removed `padding: 0 4px` + `font-weight: 500` from the highlight chip. Both added glyph advance to the overlay that the underlying textarea didn't have, so every character after `@Ben Zhang` drifted right of its true position (visible mis-alignment reported at ~8px, matching the chip's horizontal padding). The chip now conveys "highlighted" purely via background + colour + a tight border-radius; overlay and textarea characters occupy identical widths so the caret stays where the user typed it.
+
 ## 0.7.0 (2026-07-01)
 
 - **feat(MentionCombobox)**: New `mentionNames?: readonly string[]` prop. When provided and non-empty, the primitive draws a mirrored overlay behind the textarea that highlights each `@Name` (matched longest-first, whitespace-bounded) as an accent-tinted chip while the user is still composing. Textarea's own glyphs are hidden with `color: transparent` + `-webkit-text-fill-color: transparent`; `caret-color` keeps the cursor visible. Scroll syncs via a `onScroll` handler so long comments stay aligned. Omit or pass empty to opt out — the primitive renders exactly as before. Consumers typically derive the list from their captured pick-list (product-meta CommentComposer stores `PickedMention[]` for its bracket-form wire serializer and passes `picks.map(p => p.name)` here).
