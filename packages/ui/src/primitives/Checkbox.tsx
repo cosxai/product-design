@@ -13,6 +13,13 @@ export interface CheckboxProps {
   suffix?: React.ReactNode;
   disabled?: boolean;
   className?: string;
+  /**
+   * Test hook forwarded to the visual button. Consumers with
+   * getByTestId('…') queries can keep them working across the swap
+   * from native <input type="checkbox"> to this primitive without
+   * touching each test file.
+   */
+  "data-testid"?: string;
 }
 
 export function Checkbox({
@@ -22,6 +29,7 @@ export function Checkbox({
   suffix,
   disabled,
   className,
+  "data-testid": testId,
 }: CheckboxProps) {
   return (
     <label
@@ -43,6 +51,7 @@ export function Checkbox({
         aria-checked={checked}
         disabled={disabled}
         onClick={() => !disabled && onChange(!checked)}
+        data-testid={testId}
         style={{
           width: 16,
           height: 16,

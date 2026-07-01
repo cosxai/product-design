@@ -34,6 +34,8 @@ export interface RadioProps {
    */
   value?: string;
   className?: string;
+  /** Test hook forwarded to the visual button — see Checkbox. */
+  "data-testid"?: string;
 }
 
 export function Radio({
@@ -45,6 +47,7 @@ export function Radio({
   name,
   value,
   className,
+  "data-testid": testId,
 }: RadioProps) {
   return (
     <label
@@ -66,6 +69,7 @@ export function Radio({
         aria-checked={checked}
         disabled={disabled}
         onClick={() => !disabled && !checked && onChange(true)}
+        data-testid={testId}
         style={{
           width: 16,
           height: 16,
