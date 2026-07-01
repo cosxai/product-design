@@ -18,6 +18,8 @@ export { Textarea } from "./Textarea";
 export type { TextareaProps } from "./Textarea";
 export { Checkbox } from "./Checkbox";
 export type { CheckboxProps } from "./Checkbox";
+export { Radio } from "./Radio";
+export type { RadioProps } from "./Radio";
 export { ToggleSwitch } from "./ToggleSwitch";
 export type { ToggleSwitchProps } from "./ToggleSwitch";
 export { Tooltip } from "./Tooltip";
