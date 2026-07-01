@@ -88,6 +88,24 @@ export interface MentionComboboxProps<T> {
   // Defaults to `console.warn` so a quiet swallow isn't the default
   // behaviour; consumers wanting Sentry plumb their own logger here.
   onLoadError?: ((err: unknown) => void) | undefined;
+
+  // Optional list of already-inserted mention display names. When
+  // provided and non-empty, the primitive draws a mirrored overlay
+  // behind the textarea that renders each `@Name` occurrence
+  // (matched longest-first, whitespace-bounded) as an accent-tinted
+  // chip while the user is still composing. Textarea's own glyphs
+  // are hidden with `color: transparent` + `caret-color: currentColor`
+  // so the cursor stays visible but the overlay is what the reader
+  // actually sees.
+  //
+  // Consumers typically derive this from their captured
+  // pick-list — see product-meta's CommentComposer which stores
+  // `PickedMention[]` on submit for the bracket-form wire
+  // serializer and passes `picks.map(p => p.name)` here.
+  //
+  // Omit or pass an empty array to opt out — the primitive renders
+  // exactly as before with zero overlay overhead.
+  mentionNames?: readonly string[] | undefined;
 }
 
 export interface MentionComboboxHandle {
@@ -120,10 +138,13 @@ function MentionComboboxInner<T>(
     rows = 3,
     ariaLabel,
     onLoadError,
+    mentionNames,
     "data-testid": testid,
   } = props;
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const showOverlay = mentionNames !== undefined && mentionNames.length > 0;
 
   // Imperative focus — consumer composers' mount-on-open flow needs it.
   useImperativeHandle(ref, () => ({
@@ -256,8 +277,24 @@ function MentionComboboxInner<T>(
   const open = mentionStart !== null && candidates.length > 0;
   const listboxId = "ck-mention-combobox-listbox";
 
+  // Sync the overlay's scroll position when the textarea scrolls.
+  // Long comments overflow vertically; the overlay must scroll in
+  // lockstep so highlighted spans stay aligned with the caret.
+  const onTextareaScroll = useCallback(() => {
+    const ta = textareaRef.current;
+    const ov = overlayRef.current;
+    if (ta && ov) ov.scrollTop = ta.scrollTop;
+  }, []);
+
   return (
     <div style={containerStyle}>
+      {showOverlay ? (
+        <MentionHighlightOverlay
+          ref={overlayRef}
+          value={value}
+          mentionNames={mentionNames}
+        />
+      ) : null}
       <textarea
         ref={textareaRef}
         value={value}
@@ -266,6 +303,7 @@ function MentionComboboxInner<T>(
         onSelect={syncMentionFromCaret}
         onClick={syncMentionFromCaret}
         onBlur={onBlur}
+        onScroll={showOverlay ? onTextareaScroll : undefined}
         placeholder={placeholder}
         aria-label={ariaLabel}
         aria-autocomplete="list"
@@ -274,7 +312,7 @@ function MentionComboboxInner<T>(
         rows={rows}
         disabled={disabled}
         data-testid={testid}
-        style={textareaStyle}
+        style={showOverlay ? textareaTransparentStyle : textareaStyle}
       />
       {open ? (
         <ul
@@ -317,6 +355,93 @@ function MentionComboboxInner<T>(
 export const MentionCombobox = forwardRef(MentionComboboxInner) as <T>(
   props: MentionComboboxProps<T> & { ref?: ForwardedRef<MentionComboboxHandle> },
 ) => ReactElement;
+
+// ────────────────────────────────────────────────────────────────────
+// Mention highlight overlay
+// ────────────────────────────────────────────────────────────────────
+
+// MentionHighlightOverlay renders a mirrored view of the composer
+// text with each `@Name` (where Name matches an entry in
+// `mentionNames`) wrapped in an accent-tinted chip. Sits behind the
+// transparent-glyph textarea; scroll is synced by the parent when
+// the textarea overflows.
+//
+// forwardRef so the parent can drive scrollTop on `onScroll`.
+const MentionHighlightOverlay = forwardRef<
+  HTMLDivElement,
+  { value: string; mentionNames: readonly string[] }
+>(function MentionHighlightOverlay({ value, mentionNames }, ref) {
+  const segments = splitByMentionNames(value, mentionNames);
+  return (
+    <div
+      ref={ref}
+      aria-hidden
+      data-testid="ck-mention-combobox-overlay"
+      style={overlayStyle}
+    >
+      {segments.map((seg, i) =>
+        seg.kind === "mention" ? (
+          <span key={i} style={chipStyle}>
+            {seg.text}
+          </span>
+        ) : (
+          <span key={i}>{seg.text}</span>
+        ),
+      )}
+      {/* Trailing zero-width character keeps a trailing newline
+          visible in the overlay (browsers collapse a lone final \n
+          in a block, but the textarea shows the empty line — the
+          zero-width forces the overlay to match). */}
+      {value.endsWith("\n") ? "​" : null}
+    </div>
+  );
+});
+
+// splitByMentionNames walks the composer text and produces an
+// alternating sequence of plain-text + mention-chip segments,
+// scanning left-to-right and matching known names longest-first so
+// `@Ben Zhang` beats a shorter `@Ben`. Boundary rule: the char
+// before `@` must be whitespace or start-of-input; this keeps an
+// embedded email like `user@host` from mistakenly matching a
+// zero-length prefix.
+export function splitByMentionNames(
+  text: string,
+  names: readonly string[],
+): Array<{ kind: "text" | "mention"; text: string }> {
+  if (!text || names.length === 0) return [{ kind: "text", text }];
+  const tokens = [...names].sort((a, b) => b.length - a.length).map((n) => `@${n}`);
+  const out: Array<{ kind: "text" | "mention"; text: string }> = [];
+  let i = 0;
+  while (i < text.length) {
+    let matched = false;
+    for (const token of tokens) {
+      if (!text.startsWith(token, i)) continue;
+      if (i > 0) {
+        const prev = text[i - 1];
+        if (prev !== undefined && /\S/.test(prev)) continue;
+      }
+      out.push({ kind: "mention", text: token });
+      i += token.length;
+      matched = true;
+      break;
+    }
+    if (!matched) {
+      const last = out[out.length - 1];
+      const ch = text[i];
+      if (ch === undefined) {
+        i++;
+        continue;
+      }
+      if (last && last.kind === "text") {
+        last.text += ch;
+      } else {
+        out.push({ kind: "text", text: ch });
+      }
+      i++;
+    }
+  }
+  return out;
+}
 
 // ────────────────────────────────────────────────────────────────────
 // Helpers — exported for consumers that need to inspect textarea
@@ -387,11 +512,68 @@ const textareaStyle: React.CSSProperties = {
   resize: "vertical",
   padding: "0.5rem 0.625rem",
   fontSize: "0.875rem",
+  lineHeight: 1.5,
   border: "1px solid var(--ck-border-subtle)",
   borderRadius: "var(--ck-radius-md)",
   background: "var(--ck-bg-canvas)",
   color: "var(--ck-text-primary)",
   fontFamily: "inherit",
+};
+
+// textareaTransparentStyle is textareaStyle with:
+//   - color: transparent  → hide the textarea's own glyphs
+//   - -webkit-text-fill-color: transparent  → Safari counterpart
+//   - caretColor: currentColor via inherit chain (the outer element
+//     keeps its `--ck-text-primary` colour) so the cursor stays
+//     visible even though text glyphs don't render
+//   - background: transparent → let the overlay behind be visible
+//   - position: relative + zIndex: 1 → sit on top of the absolutely-
+//     positioned overlay so caret / selection are drawn above the
+//     highlight chips
+// Rest of the box model matches textareaStyle exactly so the
+// overlay lines up character-for-character.
+const textareaTransparentStyle: React.CSSProperties = {
+  ...textareaStyle,
+  position: "relative",
+  zIndex: 1,
+  background: "transparent",
+  color: "transparent",
+  WebkitTextFillColor: "transparent",
+  caretColor: "var(--ck-text-primary, #111827)",
+};
+
+// overlayStyle is the mirrored render layer that sits BEHIND the
+// transparent-glyph textarea. It matches textareaStyle's box model
+// (padding, font, border) so text positions coincide with the
+// textarea's positions on a character-for-character basis. The
+// border here is visible so the composer keeps its box outline
+// even though the textarea's own border is transparent.
+const overlayStyle: React.CSSProperties = {
+  position: "absolute",
+  inset: 0,
+  padding: "0.5rem 0.625rem",
+  fontSize: "0.875rem",
+  lineHeight: 1.5,
+  border: "1px solid var(--ck-border-subtle)",
+  borderRadius: "var(--ck-radius-md)",
+  background: "var(--ck-bg-canvas)",
+  color: "var(--ck-text-primary)",
+  fontFamily: "inherit",
+  whiteSpace: "pre-wrap",
+  wordBreak: "break-word",
+  overflowY: "auto",
+  overflowX: "hidden",
+  pointerEvents: "none",
+  boxSizing: "border-box",
+  zIndex: 0,
+};
+
+const chipStyle: React.CSSProperties = {
+  padding: "0 4px",
+  borderRadius: 4,
+  background: "var(--ck-accent-soft, rgba(37, 99, 235, 0.12))",
+  color: "var(--ck-accent, #2563eb)",
+  fontWeight: 500,
 };
 
 const listboxStyle: React.CSSProperties = {

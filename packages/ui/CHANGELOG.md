@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.0 (2026-07-01)
+
+- **feat(MentionCombobox)**: New `mentionNames?: readonly string[]` prop. When provided and non-empty, the primitive draws a mirrored overlay behind the textarea that highlights each `@Name` (matched longest-first, whitespace-bounded) as an accent-tinted chip while the user is still composing. Textarea's own glyphs are hidden with `color: transparent` + `-webkit-text-fill-color: transparent`; `caret-color` keeps the cursor visible. Scroll syncs via a `onScroll` handler so long comments stay aligned. Omit or pass empty to opt out — the primitive renders exactly as before. Consumers typically derive the list from their captured pick-list (product-meta CommentComposer stores `PickedMention[]` for its bracket-form wire serializer and passes `picks.map(p => p.name)` here).
+- **feat(MentionCombobox)**: Export `splitByMentionNames` helper used internally by the overlay — useful for consumers that render the same body outside the composer (e.g. a preview panel).
+
+## 0.6.0 (2026-06-28)
+
+- **feat(MentionCombobox)**: New headless generic primitive. Same @-trigger + debounced-search + keyboard-nav behaviour previously in product-meta, hoisted up so mesh + future consumers can share it. Consumers plug in `loadCandidates`, `getItemKey`, `getInsertionText`, `renderItem`. Ref exposes `focus()` for mount-on-open flows.
+
 ## 0.5.0 (2026-06-26)
 
 - **feat(Button)**: New `loading?: boolean` prop. When true the
