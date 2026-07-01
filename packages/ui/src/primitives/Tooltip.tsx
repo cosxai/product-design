@@ -29,23 +29,35 @@ export interface TooltipProps {
   }>;
   // ms before showing. Default 120.
   delay?: number;
-  // "top" hovers above the trigger, "bottom" below. Default "top".
-  placement?: "top" | "bottom";
+  // "top" hovers above the trigger, "bottom" below, "auto" prefers
+  // top but flips to bottom when the trigger sits near the viewport
+  // top edge (would otherwise clip against the browser chrome).
+  // Default "auto".
+  placement?: "top" | "bottom" | "auto";
   // Render even if `content` is falsy. Default false — callers can
   // wrap unconditionally without branching JSX.
   alwaysRender?: boolean;
 }
 
+// AUTO_FLIP_THRESHOLD_PX = the vertical space "top" placement needs
+// above the trigger (tooltip height + gap + a bit of breathing room).
+// Trigger positioned closer than this to the viewport top gets a
+// bottom-flip.
+const AUTO_FLIP_THRESHOLD_PX = 48;
+
 export function Tooltip({
   content,
   children,
   delay = 120,
-  placement = "top",
+  placement = "auto",
   alwaysRender = false,
 }: TooltipProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const [resolvedPlacement, setResolvedPlacement] = useState<"top" | "bottom">(
+    placement === "bottom" ? "bottom" : "top",
+  );
   const timerRef = useRef<number | null>(null);
 
   const cancelTimer = useCallback(() => {
@@ -59,9 +71,18 @@ export function Tooltip({
     const el = triggerRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
+    // "auto" resolves to top when there's enough room above, else
+    // bottom. Explicit "top" / "bottom" are honoured verbatim.
+    let effective: "top" | "bottom";
+    if (placement === "auto") {
+      effective = r.top < AUTO_FLIP_THRESHOLD_PX ? "bottom" : "top";
+    } else {
+      effective = placement;
+    }
+    setResolvedPlacement(effective);
     setPos({
       x: r.left + r.width / 2,
-      y: placement === "top" ? r.top : r.bottom,
+      y: effective === "top" ? r.top : r.bottom,
     });
   }, [placement]);
 
@@ -137,7 +158,7 @@ export function Tooltip({
     left: pos?.x ?? -9999,
     top: pos?.y ?? -9999,
     transform:
-      placement === "top"
+      resolvedPlacement === "top"
         ? "translate(-50%, calc(-100% - 8px))"
         : "translate(-50%, 8px)",
     background: "var(--ck-bg-surface)",
