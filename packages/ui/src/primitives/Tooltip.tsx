@@ -37,6 +37,13 @@ export interface TooltipProps {
   // Render even if `content` is falsy. Default false — callers can
   // wrap unconditionally without branching JSX.
   alwaysRender?: boolean;
+  // When true, force the tooltip to a single line and truncate
+  // overflow with an ellipsis. Default false — content wraps to
+  // multiple lines within `maxWidth`. Existing single-line labels
+  // (scan-status pill, date row) render identically because they
+  // fit within maxWidth without wrapping; longer hints (explanatory
+  // text under form fields, etc.) now display in full.
+  truncate?: boolean;
 }
 
 // AUTO_FLIP_THRESHOLD_PX = the vertical space "top" placement needs
@@ -51,6 +58,7 @@ export function Tooltip({
   delay = 120,
   placement = "auto",
   alwaysRender = false,
+  truncate = false,
 }: TooltipProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
@@ -174,9 +182,22 @@ export function Tooltip({
     pointerEvents: "none",
     zIndex: 9999,
     maxWidth: 320,
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
+    // Default: wrap long hints. Opt-in `truncate` restores the old
+    // single-line-with-ellipsis behaviour for compact labels where
+    // horizontal overflow is preferable to a taller tooltip (e.g.
+    // dense toolbars). Single-line labels shorter than maxWidth
+    // render identically in both modes — the branch only matters
+    // when content would need multiple lines.
+    ...(truncate
+      ? {
+          whiteSpace: "nowrap" as const,
+          overflow: "hidden" as const,
+          textOverflow: "ellipsis" as const,
+        }
+      : {
+          whiteSpace: "normal" as const,
+          wordBreak: "break-word" as const,
+        }),
     opacity: open && pos ? 1 : 0,
     transition: "opacity 120ms ease",
   };
