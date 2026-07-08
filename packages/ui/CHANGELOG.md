@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0 (2026-07-08)
+
+- **feat(actionbar)**: New `ActionBarModeHandle` component + `useActionBarMode` hook for the block_doc viewer's admin peek-out affordance. The handle sits ~6px above the ActionBar's top edge at rest (a slim 44×6 accent-coloured pill) and grows to 68×24 on hover / focus while revealing a label — click swaps the ActionBar's item set between named modes ("viewer" / "manage" / "draft"). `useActionBarMode({ modes, defaultMode, storageKey })` manages the state, persists to localStorage, and registers the active mode's items into the ActionBar registry atomically (previous set unregistered on mode change). Gate the handle behind a capability bit with `visible={can.manage}` — non-privileged principals never see the affordance. Lands with product-mesh M4.5 Phase F; consumer wiring in product-meta comes with Phase G-I.
+
 ## 0.7.1 (2026-07-01)
 
 - **fix(MentionCombobox)**: Removed `padding: 0 4px` + `font-weight: 500` from the highlight chip. Both added glyph advance to the overlay that the underlying textarea didn't have, so every character after `@Ben Zhang` drifted right of its true position (visible mis-alignment reported at ~8px, matching the chip's horizontal padding). The chip now conveys "highlighted" purely via background + colour + a tight border-radius; overlay and textarea characters occupy identical widths so the caret stays where the user typed it.

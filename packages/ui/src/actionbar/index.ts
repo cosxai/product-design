@@ -6,6 +6,14 @@ export { ActionBarButton } from "./ActionBarButton";
 export type { ActionBarButtonProps } from "./ActionBarButton";
 export { useActionBarItems, useActionBarItemsContext } from "./useActionBarItems";
 export { useActionBarStatusDot } from "./useActionBarStatusDot";
+export { ActionBarModeHandle } from "./ActionBarModeHandle";
+export type { ActionBarModeHandleProps } from "./ActionBarModeHandle";
+export { useActionBarMode } from "./useActionBarMode";
+export type {
+  ActionBarModeConfig,
+  UseActionBarModeOptions,
+  UseActionBarModeResult,
+} from "./useActionBarMode";
 export type {
   ActionBarItem,
   ActionBarItemVariant,
