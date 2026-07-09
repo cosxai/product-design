@@ -1,12 +1,5 @@
 # Changelog
 
-## 0.11.0 (2026-07-09)
-
-- **breaking(actionbar)**: Admin mode is now EXCLUSIVE, not additive.
-  - **Before (0.10.x)**: toggle-on kept the normal items visible AND revealed admin items alongside them.
-  - **Now (0.11.0)**: toggle-on hides normal items entirely and shows ONLY admin items. Toggle-off restores the normal view (admin items hidden). Reads as a "mode switch" — user is doing regular-viewer things or elevated-privilege things, never both simultaneously.
-  - Migration: no consumer API change; only the runtime rendering behaviour flips. If you had `adminOnly` items that were meant to layer alongside normal ones (e.g. "extra owner shortcuts"), you'll want to either drop the `adminOnly` flag (making them always visible) or accept the new mode-switch UX. In practice most surfaces are the latter — Manage Share / Activity / Version History belong on a separate view from Comment / Download.
-
 ## 0.10.2 (2026-07-09)
 
 - **fix(actionbar)**: Restore shield glyph on the admin-mode toggle (better semantic weight than the sliders variant tried in 0.10.1). Still borderless / transparent bg — no outer ring, just the icon.
