@@ -60,6 +60,13 @@ jobs:
       - name: Typecheck
         run: pnpm --filter @cosxai/blocks typecheck
 
+      # Build emits dist/*.js + dist/*.d.ts before publish so Node
+      # consumers (mesh htmlproc sidecar) don't have to transpile
+      # source TS at runtime. The package.json prepublishOnly hook
+      # runs the same command as a belt-and-braces fallback.
+      - name: Build
+        run: pnpm --filter @cosxai/blocks build
+
       # npm Trusted Publishing (OIDC handshake) requires npm CLI
       # >= 11.5.0. pnpm 9 bundles npm 10.x and does NOT perform the
       # OIDC exchange itself, so publishing via `pnpm publish` falls
