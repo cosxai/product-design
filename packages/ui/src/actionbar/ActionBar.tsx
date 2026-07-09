@@ -209,8 +209,15 @@ export function ActionBar({
     });
   }, [storageKey]);
   const hasAdminItems = useMemo(() => items.some((it) => it.adminOnly === true), [items]);
+  // Admin mode is EXCLUSIVE (not additive): when on, only adminOnly
+  // items render; when off, only non-adminOnly items render. Reads
+  // as a mode switch — the user is either doing normal viewer things
+  // or elevated-privilege things, never both at once.
   const visibleItems = useMemo(
-    () => (adminMode ? items : items.filter((it) => it.adminOnly !== true)),
+    () =>
+      adminMode
+        ? items.filter((it) => it.adminOnly === true)
+        : items.filter((it) => it.adminOnly !== true),
     [items, adminMode],
   );
 

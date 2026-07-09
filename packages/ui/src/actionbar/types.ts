@@ -47,18 +47,26 @@ export interface ActionBarItem {
   // a flex spacer so they pin to the right edge regardless of
   // registration order — system status indicators belong here.
   slot?: ActionBarItemSlot;
-  // Marks this item as admin-only. Hidden until the ActionBar's
-  // admin-mode toggle is switched on. The toggle button auto-appears
-  // on the bar whenever at least one registered item has adminOnly=
-  // true; when no consumer registers such items, the toggle stays
-  // hidden and the bar looks exactly as it always did.
+  // Marks this item as admin-only. Admin mode is EXCLUSIVE:
+  //   - toggle OFF → only non-adminOnly items render
+  //   - toggle ON  → only adminOnly items render
   //
-  // Use for elevated-privilege actions that would confuse regular
-  // users (version history, retry render, delete forever, etc.).
+  // Not "additive layered on top". Think of it as a mode switch —
+  // the user is either doing normal viewer things or elevated-
+  // privilege things, never both at once. This maps cleanly onto
+  // surfaces where the admin actions are conceptually a different
+  // toolset (Manage share, Activity, Version history) rather than
+  // extra buttons appended to the regular ones.
+  //
+  // The toggle button auto-appears on the bar whenever at least one
+  // registered item has adminOnly=true; when no consumer registers
+  // such items, the toggle stays hidden and the bar looks exactly
+  // as it always did.
+  //
   // Consumer decides eligibility upstream — typically by only
   // registering the item when the caller has `capabilities.manage`
   // (or an equivalent gate) === true. The kit does not check
-  // permissions; it only handles the toggle UX.
+  // permissions; it only handles the mode-switch UX.
   adminOnly?: boolean;
 }
 
