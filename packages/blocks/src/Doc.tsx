@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-import { useBrand } from "./BrandProvider";
+import { useBrand } from "./BrandProvider.js";
 
 // Doc — A4 page chrome for block_doc pages rendered in document
 // layout. Fixed 794×1123 design coordinates (A4 at 96 DPI).
