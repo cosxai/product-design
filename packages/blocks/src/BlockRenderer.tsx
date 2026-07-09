@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import type { Block } from "./blocks";
 
 // Static alignment class map — Tailwind's build-time class extraction
@@ -174,6 +176,16 @@ function CalloutView({ b }: { b: Extract<Block, { type: "callout" }> }) {
 }
 
 function BulletListView({ b }: { b: Extract<Block, { type: "bullet-list" }> }) {
+  // Per-variant marker glyph + colour. Static classNames only so
+  // Tailwind's build-time class extraction picks them up.
+  const marker =
+    b.variant === "check" ? "✓" : b.variant === "arrow" ? "→" : "•";
+  const markerCls =
+    b.variant === "check"
+      ? "text-emerald-600 mt-[1px]"
+      : b.variant === "arrow"
+        ? "text-[var(--ck-accent,#4f46e5)] mt-[1px]"
+        : "text-zinc-400 mt-[2px]";
   return (
     <ul
       data-block-id={b.id}
@@ -181,8 +193,8 @@ function BulletListView({ b }: { b: Extract<Block, { type: "bullet-list" }> }) {
     >
       {b.items.map((it, i) => (
         <li key={i} className="flex gap-2 items-start">
-          <span aria-hidden className="text-zinc-400 mt-[2px]">
-            •
+          <span aria-hidden className={markerCls}>
+            {marker}
           </span>
           <span dangerouslySetInnerHTML={{ __html: it.html }} />
         </li>
@@ -214,16 +226,23 @@ function ImageView({ b }: { b: Extract<Block, { type: "image" }> }) {
 // ──────────────────────────────────────────────────────────────────
 
 function TwoColumnView({ b }: { b: Extract<Block, { type: "two-column" }> }) {
-  // Optional rightWidth is a Tailwind fragment ("w-[280px]"). When
-  // present we hand it to the right column via className; otherwise
-  // the two columns share equal space.
-  const rightCls = b.rightWidth ?? "";
+  // rightWidth accepts a CSS length ("280px", "20rem", "30%") applied
+  // via inline style — the portable path. Tailwind class fragments
+  // ("w-[280px]") are still accepted for backward compat but
+  // discouraged because static class extraction can miss unfamiliar
+  // arbitrary values in downstream consumer builds.
+  const rw = b.rightWidth;
+  const isCssLength = !!rw && /^-?[\d.]+(px|%|rem|em|vw|vh|ch|pt|cm|mm|in)$/.test(rw);
+  const rightStyle: CSSProperties | undefined = isCssLength
+    ? { width: rw, flex: "0 0 auto" }
+    : undefined;
+  const rightCls = !rw ? "flex-1" : isCssLength ? "" : rw;
   return (
     <div data-block-id={b.id} className="my-3 flex gap-4">
       <div className="flex-1">
         <BlockList blocks={b.left} />
       </div>
-      <div className={rightCls || "flex-1"}>
+      <div className={rightCls} style={rightStyle}>
         <BlockList blocks={b.right} />
       </div>
     </div>
@@ -325,6 +344,17 @@ function TimelineView({ b }: { b: Extract<Block, { type: "timeline" }> }) {
 }
 
 function TableView({ b }: { b: Extract<Block, { type: "table" }> }) {
+  // widthFr is a fractional weight per column. Rendered as a
+  // percentage of the total assigned weight so the values compose
+  // consistently on a regular <table> (fr units are grid-only and
+  // invalid on `width`). Columns without widthFr contribute 0 to
+  // the total; when no column carries a weight, we skip the style
+  // and let the browser auto-size.
+  const totalFr = b.columns.reduce((sum, c) => sum + (c.widthFr ?? 0), 0);
+  const widthStyleFor = (widthFr: number | undefined): CSSProperties | undefined => {
+    if (widthFr === undefined || totalFr <= 0) return undefined;
+    return { width: `${(widthFr / totalFr) * 100}%` };
+  };
   return (
     <div data-block-id={b.id} className="my-3 overflow-x-auto">
       <table className="w-full text-[10px] border-collapse">
@@ -340,7 +370,7 @@ function TableView({ b }: { b: Extract<Block, { type: "table" }> }) {
                       ? "bg-zinc-100"
                       : "bg-zinc-50"
                 } ${alignClass(c.align)}`}
-                style={c.widthFr !== undefined ? { width: `${c.widthFr}fr` } : undefined}
+                style={widthStyleFor(c.widthFr)}
               >
                 {c.header}
               </th>

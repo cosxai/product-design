@@ -74,7 +74,11 @@ export interface TwoColumnBlock extends BaseBlock {
   type: "two-column";
   left: Block[];
   right: Block[];
-  // Tailwind width fragment for the right column (e.g. "w-[280px]").
+  // Right column width. Prefer a CSS length string ("280px", "20rem",
+  // "30%") — applied via inline style, portable across consumers.
+  // Tailwind class fragments ("w-[280px]") are still accepted for
+  // backward compat but discouraged since arbitrary-value classes
+  // may be dropped by static class extraction in downstream builds.
   rightWidth?: string;
 }
 

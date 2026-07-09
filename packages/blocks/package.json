@@ -1,6 +1,6 @@
 {
   "name": "@cosxai/blocks",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Block-based content renderer — Slide + Doc chrome + BlockRenderer for the shared block schema. Consumed by product-meta SPA (viewing) and product-mesh htmlproc sidecar (thumbnails).",
   "license": "UNLICENSED",
   "type": "module",
