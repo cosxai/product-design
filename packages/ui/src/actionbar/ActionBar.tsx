@@ -78,6 +78,25 @@ function loadCollapsed(storageKey: string): boolean {
   }
 }
 
+function loadAdminMode(storageKey: string): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.localStorage.getItem(`${storageKey}:admin`) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function persistAdminMode(storageKey: string, on: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    if (on) window.localStorage.setItem(`${storageKey}:admin`, "1");
+    else window.localStorage.removeItem(`${storageKey}:admin`);
+  } catch {
+    /* ignore */
+  }
+}
+
 interface BuildEntry {
   kind: "flat" | "group";
   expansionKey: string;
@@ -175,6 +194,26 @@ export function ActionBar({
     return () => window.removeEventListener("resize", reclamp);
   }, []);
 
+  // ----- Admin mode toggle (any registered item with adminOnly=true) -----
+  // Admin items stay hidden by default; a small toggle button (rendered
+  // between the grip and the first item) flips this to reveal them.
+  // Persisted per storageKey so admin users stay in the mode they
+  // last chose across route navigations. When no consumer registers
+  // admin items, the toggle button doesn't render.
+  const [adminMode, setAdminMode] = useState<boolean>(() => loadAdminMode(storageKey));
+  const toggleAdminMode = useCallback(() => {
+    setAdminMode((prev) => {
+      const next = !prev;
+      persistAdminMode(storageKey, next);
+      return next;
+    });
+  }, [storageKey]);
+  const hasAdminItems = useMemo(() => items.some((it) => it.adminOnly === true), [items]);
+  const visibleItems = useMemo(
+    () => (adminMode ? items : items.filter((it) => it.adminOnly !== true)),
+    [items, adminMode],
+  );
+
   // ----- Collapsed state (phone only) -----
   const [collapsed, setCollapsed] = useState<boolean>(() => loadCollapsed(storageKey));
   useEffect(() => {
@@ -241,14 +280,14 @@ export function ActionBar({
   const { leadingEntries, trailingEntries } = useMemo(() => {
     const leading: ActionBarItem[] = [];
     const trailing: ActionBarItem[] = [];
-    for (const it of items) {
+    for (const it of visibleItems) {
       (it.slot === "trailing" ? trailing : leading).push(it);
     }
     return {
       leadingEntries: buildEntries(leading),
       trailingEntries: buildEntries(trailing),
     };
-  }, [items]);
+  }, [visibleItems]);
   const entries = useMemo(
     () => [...leadingEntries, ...trailingEntries],
     [leadingEntries, trailingEntries],
@@ -359,12 +398,21 @@ export function ActionBar({
         alignItems: "center",
         gap: 4,
         zIndex: 80,
-        background: "var(--ck-bg-surface)",
-        border: "1px solid var(--ck-border-subtle)",
+        // Subtle accent tint when admin mode is active so the bar reads
+        // as "elevated privileges on" without a full colour swap.
+        background: adminMode
+          ? "color-mix(in oklab, var(--ck-accent, #4f46e5) 8%, var(--ck-bg-surface))"
+          : "var(--ck-bg-surface)",
+        border: `1px solid ${
+          adminMode
+            ? "var(--ck-accent, #4f46e5)"
+            : "var(--ck-border-subtle)"
+        }`,
         borderRadius: 999,
         boxShadow: "var(--ck-shadow-3)",
         fontFamily: "var(--ck-font-sans)",
         color: "var(--ck-text-primary)",
+        transition: "background 180ms ease-out, border-color 180ms ease-out",
         ...style,
       }}
     >
@@ -410,6 +458,57 @@ export function ActionBar({
           </svg>
         </button>
       ) : null}
+
+      {/* Admin-mode toggle. Only renders when at least one registered
+          item has adminOnly=true. When active: filled accent circle;
+          when inactive: outlined muted circle. Uses a small shield
+          glyph so the affordance reads as "elevated privileges" at a
+          glance, distinct from a normal action button. */}
+      {hasAdminItems && (
+        <button
+          type="button"
+          onClick={toggleAdminMode}
+          aria-label={adminMode ? "Exit admin mode" : "Enter admin mode"}
+          aria-pressed={adminMode}
+          title={adminMode ? "Admin mode · click to exit" : "Enter admin mode"}
+          data-ck-actionbar-admin-toggle
+          data-active={adminMode ? "1" : "0"}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 28,
+            height: 28,
+            padding: 0,
+            marginLeft: 2,
+            marginRight: 2,
+            borderRadius: 999,
+            background: adminMode ? "var(--ck-accent, #4f46e5)" : "transparent",
+            color: adminMode
+              ? "var(--ck-accent-fg, #fff)"
+              : "var(--ck-text-secondary, #666)",
+            border: adminMode
+              ? "1px solid var(--ck-accent, #4f46e5)"
+              : "1px solid var(--ck-border-subtle, #eee)",
+            cursor: "pointer",
+            transition: "background 160ms ease-out, color 160ms ease-out, border-color 160ms ease-out",
+          }}
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        </button>
+      )}
 
       {/* Balancing leading spacer — only present when the right side
           holds ONLY a status dot (no trailing items). With a left

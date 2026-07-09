@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.0 (2026-07-09)
+
+- **feat(actionbar)**: New `adminOnly?: boolean` on `ActionBarItem`. Marking an item admin-only hides it behind an auto-appearing shield toggle button (rendered between the drag grip and the first item). When active, admin items reveal + the bar picks up a subtle accent-tinted background so the "elevated privileges" state reads at a glance. State persists per `storageKey`. Toggle only renders when at least one registered item has adminOnly=true — a bar with no admin items looks exactly as it always did. Reusable across viewers (block_doc, PDF, etc.) so cross-kind admin surfaces stay consistent.
+- **feat(actionbar)**: Bar background + border animate on admin-mode transition (180 ms ease-out). Accent-mixed 8% opacity in oklab space so the tint reads on both light and dark themes without a full palette override.
+
 ## 0.9.0 (2026-07-08)
 
 - **feat(actionbar)**: New `ActionBarModeHandle` component + `useActionBarMode` hook for the block_doc viewer's admin peek-out affordance. The handle sits ~6px above the ActionBar's top edge at rest (a slim 44×6 accent-coloured pill) and grows to 68×24 on hover / focus while revealing a label — click swaps the ActionBar's item set between named modes ("viewer" / "manage" / "draft"). `useActionBarMode({ modes, defaultMode, storageKey })` manages the state, persists to localStorage, and registers the active mode's items into the ActionBar registry atomically (previous set unregistered on mode change). Gate the handle behind a capability bit with `visible={can.manage}` — non-privileged principals never see the affordance. Lands with product-mesh M4.5 Phase F; consumer wiring in product-meta comes with Phase G-I.
