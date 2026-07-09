@@ -6,16 +6,21 @@
 //   import { Slide, BlockRenderer, BrandProvider } from "@cosxai/blocks";
 //   import type { Block, BrandConfig } from "@cosxai/blocks";
 
-export { BrandProvider, useBrand } from "./BrandProvider";
-export type { BrandConfig, BrandProviderProps } from "./BrandProvider";
+// Node ESM requires explicit `.js` extensions on relative imports —
+// the compiled output would fail with ERR_MODULE_NOT_FOUND otherwise.
+// TS resolves `.js` back to `.ts` at compile time; Vite / esbuild
+// bundlers also handle the `.js` suffix in source imports fine.
 
-export { Slide } from "./Slide";
-export type { SlideProps } from "./Slide";
+export { BrandProvider, useBrand } from "./BrandProvider.js";
+export type { BrandConfig, BrandProviderProps } from "./BrandProvider.js";
 
-export { Doc } from "./Doc";
-export type { DocProps } from "./Doc";
+export { Slide } from "./Slide.js";
+export type { SlideProps } from "./Slide.js";
 
-export { BlockRenderer, BlockList } from "./BlockRenderer";
+export { Doc } from "./Doc.js";
+export type { DocProps } from "./Doc.js";
+
+export { BlockRenderer, BlockList } from "./BlockRenderer.js";
 
 export type {
   Block,
@@ -40,4 +45,4 @@ export type {
   CustomHtmlBlock,
   SlideDecorationBlock,
   DocPageContent,
-} from "./blocks";
+} from "./blocks.js";

@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-import type { Block } from "./blocks";
+import type { Block } from "./blocks.js";
 
 // Static alignment class map — Tailwind's build-time class extraction
 // requires literal class names, so `text-${c.align}` template

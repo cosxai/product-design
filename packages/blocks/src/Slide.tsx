@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-import { useBrand } from "./BrandProvider";
+import { useBrand } from "./BrandProvider.js";
 
 // Slide — 16:9 artboard chrome for block_doc pages rendered in slide
 // layout. Fixed 1024×576 design coordinates.
