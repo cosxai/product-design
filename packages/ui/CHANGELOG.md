@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.3 (2026-07-09)
+
+- **feat(actionbar)**: New `hiddenInAdmin?: boolean` on `ActionBarItem`. Symmetric counterpart to `adminOnly` — pages that want an exclusive "different toolset" UX (block_doc viewer's Manage share + Activity + History replacing Share) mark their regular items `hiddenInAdmin: true` so they clear when the shield toggle flips on. Pages that want the additive layering shape just leave it unset. Per-item flag so different consumers on the same page can pick independently.
+
 ## 0.10.2 (2026-07-09)
 
 - **fix(actionbar)**: Restore shield glyph on the admin-mode toggle (better semantic weight than the sliders variant tried in 0.10.1). Still borderless / transparent bg — no outer ring, just the icon.

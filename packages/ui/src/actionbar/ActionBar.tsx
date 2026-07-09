@@ -209,8 +209,19 @@ export function ActionBar({
     });
   }, [storageKey]);
   const hasAdminItems = useMemo(() => items.some((it) => it.adminOnly === true), [items]);
+  // Filter semantics:
+  //   admin OFF → hide items marked adminOnly (the toggle would reveal them)
+  //   admin ON  → hide items marked hiddenInAdmin (page opted them out of admin view)
+  // Together, adminOnly + hiddenInAdmin let pages choose:
+  //   - additive: normal items unmarked → visible in both modes;
+  //     admin items marked adminOnly → visible only in admin
+  //   - exclusive: normal items marked hiddenInAdmin → hidden in admin;
+  //     admin items marked adminOnly → visible only in admin
   const visibleItems = useMemo(
-    () => (adminMode ? items : items.filter((it) => it.adminOnly !== true)),
+    () =>
+      adminMode
+        ? items.filter((it) => it.hiddenInAdmin !== true)
+        : items.filter((it) => it.adminOnly !== true),
     [items, adminMode],
   );
 

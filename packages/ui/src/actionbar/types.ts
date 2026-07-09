@@ -60,6 +60,18 @@ export interface ActionBarItem {
   // (or an equivalent gate) === true. The kit does not check
   // permissions; it only handles the toggle UX.
   adminOnly?: boolean;
+  // Marks a normally-visible item as hidden when admin mode is on.
+  // Symmetric counterpart to `adminOnly`: pages that want an
+  // exclusive "different toolset" UX (e.g. Share disappears in favour
+  // of Manage Share + Activity + History) mark their regular items
+  // hiddenInAdmin=true so they clear when the toggle flips on.
+  // Pages that want additive layering (regular items stay + admin
+  // items appear alongside) just leave this unset.
+  //
+  // Per-item because different pages within the same app want
+  // different behaviour: block_doc viewer wants exclusive; a
+  // hypothetical PDF admin surface might want additive.
+  hiddenInAdmin?: boolean;
 }
 
 // Category definition — declared at the provider level. Drives
