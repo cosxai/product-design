@@ -6,15 +6,20 @@ import { useBrand } from "./BrandProvider.js";
 // layout. Fixed 1024×576 design coordinates.
 //
 // Sizing modes:
-//   - Default (renderMode = false): ResizeObserver on the outer frame
-//     derives a scale factor so the artboard fits the current viewport
-//     width. Container is `w-full aspectRatio: 16/9`.
-//   - renderMode = true: skip the observer, scale = 1, container is
-//     fixed at the design coordinates. Used by server-side thumbnail
-//     renderers (htmlproc sidecar) so puppeteer clips deterministically.
-//
-// Header logo + slide count + optional badge come from BrandProvider so
-// white-labeling swaps them without touching this file.
+//   - Default (renderMode = false): viewer context. ResizeObserver on
+//     the outer frame derives a scale factor so the artboard fits the
+//     current viewport width; the running header shows the brand logo
+//     (or badge when set) + confidential line + slide counter.
+//   - renderMode = true: server-side thumbnail context (htmlproc
+//     sidecar). Skips the observer, scale = 1, container is fixed at
+//     the design coordinates so puppeteer clips deterministically. The
+//     brand-derived header decoration is suppressed — thumbnails are
+//     a picture of the AUTHORED content, not workspace-branded chrome
+//     (per the M4.5 followup review: workspace A rendering a doc for
+//     client B shouldn't stamp A's logo into the thumbnail; branding
+//     belongs to templates authored in blocks, not to a viewer-time
+//     Slide/Doc wrapper). The counter stays visible so page N of M
+//     still reads correctly on the card.
 
 const DESIGN_W = 1024;
 const DESIGN_H = 576;
@@ -110,9 +115,14 @@ export function Slide({
             transformOrigin: "top left",
           }}
         >
-          {/* Header row: logo or badge (left) + slide index (right) */}
+          {/* Header row: logo/badge (left) + confidential + slide index
+              (right). Thumbnail renderMode strips the brand decoration
+              on both sides — the counter alone stays so page N/M reads
+              correctly on the card. */}
           <div className="relative z-[1] flex justify-between items-center px-[40px] pt-[32px]">
-            {badge ? (
+            {renderMode ? (
+              <span />
+            ) : badge ? (
               <span className="inline-block px-[12px] py-[4px] text-[10px] font-medium tracking-wider uppercase border border-zinc-300 rounded-full text-zinc-600">
                 {badge}
               </span>
@@ -120,7 +130,7 @@ export function Slide({
               <img src={brand.logoUrl} alt={brand.logoAlt} className="h-[44px] w-auto" />
             )}
             <div className="flex items-center gap-4 text-zinc-500">
-              {!badge && (
+              {!badge && !renderMode && (
                 <span className="text-[10px] uppercase tracking-widest">
                   {brand.confidentialFooter}
                 </span>
@@ -140,10 +150,11 @@ export function Slide({
           >
             {children}
           </div>
-          {/* Footer confidential note — only when a badge is set (badge
-              swaps out the header logo so the footer picks up the
-              confidential line the header would otherwise carry) */}
-          {badge && (
+          {/* Footer confidential note — only when a badge is set AND
+              we're in viewer mode. In thumbnail renderMode we drop the
+              confidential line entirely (workspace brand doesn't belong
+              in the picture-of-content). */}
+          {badge && !renderMode && (
             <div className="absolute bottom-[16px] right-[40px] z-[1] text-right">
               <p className="text-[8px] text-zinc-500 uppercase tracking-widest leading-relaxed whitespace-pre-line">
                 {brand.confidentialFooter}

@@ -6,12 +6,20 @@ import { useBrand } from "./BrandProvider.js";
 // layout. Fixed 794×1123 design coordinates (A4 at 96 DPI).
 //
 // Sizing modes:
-//   - Default (renderMode = false): ResizeObserver on the outer frame
-//     derives a scale factor so the page fits the current viewport
-//     width.
-//   - renderMode = true: skip the observer, scale = 1, container fixed
-//     at the design coordinates. Used by server-side thumbnail
-//     renderers (htmlproc sidecar) so puppeteer clips deterministically.
+//   - Default (renderMode = false): viewer context. ResizeObserver on
+//     the outer frame derives a scale factor so the page fits the
+//     current viewport width; the running header shows the brand logo
+//     + doc title + page counter, and the footer shows the brand
+//     confidential line.
+//   - renderMode = true: server-side thumbnail context (htmlproc
+//     sidecar). Skips the observer, scale = 1, container fixed at the
+//     design coordinates for deterministic puppeteer clipping. The
+//     brand-derived header logo + confidential footer are suppressed
+//     — thumbnails picture the AUTHORED content, not workspace-branded
+//     chrome (per the M4.5 followup review: branding belongs to
+//     templates authored in blocks, not to a viewer-time Doc wrapper).
+//     Page counter + doc title stay visible so a card still reads as
+//     "this document, page N of M".
 
 const DESIGN_W = 794;
 const DESIGN_H = 1123;
@@ -91,10 +99,14 @@ export function Doc({
             transformOrigin: "top left",
           }}
         >
-          {/* Header */}
+          {/* Header. renderMode strips the logo (brand doesn't belong
+              in a picture-of-content thumbnail); the title still shows
+              so the card reads as the right doc. */}
           <div className="relative flex justify-between items-baseline px-[40px] pt-[24px]">
             <div className="flex items-baseline gap-3">
-              <img src={brand.logoUrl} alt={brand.logoAlt} className="h-[20px] w-auto" />
+              {!renderMode && (
+                <img src={brand.logoUrl} alt={brand.logoAlt} className="h-[20px] w-auto" />
+              )}
               <p className="text-[10px] font-medium tracking-wide text-zinc-800">{title}</p>
             </div>
             <span className="text-[9px] text-zinc-500 uppercase tracking-widest">
@@ -108,12 +120,16 @@ export function Doc({
           )}
           {/* Body */}
           <div className="px-[40px] py-[16px] flex-1 flex flex-col">{children}</div>
-          {/* Footer */}
-          <div className="px-[40px] pb-[16px] border-t border-zinc-100 pt-[8px]">
-            <p className="text-[8px] text-zinc-500 uppercase tracking-widest leading-relaxed">
-              {brand.confidentialFooter}
-            </p>
-          </div>
+          {/* Footer. renderMode drops the confidential line + the
+              divider — thumbnails shouldn't carry workspace-brand
+              text. The body flex-1 keeps content pinned to the top. */}
+          {!renderMode && (
+            <div className="px-[40px] pb-[16px] border-t border-zinc-100 pt-[8px]">
+              <p className="text-[8px] text-zinc-500 uppercase tracking-widest leading-relaxed">
+                {brand.confidentialFooter}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
