@@ -78,24 +78,13 @@ function loadCollapsed(storageKey: string): boolean {
   }
 }
 
-function loadAdminMode(storageKey: string): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return window.localStorage.getItem(`${storageKey}:admin`) === "1";
-  } catch {
-    return false;
-  }
-}
-
-function persistAdminMode(storageKey: string, on: boolean) {
-  if (typeof window === "undefined") return;
-  try {
-    if (on) window.localStorage.setItem(`${storageKey}:admin`, "1");
-    else window.localStorage.removeItem(`${storageKey}:admin`);
-  } catch {
-    /* ignore */
-  }
-}
+// Admin mode is session-only — deliberately NOT persisted. Two
+// reasons: (1) cross-page reload persistence would surface an
+// elevated-privileges state on a fresh session without explicit
+// user opt-in every time — a small surprise factor with real
+// consequences on admin surfaces. (2) The reset-on-context-change
+// effect below relies on the state living in React memory alone,
+// so we can watch for admin-item-set changes and clear cleanly.
 
 interface BuildEntry {
   kind: "flat" | "group";
@@ -197,17 +186,34 @@ export function ActionBar({
   // ----- Admin mode toggle (any registered item with adminOnly=true) -----
   // Admin items stay hidden by default; a small toggle button (rendered
   // between the grip and the first item) flips this to reveal them.
-  // Persisted per storageKey so admin users stay in the mode they
-  // last chose across route navigations. When no consumer registers
-  // admin items, the toggle button doesn't render.
-  const [adminMode, setAdminMode] = useState<boolean>(() => loadAdminMode(storageKey));
+  // Session-only: never persisted (see comment on loadAdminMode's
+  // removal above). Additionally auto-resets when the set of
+  // adminOnly item keys changes so a user who turned admin on for
+  // Doc A doesn't accidentally land in admin mode on Doc B.
+  const [adminMode, setAdminMode] = useState<boolean>(false);
   const toggleAdminMode = useCallback(() => {
-    setAdminMode((prev) => {
-      const next = !prev;
-      persistAdminMode(storageKey, next);
-      return next;
-    });
-  }, [storageKey]);
+    setAdminMode((prev) => !prev);
+  }, []);
+  const adminItemKeys = useMemo(
+    () =>
+      items
+        .filter((it) => it.adminOnly === true)
+        .map((it) => it.key)
+        .sort()
+        .join(","),
+    [items],
+  );
+  const prevAdminKeysRef = useRef(adminItemKeys);
+  useEffect(() => {
+    if (prevAdminKeysRef.current !== adminItemKeys) {
+      prevAdminKeysRef.current = adminItemKeys;
+      // Context changed (typically: user navigated to a different
+      // page whose useActionBarItems registered a different set of
+      // admin actions). Reset admin mode so the elevated state is
+      // never carried across viewer sessions implicitly.
+      setAdminMode(false);
+    }
+  }, [adminItemKeys]);
   const hasAdminItems = useMemo(() => items.some((it) => it.adminOnly === true), [items]);
   // Filter semantics:
   //   admin OFF → hide items marked adminOnly (the toggle would reveal them)

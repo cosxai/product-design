@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.4 (2026-07-09)
+
+- **fix(actionbar)**: Admin mode is now session-only (was persisted to `localStorage` under `<storageKey>:admin`). Two problems the persistence caused:
+  - Page reload → session came back in elevated state without an explicit user opt-in.
+  - Cross-doc navigation → user turned admin on for Doc A, opened Doc B, and landed in admin mode carrying nothing but a red-tinted bar (bug Ben spotted on the block_doc viewer).
+- **fix(actionbar)**: Auto-reset admin mode when the set of `adminOnly` item keys changes. Consumers that call `useActionBarItems` with different items on a new route reliably clear the elevated state — no per-page "reset on unmount" wiring needed. Same-page updates (item labels change, hint keys change) don't reset because the *key* set stays constant.
+
 ## 0.10.3 (2026-07-09)
 
 - **feat(actionbar)**: New `hiddenInAdmin?: boolean` on `ActionBarItem`. Symmetric counterpart to `adminOnly` — pages that want an exclusive "different toolset" UX (block_doc viewer's Manage share + Activity + History replacing Share) mark their regular items `hiddenInAdmin: true` so they clear when the shield toggle flips on. Pages that want the additive layering shape just leave it unset. Per-item flag so different consumers on the same page can pick independently.
