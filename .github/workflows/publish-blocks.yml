@@ -1,0 +1,83 @@
+name: Publish @cosxai/blocks
+
+# Triggers:
+#   - git tag `blocks-v*` (e.g. blocks-v0.1.0, blocks-v0.2.0) → publish to npm
+#   - manual workflow_dispatch → publish current main
+#
+# Authentication: npm Trusted Publishing (OIDC). No NPM_TOKEN required.
+#
+# One-time setup on npmjs.com:
+#   1. Sign in as a maintainer of the @cosxai org
+#   2. Org Settings → Trusted Publishers → Add publisher
+#      - Publisher: GitHub Actions
+#      - Organization: cosxai
+#      - Repository:   product-design
+#      - Workflow:     publish-blocks.yml
+#      - Environment:  (leave blank)
+#      - Package name pattern: @cosxai/blocks  (or @cosxai/* to cover the scope)
+#   3. Done — no token to copy, no secret to paste
+#
+# Release flow:
+#   cd product-design/packages/blocks
+#   # bump version in package.json (e.g. 0.1.0 → 0.2.0)
+#   git commit -am "release(blocks): v0.2.0"
+#   git tag blocks-v0.2.0
+#   git push origin main --tags
+#
+# npm verifies the OIDC token from this workflow run matches the
+# trusted-publisher config and publishes automatically with provenance.
+
+on:
+  push:
+    tags:
+      - 'blocks-v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write   # required for OIDC trusted publishing + provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm --filter @cosxai/blocks typecheck
+
+      # npm Trusted Publishing (OIDC handshake) requires npm CLI
+      # >= 11.5.0. pnpm 9 bundles npm 10.x and does NOT perform the
+      # OIDC exchange itself, so publishing via `pnpm publish` falls
+      # through as an anonymous request and npm answers 404
+      # ("OIDC token not bound to any trusted publisher"). Upgrade
+      # the system npm and publish from packages/blocks directly
+      # with `npm publish` — npm handles the OIDC handshake natively.
+      - name: Upgrade npm for OIDC Trusted Publishing
+        # Pinned to 11.5.0 — see publish-ui.yml for the rationale
+        # (recent npm@latest ships a broken libnpmpublish that
+        # fails with "Cannot find module 'sigstore'" under --provenance).
+        run: npm install -g npm@11.5.0
+
+      - name: Publish (Trusted Publishing — OIDC, no token)
+        working-directory: packages/blocks
+        # --provenance signs the published tarball with a sigstore
+        # statement linking it to this repo + workflow run + commit
+        # SHA. Downstream consumers can verify on sigstore.dev that
+        # the artifact really came from a known build of known
+        # source. Requires the source repo to be PUBLIC on GitHub.
+        run: npm publish --access public --provenance

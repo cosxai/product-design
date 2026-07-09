@@ -1,0 +1,37 @@
+{
+  "name": "@cosxai/blocks",
+  "version": "0.1.1",
+  "description": "Block-based content renderer — Slide + Doc chrome + BlockRenderer for the shared block schema. Consumed by product-meta SPA (viewing) and product-mesh htmlproc sidecar (thumbnails).",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cosxai/product-design.git",
+    "directory": "packages/blocks"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.6.0"
+  }
+}
