@@ -460,10 +460,11 @@ export function ActionBar({
       ) : null}
 
       {/* Admin-mode toggle. Only renders when at least one registered
-          item has adminOnly=true. When active: filled accent circle;
-          when inactive: outlined muted circle. Uses a small shield
-          glyph so the affordance reads as "elevated privileges" at a
-          glance, distinct from a normal action button. */}
+          item has adminOnly=true. Styled to match the grip: no border,
+          transparent background, icon-only. Muted stroke by default,
+          accent when active — same visual weight as the other bar
+          items so the affordance sits comfortably next to Theme /
+          Share / etc. */}
       {hasAdminItems && (
         <button
           type="button"
@@ -483,29 +484,34 @@ export function ActionBar({
             marginLeft: 2,
             marginRight: 2,
             borderRadius: 999,
-            background: adminMode ? "var(--ck-accent, #4f46e5)" : "transparent",
+            background: "transparent",
             color: adminMode
-              ? "var(--ck-accent-fg, #fff)"
+              ? "var(--ck-accent, #4f46e5)"
               : "var(--ck-text-secondary, #666)",
-            border: adminMode
-              ? "1px solid var(--ck-accent, #4f46e5)"
-              : "1px solid var(--ck-border-subtle, #eee)",
+            border: "none",
             cursor: "pointer",
-            transition: "background 160ms ease-out, color 160ms ease-out, border-color 160ms ease-out",
+            transition: "color 160ms ease-out",
           }}
         >
           <svg
-            width="14"
-            height="14"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"
             aria-hidden
           >
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            {/* Sliders/tuning icon — reads as "surface more controls",
+                which is exactly what admin mode does. Two horizontal
+                tracks with a knob on each; the active vs. inactive
+                distinction comes from stroke colour, not fill. */}
+            <line x1="4" y1="8" x2="20" y2="8" />
+            <line x1="4" y1="16" x2="20" y2="16" />
+            <circle cx="10" cy="8" r="2" fill="currentColor" />
+            <circle cx="15" cy="16" r="2" fill="currentColor" />
           </svg>
         </button>
       )}

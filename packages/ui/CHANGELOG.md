@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.1 (2026-07-09)
+
+- **fix(actionbar)**: Admin-mode toggle drops its bordered-circle chrome so the button reads with the same visual weight as neighbouring items (Theme icon, Share icon, etc.). Now: transparent bg, no border, muted stroke by default, accent-coloured icon when active. Glyph swapped from shield → sliders (two tracks with knobs) so the affordance reads as "reveal more controls" instead of "security/protected" — matches what admin mode actually does.
+
 ## 0.10.0 (2026-07-09)
 
 - **feat(actionbar)**: New `adminOnly?: boolean` on `ActionBarItem`. Marking an item admin-only hides it behind an auto-appearing shield toggle button (rendered between the drag grip and the first item). When active, admin items reveal + the bar picks up a subtle accent-tinted background so the "elevated privileges" state reads at a glance. State persists per `storageKey`. Toggle only renders when at least one registered item has adminOnly=true — a bar with no admin items looks exactly as it always did. Reusable across viewers (block_doc, PDF, etc.) so cross-kind admin surfaces stay consistent.
