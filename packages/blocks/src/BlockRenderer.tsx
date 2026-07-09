@@ -1,5 +1,17 @@
 import type { Block } from "./blocks";
 
+// Static alignment class map — Tailwind's build-time class extraction
+// requires literal class names, so `text-${c.align}` template
+// interpolation silently drops in production builds. Map here + the
+// column/cell renderers pick from it.
+function alignClass(align: "left" | "center" | "right" | undefined) {
+  switch (align) {
+    case "center": return "text-center";
+    case "right":  return "text-right";
+    default:       return "text-left";
+  }
+}
+
 // BlockRenderer — dispatch + per-type views for content-as-data
 // block_doc pages. Signing-form blocks render as read-only placeholders
 // here; live signing interactions live in the signing surface, not the
@@ -60,10 +72,15 @@ export function BlockRenderer({ block }: { block: Block }) {
       return <CustomHtmlView b={block} />;
     case "slide-decoration":
       return null; // Slide renders decorations at its own layer
-    default:
-      // Exhaustive switch guard — TS will error at compile time if a
-      // new block type is added to the union without a case.
+    default: {
+      // Exhaustive switch guard — TS surfaces a type error at compile
+      // time when the discriminated union grows a new variant without
+      // a matching case. The `never` binding is what turns the compile
+      // check on; the runtime `return null` handles the impossible case.
+      const _exhaustive: never = block;
+      void _exhaustive;
       return null;
+    }
   }
 }
 
@@ -322,7 +339,7 @@ function TableView({ b }: { b: Extract<Block, { type: "table" }> }) {
                     : c.tone === "muted"
                       ? "bg-zinc-100"
                       : "bg-zinc-50"
-                } text-${c.align ?? "left"}`}
+                } ${alignClass(c.align)}`}
                 style={c.widthFr !== undefined ? { width: `${c.widthFr}fr` } : undefined}
               >
                 {c.header}
@@ -345,7 +362,7 @@ function TableView({ b }: { b: Extract<Block, { type: "table" }> }) {
                 return (
                   <td
                     key={c.id}
-                    className={`border border-zinc-200 px-2 py-1 align-top text-${c.align ?? "left"} ${emphasisCls}`}
+                    className={`border border-zinc-200 px-2 py-1 align-top ${alignClass(c.align)} ${emphasisCls}`}
                     dangerouslySetInnerHTML={{ __html: cellHtml }}
                   />
                 );

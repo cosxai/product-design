@@ -29,6 +29,12 @@ export interface BrandConfig {
   accentVar: string;
 }
 
+// The default logo path is a leaf under the consumer's app root
+// (`/cosx-logo.svg`). This package does NOT ship the SVG — consumers
+// must either serve that path themselves (product-meta ships the
+// file under web/public/) or pass a `brand={{ logoUrl: "..." }}`
+// override. Server-side thumbnail renderers should pass a data:
+// URI so the render doesn't need to fetch the SVG over network.
 const defaultBrand: BrandConfig = {
   logoUrl: "/cosx-logo.svg",
   logoAlt: "COSX",

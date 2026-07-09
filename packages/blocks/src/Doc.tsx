@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { useBrand } from "./BrandProvider";
 
@@ -44,8 +44,13 @@ export function Doc({
   const frameRef = useRef<HTMLDivElement | null>(null);
   const [scale, setScale] = useState<number>(1);
 
-  useLayoutEffect(() => {
-    if (renderMode) return; // native DIP; no observer
+  // See Slide.tsx for the useEffect + renderMode reset rationale
+  // (SSR safety in the htmlproc sidecar + clean scale reset on toggle).
+  useEffect(() => {
+    if (renderMode) {
+      setScale(1);
+      return;
+    }
     const el = frameRef.current;
     if (!el) return;
     const update = () => {

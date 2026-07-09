@@ -4,8 +4,8 @@
 // enforcing the same schema on writes).
 //
 // Adding a block type requires changes in three places:
-//   - packages/block-doc/src/blocks.ts (this file)       — TS type
-//   - packages/block-doc/src/BlockRenderer.tsx           — TS view
+//   - packages/blocks/src/blocks.ts (this file)          — TS type
+//   - packages/blocks/src/BlockRenderer.tsx              — TS view
 //   - product-mesh internal/document/.../sanitize.go     — Go validator
 //
 // The Go validator MUST match this file. If they drift, malformed

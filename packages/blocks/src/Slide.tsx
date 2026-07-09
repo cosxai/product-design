@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { useBrand } from "./BrandProvider";
 
@@ -48,10 +48,20 @@ export function Slide({
 }: SlideProps) {
   const brand = useBrand();
   const frameRef = useRef<HTMLDivElement | null>(null);
-  const [scale, setScale] = useState<number>(renderMode ? 1 : 1);
+  const [scale, setScale] = useState<number>(1);
 
-  useLayoutEffect(() => {
-    if (renderMode) return; // native DIP; no observer
+  // useEffect (not useLayoutEffect) — this package renders under
+  // react-dom/server (mesh htmlproc sidecar) where useLayoutEffect
+  // emits a warning. useEffect is a no-op on the server and runs
+  // synchronously enough on the client for the artboard scale to
+  // stabilise before the user notices.
+  useEffect(() => {
+    if (renderMode) {
+      // Native DIP + no observer. Reset scale so a prior
+      // viewport-derived value doesn't leak in when the prop flips.
+      setScale(1);
+      return;
+    }
     const el = frameRef.current;
     if (!el) return;
     const update = () => {
