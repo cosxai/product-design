@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.2 (2026-07-09)
+
+- **fix(actionbar)**: Restore shield glyph on the admin-mode toggle (better semantic weight than the sliders variant tried in 0.10.1). Still borderless / transparent bg — no outer ring, just the icon.
+- **feat(actionbar)**: Softer motion when entering / exiting admin mode. Bar background + border tint now transition on a spring curve (260 ms, `cubic-bezier(0.34, 1.56, 0.64, 1)`), the shield icon picks up a 1.06× scale bump alongside its stroke-colour shift, and admin items animate in with a translate + scale spring on reveal. Toggle-off is instant (React unmount) — future release may add a matching exit transition if needed.
+
 ## 0.10.1 (2026-07-09)
 
 - **fix(actionbar)**: Admin-mode toggle drops its bordered-circle chrome so the button reads with the same visual weight as neighbouring items (Theme icon, Share icon, etc.). Now: transparent bg, no border, muted stroke by default, accent-coloured icon when active. Glyph swapped from shield → sliders (two tracks with knobs) so the affordance reads as "reveal more controls" instead of "security/protected" — matches what admin mode actually does.

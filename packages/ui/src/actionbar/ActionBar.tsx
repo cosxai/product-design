@@ -412,7 +412,9 @@ export function ActionBar({
         boxShadow: "var(--ck-shadow-3)",
         fontFamily: "var(--ck-font-sans)",
         color: "var(--ck-text-primary)",
-        transition: "background 180ms ease-out, border-color 180ms ease-out",
+        transition:
+          "background 260ms cubic-bezier(0.34, 1.56, 0.64, 1)," +
+          "border-color 260ms cubic-bezier(0.34, 1.56, 0.64, 1)",
         ...style,
       }}
     >
@@ -460,11 +462,10 @@ export function ActionBar({
       ) : null}
 
       {/* Admin-mode toggle. Only renders when at least one registered
-          item has adminOnly=true. Styled to match the grip: no border,
-          transparent background, icon-only. Muted stroke by default,
-          accent when active — same visual weight as the other bar
-          items so the affordance sits comfortably next to Theme /
-          Share / etc. */}
+          item has adminOnly=true. Borderless, transparent bg — same
+          visual weight as the drag grip and the item icons around
+          it. Muted stroke by default, accent stroke + subtle scale
+          when active. Icon: shield (elevated privileges). */}
       {hasAdminItems && (
         <button
           type="button"
@@ -490,7 +491,13 @@ export function ActionBar({
               : "var(--ck-text-secondary, #666)",
             border: "none",
             cursor: "pointer",
-            transition: "color 160ms ease-out",
+            transform: adminMode ? "scale(1.06)" : "scale(1)",
+            // Spring-ish easing so the tint + scale feel connected
+            // rather than mechanical — matches ck-actionbar-enter's
+            // curve for family consistency.
+            transition:
+              "color 260ms cubic-bezier(0.34, 1.56, 0.64, 1)," +
+              "transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         >
           <svg
@@ -504,14 +511,7 @@ export function ActionBar({
             strokeLinejoin="round"
             aria-hidden
           >
-            {/* Sliders/tuning icon — reads as "surface more controls",
-                which is exactly what admin mode does. Two horizontal
-                tracks with a knob on each; the active vs. inactive
-                distinction comes from stroke colour, not fill. */}
-            <line x1="4" y1="8" x2="20" y2="8" />
-            <line x1="4" y1="16" x2="20" y2="16" />
-            <circle cx="10" cy="8" r="2" fill="currentColor" />
-            <circle cx="15" cy="16" r="2" fill="currentColor" />
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
         </button>
       )}
@@ -584,8 +584,16 @@ export function ActionBar({
   );
 
   function renderEntry(entry: BuildEntry): ReactNode {
+    // Admin-only entries play a slide-in animation on mount so the
+    // reveal doesn't feel like items just popped in. Groups that
+    // contain any adminOnly items also get wrapped so the whole
+    // disclosure slides in together.
+    const isAdmin =
+      entry.item?.adminOnly === true ||
+      entry.groupItems?.some((it) => it.adminOnly === true) === true;
+    let node: ReactNode;
     if (entry.kind === "flat" && entry.item) {
-      return (
+      node = (
         <ActionBarButton
           key={entry.expansionKey}
           icon={entry.item.icon}
@@ -598,27 +606,42 @@ export function ActionBar({
           onClick={entry.item.onClick}
         />
       );
+    } else {
+      const cat = entry.category!;
+      const catDef = categories[cat];
+      const hasActiveChild = entry.groupItems!.some((it) => it.active);
+      const isOpen = expandedKey === entry.expansionKey;
+      node = (
+        <ActionBarMenuGroup
+          key={entry.expansionKey}
+          label={catDef?.label ?? cat}
+          icon={catDef?.icon}
+          hasActiveChild={hasActiveChild}
+          isOpen={isOpen}
+          onToggle={() => setExpandedKey(isOpen ? null : entry.expansionKey)}
+          items={entry.groupItems!}
+          onItemClicked={(it) => {
+            it.onClick();
+            if (!it.keepGroupOpenOnClick) {
+              setExpandedKey(null);
+            }
+          }}
+        />
+      );
     }
-    const cat = entry.category!;
-    const catDef = categories[cat];
-    const hasActiveChild = entry.groupItems!.some((it) => it.active);
-    const isOpen = expandedKey === entry.expansionKey;
+    if (!isAdmin) return node;
+    // Wrapper carries the spring-in animation via keyframes injected
+    // at module load (see bottom of file). Key includes adminMode so
+    // React remounts the wrapper each time it flips, replaying the
+    // animation cleanly.
     return (
-      <ActionBarMenuGroup
-        key={entry.expansionKey}
-        label={catDef?.label ?? cat}
-        icon={catDef?.icon}
-        hasActiveChild={hasActiveChild}
-        isOpen={isOpen}
-        onToggle={() => setExpandedKey(isOpen ? null : entry.expansionKey)}
-        items={entry.groupItems!}
-        onItemClicked={(it) => {
-          it.onClick();
-          if (!it.keepGroupOpenOnClick) {
-            setExpandedKey(null);
-          }
-        }}
-      />
+      <span
+        key={`${entry.expansionKey}-admin`}
+        className="ck-actionbar-admin-item"
+        style={{ display: "inline-flex" }}
+      >
+        {node}
+      </span>
     );
   }
 }
@@ -667,17 +690,37 @@ function StatusDotGlyph({ color, pulse }: StatusDotGlyphProps) {
   );
 }
 
-// One global stylesheet entry for the pulse keyframe. Injected once
-// on first import. Idempotent — re-imports check by id.
+// One global stylesheet entry for the pulse keyframe + admin-item
+// entrance animation. Injected once on first import. Idempotent —
+// re-imports check by id.
 if (typeof document !== "undefined") {
   const STYLE_ID = "ck-actionbar-status-pulse";
   if (!document.getElementById(STYLE_ID)) {
     const el = document.createElement("style");
     el.id = STYLE_ID;
-    el.textContent = `@keyframes ck-actionbar-status-pulse {
+    el.textContent = `
+      @keyframes ck-actionbar-status-pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.45; }
-      }`;
+      }
+      @keyframes ck-actionbar-admin-enter {
+        0% {
+          opacity: 0;
+          transform: translateX(-6px) scale(0.92);
+        }
+        60% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+        }
+      }
+      .ck-actionbar-admin-item {
+        animation: ck-actionbar-admin-enter 260ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        transform-origin: left center;
+      }
+    `;
     document.head.appendChild(el);
   }
 }
