@@ -1,44 +1,45 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-import { useBrand } from "./BrandProvider.js";
-
-// Slide — 16:9 artboard chrome for block_doc pages rendered in slide
-// layout. Fixed 1024×576 design coordinates.
+// Slide — 16:9 artboard chrome for block_doc pages. Fixed 1024×576
+// design coordinates.
 //
 // Sizing modes:
-//   - Default (renderMode = false): viewer context. ResizeObserver on
-//     the outer frame derives a scale factor so the artboard fits the
-//     current viewport width; the running header shows the brand logo
-//     (or badge when set) + confidential line + slide counter.
+//   - Default (renderMode = false): viewer context. Frame is
+//     `w-full aspectRatio: 16/9` capped at 1440px; ResizeObserver
+//     derives a scale factor so the artboard fits the current
+//     viewport width. A mono label strip above the frame shows
+//     "Page N / Total" (left) + rendered dimensions (right),
+//     matching the PDF viewer's label pattern.
 //   - renderMode = true: server-side thumbnail context (htmlproc
-//     sidecar). Skips the observer, scale = 1, container is fixed at
-//     the design coordinates so puppeteer clips deterministically. The
-//     brand-derived header decoration is suppressed — thumbnails are
-//     a picture of the AUTHORED content, not workspace-branded chrome
-//     (per the M4.5 followup review: workspace A rendering a doc for
-//     client B shouldn't stamp A's logo into the thumbnail; branding
-//     belongs to templates authored in blocks, not to a viewer-time
-//     Slide/Doc wrapper). The counter stays visible so page N of M
-//     still reads correctly on the card.
+//     sidecar). Skips the observer + label strip, scale = 1,
+//     container fixed at design DIP so puppeteer clips
+//     deterministically.
+//
+// Both modes render block content as the entire frame — no in-frame
+// logo, badge, confidential line, or counter. Workspace branding
+// moves to per-workspace TEMPLATES (M6+) that author their own
+// cover / header blocks; until then viewer chrome is deliberately
+// neutral so a picture-of-content thumbnail and a viewer-mounted
+// page look pixel-consistent.
 
 const DESIGN_W = 1024;
 const DESIGN_H = 576;
 
 export interface SlideProps {
   children: ReactNode;
-  /** Zero-based page index for the "1 / 10" indicator. */
+  /** Zero-based page index for the "Page N / M" indicator. */
   index: number;
-  /** Total pages in the doc for the "1 / 10" denominator. */
+  /** Total pages in the doc for the counter denominator. */
   totalSlides: number;
-  /** Optional per-slide title / badge — replaces the brand logo. */
+  /** Reserved for future template-driven badges. Currently ignored. */
   badge?: string | undefined;
-  /** Optional label; renders under the artboard in dev builds. */
+  /** Reserved for future template-driven per-slide labels. Currently ignored. */
   title?: string | undefined;
   /**
-   * Server-side render mode. When true, skips ResizeObserver and
-   * renders at native design DIP (1024×576). Consumers building
-   * thumbnails via headless Chrome pass this + a matching viewport
-   * so the screenshot clip is deterministic.
+   * Server-side render mode. When true, skips ResizeObserver + label
+   * strip and renders at native design DIP (1024×576). Consumers
+   * building thumbnails via headless Chrome pass this + a matching
+   * viewport so the screenshot clip is deterministic.
    */
   renderMode?: boolean | undefined;
 }
@@ -47,11 +48,8 @@ export function Slide({
   children,
   index,
   totalSlides,
-  badge,
-  title,
   renderMode,
 }: SlideProps) {
-  const brand = useBrand();
   const frameRef = useRef<HTMLDivElement | null>(null);
   const [scale, setScale] = useState<number>(1);
 
@@ -79,8 +77,6 @@ export function Slide({
     return () => ro.disconnect();
   }, [renderMode]);
 
-  const num = String(index + 1).padStart(2, "0");
-  const total = String(totalSlides).padStart(2, "0");
   const actualW = Math.round(DESIGN_W * scale);
   const actualH = Math.round(DESIGN_H * scale);
 
@@ -90,10 +86,14 @@ export function Slide({
 
   return (
     <div className="w-full flex flex-col items-center">
-      {title && !renderMode && (
-        <div className="w-full max-w-[1440px] mb-1 flex justify-between text-[10px] text-zinc-500 uppercase tracking-wider">
-          <span>Slide {index + 1} · {title}</span>
-          <span>{actualW}×{actualH}</span>
+      {!renderMode && (
+        <div className="w-full max-w-[1440px] mb-2 flex justify-between items-baseline font-mono text-[11px] uppercase tracking-widest text-zinc-500">
+          <span>
+            Page {index + 1} / {totalSlides}
+          </span>
+          <span>
+            {actualW} × {actualH}
+          </span>
         </div>
       )}
       <div
@@ -102,7 +102,7 @@ export function Slide({
         className={
           renderMode
             ? "relative bg-white overflow-hidden"
-            : "relative w-full rounded border border-zinc-300 bg-white overflow-hidden"
+            : "relative w-full max-w-[1440px] rounded border border-zinc-300 bg-white overflow-hidden"
         }
         style={frameStyle}
       >
@@ -115,52 +115,13 @@ export function Slide({
             transformOrigin: "top left",
           }}
         >
-          {/* Header row: logo/badge (left) + confidential + slide index
-              (right). Thumbnail renderMode strips the brand decoration
-              on both sides — the counter alone stays so page N/M reads
-              correctly on the card. */}
-          <div className="relative z-[1] flex justify-between items-center px-[40px] pt-[32px]">
-            {renderMode ? (
-              <span />
-            ) : badge ? (
-              <span className="inline-block px-[12px] py-[4px] text-[10px] font-medium tracking-wider uppercase border border-zinc-300 rounded-full text-zinc-600">
-                {badge}
-              </span>
-            ) : (
-              <img src={brand.logoUrl} alt={brand.logoAlt} className="h-[44px] w-auto" />
-            )}
-            <div className="flex items-center gap-4 text-zinc-500">
-              {!badge && !renderMode && (
-                <span className="text-[10px] uppercase tracking-widest">
-                  {brand.confidentialFooter}
-                </span>
-              )}
-              <span className="text-[12px]">
-                {num} / {total}
-              </span>
-            </div>
-          </div>
-          {/* Body */}
-          <div
-            className={
-              badge
-                ? "relative z-[1] px-[40px] pb-[32px] flex-1 flex flex-col pt-[12px] justify-start"
-                : "relative z-[1] px-[40px] pb-[32px] flex-1 flex flex-col pt-[8px] justify-center"
-            }
-          >
+          {/* Body owns the whole frame — no in-frame chrome (see the
+              header comment for the rationale). Center the content
+              vertically since a slide is a spatial artboard, not a
+              flowing page. */}
+          <div className="relative z-[1] px-[40px] py-[32px] flex-1 flex flex-col justify-center">
             {children}
           </div>
-          {/* Footer confidential note — only when a badge is set AND
-              we're in viewer mode. In thumbnail renderMode we drop the
-              confidential line entirely (workspace brand doesn't belong
-              in the picture-of-content). */}
-          {badge && !renderMode && (
-            <div className="absolute bottom-[16px] right-[40px] z-[1] text-right">
-              <p className="text-[8px] text-zinc-500 uppercase tracking-widest leading-relaxed whitespace-pre-line">
-                {brand.confidentialFooter}
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>
