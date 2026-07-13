@@ -66,8 +66,58 @@ import {
   BlockRenderer, BlockList,
   BrandProvider, useBrand,
   type Block, type DocPageContent, type BrandConfig,
+  type DocStyle, type BlockStyle,
+  INTERNAL_DEFAULTS, resolveStyle, alignStyle,
 } from "@cosxai/blocks";
 ```
+
+## Styling model (v0.7.0)
+
+BlockRenderer paints inline styles per sub-part via a three-layer
+cascade:
+
+```
+block.style (root element only)  >  docStyle[type][subKey]  >  INTERNAL_DEFAULTS[type][subKey]
+```
+
+- `INTERNAL_DEFAULTS` (shipped in this package) carries **structural**
+  props only — `display`, `listStyleType`, `flexDirection`, `flex`,
+  `overflowX`, `borderCollapse` — the properties whose absence would
+  collapse the block's layout. It does NOT carry appearance
+  (fontFamily, colors, spacing, borders, dimensional theme values).
+- `docStyle` (passed via `<BlockList docStyle={...}>` and threaded to
+  every `BlockRenderer`) provides the appearance layer as a nested
+  bank mirroring `INTERNAL_DEFAULTS`'s per-sub-part structure. Example:
+
+  ```ts
+  const docStyle: DocStyle = {
+    heading: {
+      "level-1": { fontFamily: "Playfair Display", fontSize: "24px" },
+    },
+    callout: {
+      base: { fontFamily: "Geist" },
+      tones: { accent: { borderLeftColor: "#4f46e5", background: "#eef2ff" } },
+    },
+  };
+  ```
+
+- `block.style` overrides the block's root element only. Sub-parts
+  (eyebrow above a heading, marker inside a bullet, cell inside a
+  table) are unaffected by `block.style`.
+
+**Why**: `product-mesh` persists the editorial visual language in
+`documents.draft_style` / `document_commits.style` JSONB, backfilled
+from `template_seeds.go`'s hard-coded editorial bank. This means
+package version bumps cannot silently re-render historical docs — the
+appearance layer travels with the data, not the code. Rendering with
+an absent `docStyle` produces a structurally-correct but visually
+blank DOM (intentionally — helps surface data-layer bugs instead of
+masking them with fallbacks).
+
+Breaking from v0.6.x: `DocStyle` was a flat `{ [type]: CSSProperties }`.
+v0.7.0 nests it to match `INTERNAL_DEFAULTS`. Consumers should upgrade
+their doc-side stored blobs simultaneously (mesh migration 000042
+handles the platform's own data).
 
 ## Consumers
 

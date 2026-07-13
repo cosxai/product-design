@@ -1,7 +1,7 @@
 {
   "name": "@cosxai/blocks",
-  "version": "0.6.1",
-  "description": "Block-based content renderer with data-driven inline styles. BlockRenderer emits self-contained inline style — no external CSS bundle required. Cascade: block.style > docStyle[type] > INTERNAL_DEFAULTS[type]. Consumed by product-meta SPA (viewing) and product-mesh htmlproc sidecar (PDF + thumbnails).",
+  "version": "0.7.0",
+  "description": "Block-based content renderer with data-driven inline styles. BlockRenderer emits self-contained inline style — no external CSS bundle required. Cascade per sub-part: block.style (root only) > docStyle[type][subKey] > INTERNAL_DEFAULTS[type][subKey]. v0.7.0 breaking: INTERNAL_DEFAULTS is structural-only (display/flex/list-style/borderCollapse); appearance (fontFamily, colors, spacing, borders) must come from docStyle (populated by product-mesh's template_seeds.go from the doc's persisted draft_style / commit.style JSONB). Consumed by product-meta SPA (viewing) and product-mesh htmlproc sidecar (PDF + thumbnails).",
   "license": "UNLICENSED",
   "type": "module",
   "main": "./dist/index.js",
