@@ -1,23 +1,18 @@
 import type { CSSProperties } from "react";
 
 import type { Block } from "./blocks.js";
-
-// Static alignment class map — Tailwind's build-time class extraction
-// requires literal class names, so `text-${c.align}` template
-// interpolation silently drops in production builds. Map here + the
-// column/cell renderers pick from it.
-function alignClass(align: "left" | "center" | "right" | undefined) {
-  switch (align) {
-    case "center": return "text-center";
-    case "right":  return "text-right";
-    default:       return "text-left";
-  }
-}
+import { INTERNAL_DEFAULTS, alignStyle, resolveStyle, type DocStyle } from "./styles.js";
 
 // BlockRenderer — dispatch + per-type views for content-as-data
 // block_doc pages. Signing-form blocks render as read-only placeholders
 // here; live signing interactions live in the signing surface, not the
 // generic renderer.
+//
+// Style model (v0.6.0 breaking change):
+//   Every block outputs inline `style={...}` computed from the cascade
+//     block.style > docStyle[block.type] > INTERNAL_DEFAULTS[block.type]
+//   No consumer needs to bundle Tailwind CSS — the renderer's output
+//   is self-contained. See styles.ts for the resolver + defaults bank.
 //
 // Design:
 //   - Every block gets `data-block-id="<id>"` on its root, so future
@@ -32,44 +27,56 @@ function alignClass(align: "left" | "center" | "right" | undefined) {
 //     values; renders inside a data-block-custom-id scope so the
 //     server-prefixed selectors match.
 
-export function BlockRenderer({ block }: { block: Block }) {
+export interface BlockRendererProps {
+  block: Block;
+  /**
+   * Optional doc-level style override. Middle layer in the cascade
+   * (block.style > docStyle > defaults). Keyed by block `type`;
+   * unknown keys ignored. Typically hydrated from
+   * `doc.metadata.style` (SPA) or `commit.style` (immutable
+   * snapshot from mesh).
+   */
+  docStyle?: DocStyle | undefined;
+}
+
+export function BlockRenderer({ block, docStyle }: BlockRendererProps) {
   switch (block.type) {
     case "heading":
-      return <HeadingView b={block} />;
+      return <HeadingView b={block} docStyle={docStyle} />;
     case "prose":
-      return <ProseView b={block} />;
+      return <ProseView b={block} docStyle={docStyle} />;
     case "divider":
-      return <DividerView b={block} />;
+      return <DividerView b={block} docStyle={docStyle} />;
     case "footer-note":
-      return <FooterNoteView b={block} />;
+      return <FooterNoteView b={block} docStyle={docStyle} />;
     case "callout":
-      return <CalloutView b={block} />;
+      return <CalloutView b={block} docStyle={docStyle} />;
     case "bullet-list":
-      return <BulletListView b={block} />;
+      return <BulletListView b={block} docStyle={docStyle} />;
     case "image":
-      return <ImageView b={block} />;
+      return <ImageView b={block} docStyle={docStyle} />;
     case "two-column":
-      return <TwoColumnView b={block} />;
+      return <TwoColumnView b={block} docStyle={docStyle} />;
     case "card-grid":
-      return <CardGridView b={block} />;
+      return <CardGridView b={block} docStyle={docStyle} />;
     case "stat-grid":
-      return <StatGridView b={block} />;
+      return <StatGridView b={block} docStyle={docStyle} />;
     case "timeline":
-      return <TimelineView b={block} />;
+      return <TimelineView b={block} docStyle={docStyle} />;
     case "table":
-      return <TableView b={block} />;
+      return <TableView b={block} docStyle={docStyle} />;
     case "doc-section":
-      return <DocSectionView b={block} />;
+      return <DocSectionView b={block} docStyle={docStyle} />;
     case "doc-field-table":
-      return <DocFieldTableView b={block} />;
+      return <DocFieldTableView b={block} docStyle={docStyle} />;
     case "doc-input":
-      return <DocInputPlaceholder b={block} />;
+      return <DocInputPlaceholder b={block} docStyle={docStyle} />;
     case "doc-textarea":
-      return <DocTextareaPlaceholder b={block} />;
+      return <DocTextareaPlaceholder b={block} docStyle={docStyle} />;
     case "doc-checkbox":
-      return <DocCheckboxPlaceholder b={block} />;
+      return <DocCheckboxPlaceholder b={block} docStyle={docStyle} />;
     case "doc-signature":
-      return <DocSignaturePlaceholder b={block} />;
+      return <DocSignaturePlaceholder b={block} docStyle={docStyle} />;
     case "custom-html":
       return <CustomHtmlView b={block} />;
     case "slide-decoration":
@@ -86,12 +93,20 @@ export function BlockRenderer({ block }: { block: Block }) {
   }
 }
 
+export interface BlockListProps {
+  blocks: readonly Block[];
+  /**
+   * Optional doc-level style override threaded to every BlockRenderer.
+   */
+  docStyle?: DocStyle | undefined;
+}
+
 /** BlockList — helper that maps a Block[] to a rendered list. */
-export function BlockList({ blocks }: { blocks: readonly Block[] }) {
+export function BlockList({ blocks, docStyle }: BlockListProps) {
   return (
     <>
       {blocks.map((b) => (
-        <BlockRenderer key={b.id} block={b} />
+        <BlockRenderer key={b.id} block={b} docStyle={docStyle} />
       ))}
     </>
   );
@@ -101,99 +116,141 @@ export function BlockList({ blocks }: { blocks: readonly Block[] }) {
 // Inline-text blocks
 // ──────────────────────────────────────────────────────────────────
 
-function HeadingView({ b }: { b: Extract<Block, { type: "heading" }> }) {
+function HeadingView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "heading" }>;
+  docStyle: DocStyle | undefined;
+}) {
   const eyebrow = b.eyebrow ? (
-    <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-500 mb-1">{b.eyebrow}</p>
+    <p style={INTERNAL_DEFAULTS.heading.eyebrow}>{b.eyebrow}</p>
   ) : null;
+  const docLayer = docStyle?.heading;
   if (b.level === 1) {
+    const style = resolveStyle(INTERNAL_DEFAULTS.heading["level-1"], docLayer, b.style);
     return (
       <div data-block-id={b.id}>
         {eyebrow}
-        <h1 className="text-[24px] font-light tracking-tight leading-tight mt-2 mb-3">{b.text}</h1>
+        <h1 style={style}>{b.text}</h1>
       </div>
     );
   }
   if (b.level === 2) {
+    const style = resolveStyle(INTERNAL_DEFAULTS.heading["level-2"], docLayer, b.style);
     return (
       <div data-block-id={b.id}>
         {eyebrow}
-        <h2 className="text-[14px] font-semibold tracking-tight leading-snug mt-3 mb-2">{b.text}</h2>
+        <h2 style={style}>{b.text}</h2>
       </div>
     );
   }
+  const style = resolveStyle(INTERNAL_DEFAULTS.heading["level-3"], docLayer, b.style);
   return (
     <div data-block-id={b.id}>
       {eyebrow}
-      <h3 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-zinc-700 mt-3 mb-1">
-        {b.text}
-      </h3>
+      <h3 style={style}>{b.text}</h3>
     </div>
   );
 }
 
-function ProseView({ b }: { b: Extract<Block, { type: "prose" }> }) {
+function ProseView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "prose" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const base = b.tight ? INTERNAL_DEFAULTS.prose["body-tight"] : INTERNAL_DEFAULTS.prose.body;
+  const style = resolveStyle(base, docStyle?.prose, b.style);
   return (
     <p
       data-block-id={b.id}
-      className={
-        b.tight
-          ? "text-[10.5px] leading-relaxed text-zinc-800"
-          : "text-[10.5px] leading-relaxed text-zinc-800 my-3"
-      }
+      style={style}
       dangerouslySetInnerHTML={{ __html: b.html }}
     />
   );
 }
 
-function DividerView({ b }: { b: Extract<Block, { type: "divider" }> }) {
-  return <hr data-block-id={b.id} className="my-3 border-zinc-200" />;
+function DividerView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "divider" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const style = resolveStyle(INTERNAL_DEFAULTS.divider.root, docStyle?.divider, b.style);
+  return <hr data-block-id={b.id} style={style} />;
 }
 
-function FooterNoteView({ b }: { b: Extract<Block, { type: "footer-note" }> }) {
+function FooterNoteView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "footer-note" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const style = resolveStyle(
+    INTERNAL_DEFAULTS["footer-note"].root,
+    docStyle?.["footer-note"],
+    b.style,
+  );
   return (
     <p
       data-block-id={b.id}
-      className="text-[9px] uppercase tracking-[0.15em] text-zinc-500 mt-4"
+      style={style}
       dangerouslySetInnerHTML={{ __html: b.html }}
     />
   );
 }
 
-function CalloutView({ b }: { b: Extract<Block, { type: "callout" }> }) {
-  const toneClass =
-    b.tone === "accent"
-      ? "border-l-2 border-[var(--ck-accent,#4f46e5)] bg-[color-mix(in_oklab,var(--ck-accent,#4f46e5)_8%,transparent)]"
-      : b.tone === "muted"
-        ? "border-l-2 border-zinc-300 bg-zinc-50"
-        : "border-l-2 border-zinc-400 bg-zinc-50";
+function CalloutView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "callout" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const base: CSSProperties = {
+    ...INTERNAL_DEFAULTS.callout.base,
+    ...INTERNAL_DEFAULTS.callout.tones[b.tone],
+  };
+  const style = resolveStyle(base, docStyle?.callout, b.style);
   return (
     <div
       data-block-id={b.id}
-      className={`text-[10.5px] leading-relaxed text-zinc-800 my-3 px-3 py-2 ${toneClass}`}
+      style={style}
       dangerouslySetInnerHTML={{ __html: b.html }}
     />
   );
 }
 
-function BulletListView({ b }: { b: Extract<Block, { type: "bullet-list" }> }) {
-  // Per-variant marker glyph + colour. Static classNames only so
-  // Tailwind's build-time class extraction picks them up.
-  const marker =
-    b.variant === "check" ? "✓" : b.variant === "arrow" ? "→" : "•";
-  const markerCls =
-    b.variant === "check"
-      ? "text-emerald-600 mt-[1px]"
-      : b.variant === "arrow"
-        ? "text-[var(--ck-accent,#4f46e5)] mt-[1px]"
-        : "text-zinc-400 mt-[2px]";
+function BulletListView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "bullet-list" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const marker = b.variant === "check" ? "✓" : b.variant === "arrow" ? "→" : "•";
+  const markerStyle = INTERNAL_DEFAULTS["bullet-list"].markers[b.variant ?? "dot"];
+  const rootStyle = resolveStyle(
+    INTERNAL_DEFAULTS["bullet-list"].root,
+    docStyle?.["bullet-list"],
+    b.style,
+  );
   return (
-    <ul
-      data-block-id={b.id}
-      className="my-3 space-y-1.5 text-[10.5px] leading-relaxed text-zinc-800"
-    >
+    <ul data-block-id={b.id} style={rootStyle}>
       {b.items.map((it, i) => (
-        <li key={i} className="flex gap-2 items-start">
-          <span aria-hidden className={markerCls}>
+        <li
+          key={i}
+          style={
+            i === 0
+              ? INTERNAL_DEFAULTS["bullet-list"]["item-first"]
+              : INTERNAL_DEFAULTS["bullet-list"].item
+          }
+        >
+          <span aria-hidden style={markerStyle}>
             {marker}
           </span>
           <span dangerouslySetInnerHTML={{ __html: it.html }} />
@@ -203,139 +260,147 @@ function BulletListView({ b }: { b: Extract<Block, { type: "bullet-list" }> }) {
   );
 }
 
-function ImageView({ b }: { b: Extract<Block, { type: "image" }> }) {
-  return (
-    <img
-      data-block-id={b.id}
-      src={b.src}
-      alt={b.alt}
-      {...(b.width !== undefined ? { style: { width: b.width } } : {})}
-      className={
-        b.align === "center"
-          ? "block mx-auto my-3"
-          : b.align === "right"
-            ? "block ml-auto my-3"
-            : "block my-3"
-      }
-    />
-  );
+function ImageView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "image" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const align = b.align ?? "left";
+  const base: CSSProperties = {
+    ...INTERNAL_DEFAULTS.image.base,
+    ...INTERNAL_DEFAULTS.image.align[align],
+    ...(b.width !== undefined ? { width: b.width } : {}),
+  };
+  const style = resolveStyle(base, docStyle?.image, b.style);
+  return <img data-block-id={b.id} src={b.src} alt={b.alt} style={style} />;
 }
 
 // ──────────────────────────────────────────────────────────────────
 // Structural blocks
 // ──────────────────────────────────────────────────────────────────
 
-function TwoColumnView({ b }: { b: Extract<Block, { type: "two-column" }> }) {
+function TwoColumnView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "two-column" }>;
+  docStyle: DocStyle | undefined;
+}) {
   // rightWidth accepts a CSS length ("280px", "20rem", "30%") applied
-  // via inline style — the portable path. Tailwind class fragments
-  // ("w-[280px]") are still accepted for backward compat but
-  // discouraged because static class extraction can miss unfamiliar
-  // arbitrary values in downstream consumer builds.
+  // via inline style — the portable path since v0.6.0 dropped
+  // className flows entirely. Legacy Tailwind class fragments
+  // ("w-[280px]") passed here have no effect (className removed from
+  // this component); document authors should switch to CSS lengths.
   const rw = b.rightWidth;
   const isCssLength = !!rw && /^-?[\d.]+(px|%|rem|em|vw|vh|ch|pt|cm|mm|in)$/.test(rw);
-  const rightStyle: CSSProperties | undefined = isCssLength
+  const rightStyle: CSSProperties = isCssLength
     ? { width: rw, flex: "0 0 auto" }
-    : undefined;
-  const rightCls = !rw ? "flex-1" : isCssLength ? "" : rw;
+    : INTERNAL_DEFAULTS["two-column"]["right-flex"];
+  const rootStyle = resolveStyle(
+    INTERNAL_DEFAULTS["two-column"].root,
+    docStyle?.["two-column"],
+    b.style,
+  );
   return (
-    <div data-block-id={b.id} className="my-3 flex gap-4">
-      <div className="flex-1">
-        <BlockList blocks={b.left} />
+    <div data-block-id={b.id} style={rootStyle}>
+      <div style={INTERNAL_DEFAULTS["two-column"].left}>
+        <BlockList blocks={b.left} docStyle={docStyle} />
       </div>
-      <div className={rightCls} style={rightStyle}>
-        <BlockList blocks={b.right} />
+      <div style={rightStyle}>
+        <BlockList blocks={b.right} docStyle={docStyle} />
       </div>
     </div>
   );
 }
 
-function CardGridView({ b }: { b: Extract<Block, { type: "card-grid" }> }) {
+function CardGridView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "card-grid" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const rootStyle: CSSProperties = {
+    ...resolveStyle(INTERNAL_DEFAULTS["card-grid"].root, docStyle?.["card-grid"], b.style),
+    gridTemplateColumns: `repeat(${b.cols}, minmax(0, 1fr))`,
+  };
   return (
-    <div
-      data-block-id={b.id}
-      className="my-3 grid gap-3"
-      style={{ gridTemplateColumns: `repeat(${b.cols}, minmax(0, 1fr))` }}
-    >
+    <div data-block-id={b.id} style={rootStyle}>
       {b.cards.map((c, i) => (
-        <div
-          key={i}
-          className="rounded border border-zinc-200 bg-white p-3 flex flex-col gap-1"
-        >
-          {c.image && <img src={c.image} alt="" className="w-full mb-1" />}
-          {c.title && <h4 className="text-[12px] font-semibold text-zinc-900">{c.title}</h4>}
+        <div key={i} style={INTERNAL_DEFAULTS["card-grid"].card}>
+          {c.image && <img src={c.image} alt="" style={INTERNAL_DEFAULTS["card-grid"]["card-image"]} />}
+          {c.title && <h4 style={INTERNAL_DEFAULTS["card-grid"]["card-title"]}>{c.title}</h4>}
           {c.body && (
             <p
-              className="text-[10px] leading-relaxed text-zinc-700"
+              style={INTERNAL_DEFAULTS["card-grid"]["card-body"]}
               dangerouslySetInnerHTML={{ __html: c.body }}
             />
           )}
-          {c.foot && <p className="text-[9px] text-zinc-500 mt-1">{c.foot}</p>}
+          {c.foot && <p style={INTERNAL_DEFAULTS["card-grid"]["card-foot"]}>{c.foot}</p>}
         </div>
       ))}
     </div>
   );
 }
 
-function StatGridView({ b }: { b: Extract<Block, { type: "stat-grid" }> }) {
+function StatGridView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "stat-grid" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const rootStyle: CSSProperties = {
+    ...resolveStyle(INTERNAL_DEFAULTS["stat-grid"].root, docStyle?.["stat-grid"], b.style),
+    gridTemplateColumns: `repeat(${b.stats.length}, minmax(0, 1fr))`,
+  };
   return (
-    <div
-      data-block-id={b.id}
-      className="my-3 grid gap-4"
-      style={{ gridTemplateColumns: `repeat(${b.stats.length}, minmax(0, 1fr))` }}
-    >
+    <div data-block-id={b.id} style={rootStyle}>
       {b.stats.map((s, i) => (
-        <div key={i} className="flex flex-col gap-0.5">
-          <p className="text-[9px] uppercase tracking-[0.15em] text-zinc-500">{s.label}</p>
-          <p className="text-[24px] font-semibold text-zinc-900 leading-none">{s.value}</p>
+        <div key={i} style={INTERNAL_DEFAULTS["stat-grid"].cell}>
+          <p style={INTERNAL_DEFAULTS["stat-grid"].label}>{s.label}</p>
+          <p style={INTERNAL_DEFAULTS["stat-grid"].value}>{s.value}</p>
         </div>
       ))}
     </div>
   );
 }
 
-function TimelineView({ b }: { b: Extract<Block, { type: "timeline" }> }) {
+function TimelineView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "timeline" }>;
+  docStyle: DocStyle | undefined;
+}) {
   const isHorizontal = b.orientation === "horizontal";
+  const baseRoot = isHorizontal
+    ? INTERNAL_DEFAULTS.timeline["root-horizontal"]
+    : INTERNAL_DEFAULTS.timeline["root-vertical"];
+  const rootStyle = resolveStyle(baseRoot, docStyle?.timeline, b.style);
+  const stepStyle = isHorizontal
+    ? INTERNAL_DEFAULTS.timeline["step-horizontal"]
+    : INTERNAL_DEFAULTS.timeline["step-vertical"];
   return (
-    <ol
-      data-block-id={b.id}
-      className={
-        isHorizontal
-          ? "my-3 flex gap-3 overflow-x-auto"
-          : "my-3 space-y-3"
-      }
-    >
+    <ol data-block-id={b.id} style={rootStyle}>
       {b.steps.map((step, i) => (
-        <li
-          key={i}
-          className={
-            isHorizontal
-              ? "flex-1 min-w-[140px] flex flex-col gap-1"
-              : "flex gap-3 items-start"
-          }
-        >
-          {!isHorizontal && (
-            <span
-              aria-hidden
-              className="mt-[6px] h-2 w-2 rounded-full bg-[var(--ck-accent,#4f46e5)] flex-none"
-            />
-          )}
-          <div className="flex-1">
-            {step.num && <p className="text-[9px] text-zinc-500">{step.num}</p>}
+        <li key={i} style={stepStyle}>
+          {!isHorizontal && <span aria-hidden style={INTERNAL_DEFAULTS.timeline.dot} />}
+          <div style={{ flex: 1 }}>
+            {step.num && <p style={INTERNAL_DEFAULTS.timeline["step-num"]}>{step.num}</p>}
             {step.eyebrow && (
-              <p className="text-[9px] uppercase tracking-[0.15em] text-zinc-500">
-                {step.eyebrow}
-              </p>
+              <p style={INTERNAL_DEFAULTS.timeline["step-eyebrow"]}>{step.eyebrow}</p>
             )}
-            <p className="text-[11px] font-semibold text-zinc-900">{step.title}</p>
+            <p style={INTERNAL_DEFAULTS.timeline["step-title"]}>{step.title}</p>
             {step.body && (
               <p
-                className="text-[10.5px] leading-relaxed text-zinc-700 mt-1"
+                style={INTERNAL_DEFAULTS.timeline["step-body"]}
                 dangerouslySetInnerHTML={{ __html: step.body }}
               />
             )}
-            {step.output && (
-              <p className="text-[9px] text-zinc-500 mt-1">→ {step.output}</p>
-            )}
+            {step.output && <p style={INTERNAL_DEFAULTS.timeline["step-output"]}>→ {step.output}</p>}
           </div>
         </li>
       ))}
@@ -343,7 +408,13 @@ function TimelineView({ b }: { b: Extract<Block, { type: "timeline" }> }) {
   );
 }
 
-function TableView({ b }: { b: Extract<Block, { type: "table" }> }) {
+function TableView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "table" }>;
+  docStyle: DocStyle | undefined;
+}) {
   // widthFr is a fractional weight per column. Rendered as a
   // percentage of the total assigned weight so the values compose
   // consistently on a regular <table> (fr units are grid-only and
@@ -355,26 +426,31 @@ function TableView({ b }: { b: Extract<Block, { type: "table" }> }) {
     if (widthFr === undefined || totalFr <= 0) return undefined;
     return { width: `${(widthFr / totalFr) * 100}%` };
   };
+  const wrapperStyle = resolveStyle(
+    INTERNAL_DEFAULTS.table.wrapper,
+    docStyle?.table,
+    b.style,
+  );
   return (
-    <div data-block-id={b.id} className="my-3 overflow-x-auto">
-      <table className="w-full text-[10px] border-collapse">
+    <div data-block-id={b.id} style={wrapperStyle}>
+      <table style={INTERNAL_DEFAULTS.table.root}>
         <thead>
           <tr>
-            {b.columns.map((c) => (
-              <th
-                key={c.id}
-                className={`border border-zinc-200 px-2 py-1 font-semibold text-zinc-800 ${
-                  c.tone === "accent"
-                    ? "bg-[color-mix(in_oklab,var(--ck-accent,#4f46e5)_10%,transparent)]"
-                    : c.tone === "muted"
-                      ? "bg-zinc-100"
-                      : "bg-zinc-50"
-                } ${alignClass(c.align)}`}
-                style={widthStyleFor(c.widthFr)}
-              >
-                {c.header}
-              </th>
-            ))}
+            {b.columns.map((c) => {
+              const tone: keyof typeof INTERNAL_DEFAULTS.table.tones =
+                c.tone === "accent" ? "accent" : c.tone === "muted" ? "muted" : "default";
+              const style: CSSProperties = {
+                ...INTERNAL_DEFAULTS.table.th,
+                ...INTERNAL_DEFAULTS.table.tones[tone],
+                ...alignStyle(c.align),
+                ...widthStyleFor(c.widthFr),
+              };
+              return (
+                <th key={c.id} style={style}>
+                  {c.header}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>
@@ -382,17 +458,16 @@ function TableView({ b }: { b: Extract<Block, { type: "table" }> }) {
             <tr key={ri}>
               {b.columns.map((c) => {
                 const cellHtml = row.cells[c.id] ?? "";
-                const emphasis = row.emphasis?.[c.id];
-                const emphasisCls =
-                  emphasis === "lead"
-                    ? "font-semibold text-zinc-900"
-                    : emphasis === "muted"
-                      ? "text-zinc-500"
-                      : "text-zinc-800";
+                const emphasis = row.emphasis?.[c.id] ?? "normal";
+                const style: CSSProperties = {
+                  ...INTERNAL_DEFAULTS.table.td,
+                  ...alignStyle(c.align),
+                  ...INTERNAL_DEFAULTS.table.emphasis[emphasis],
+                };
                 return (
                   <td
                     key={c.id}
-                    className={`border border-zinc-200 px-2 py-1 align-top ${alignClass(c.align)} ${emphasisCls}`}
+                    style={style}
                     dangerouslySetInnerHTML={{ __html: cellHtml }}
                   />
                 );
@@ -409,39 +484,58 @@ function TableView({ b }: { b: Extract<Block, { type: "table" }> }) {
 // A4 doc-* blocks
 // ──────────────────────────────────────────────────────────────────
 
-function DocSectionView({ b }: { b: Extract<Block, { type: "doc-section" }> }) {
+function DocSectionView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "doc-section" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const rootStyle = resolveStyle(
+    INTERNAL_DEFAULTS["doc-section"].root,
+    docStyle?.["doc-section"],
+    b.style,
+  );
   return (
-    <section data-block-id={b.id} className="my-4">
-      <div className="flex items-baseline gap-2 mb-2 border-b border-zinc-300 pb-1">
+    <section data-block-id={b.id} style={rootStyle}>
+      <div style={INTERNAL_DEFAULTS["doc-section"].header}>
         {b.num !== undefined && (
-          <span className="text-[10px] font-semibold text-zinc-600">§{b.num}</span>
+          <span style={INTERNAL_DEFAULTS["doc-section"].num}>§{b.num}</span>
         )}
-        <h3 className="text-[12px] font-semibold text-zinc-900 tracking-tight">{b.title}</h3>
+        <h3 style={INTERNAL_DEFAULTS["doc-section"].title}>{b.title}</h3>
       </div>
-      <div className="pl-3">
-        <BlockList blocks={b.children} />
+      <div style={INTERNAL_DEFAULTS["doc-section"].children}>
+        <BlockList blocks={b.children} docStyle={docStyle} />
       </div>
     </section>
   );
 }
 
-function DocFieldTableView({ b }: { b: Extract<Block, { type: "doc-field-table" }> }) {
+function DocFieldTableView({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "doc-field-table" }>;
+  docStyle: DocStyle | undefined;
+}) {
   const labelW = b.labelWidth ?? "32%";
+  const rootStyle = resolveStyle(
+    INTERNAL_DEFAULTS["doc-field-table"].root,
+    docStyle?.["doc-field-table"],
+    b.style,
+  );
   return (
-    <table
-      data-block-id={b.id}
-      className="my-2 w-full text-[10.5px] border-collapse"
-    >
+    <table data-block-id={b.id} style={rootStyle}>
       <colgroup>
         <col style={{ width: labelW }} />
         <col />
       </colgroup>
       <tbody>
         {b.rows.map((r, i) => (
-          <tr key={i} className="border-b border-zinc-100">
-            <th className="text-left align-top font-medium text-zinc-700 py-1 pr-2">{r.label}</th>
-            <td className="align-top py-1">
-              <BlockList blocks={r.valueBlocks} />
+          <tr key={i} style={INTERNAL_DEFAULTS["doc-field-table"].row}>
+            <th style={INTERNAL_DEFAULTS["doc-field-table"].label}>{r.label}</th>
+            <td style={INTERNAL_DEFAULTS["doc-field-table"].value}>
+              <BlockList blocks={r.valueBlocks} docStyle={docStyle} />
             </td>
           </tr>
         ))}
@@ -455,46 +549,80 @@ function DocFieldTableView({ b }: { b: Extract<Block, { type: "doc-field-table" 
 // signing surface owns live interaction).
 // ──────────────────────────────────────────────────────────────────
 
-function DocInputPlaceholder({ b }: { b: Extract<Block, { type: "doc-input" }> }) {
+function DocInputPlaceholder({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "doc-input" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const rootStyle = resolveStyle(
+    INTERNAL_DEFAULTS["doc-input"].root,
+    docStyle?.["doc-input"],
+    b.style,
+  );
   return (
-    <span data-block-id={b.id} className="inline-block align-middle">
-      <span className="inline-block min-w-[80px] border-b border-zinc-400 text-[10.5px] text-zinc-400 px-1">
-        {b.placeholder ?? " "}
-      </span>
+    <span data-block-id={b.id} style={rootStyle}>
+      <span style={INTERNAL_DEFAULTS["doc-input"].inner}>{b.placeholder ?? " "}</span>
     </span>
   );
 }
 
-function DocTextareaPlaceholder({ b }: { b: Extract<Block, { type: "doc-textarea" }> }) {
+function DocTextareaPlaceholder({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "doc-textarea" }>;
+  docStyle: DocStyle | undefined;
+}) {
   const rows = b.rows ?? 3;
+  const rootStyle: CSSProperties = {
+    ...resolveStyle(INTERNAL_DEFAULTS["doc-textarea"].root, docStyle?.["doc-textarea"], b.style),
+    minHeight: `${rows * 1.3}em`,
+  };
   return (
-    <div
-      data-block-id={b.id}
-      className="my-2 border border-zinc-300 bg-zinc-50 px-2 py-1 text-[10.5px] text-zinc-400"
-      style={{ minHeight: `${rows * 1.3}em` }}
-    >
+    <div data-block-id={b.id} style={rootStyle}>
       {b.placeholder ?? ""}
     </div>
   );
 }
 
-function DocCheckboxPlaceholder({ b }: { b: Extract<Block, { type: "doc-checkbox" }> }) {
+function DocCheckboxPlaceholder({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "doc-checkbox" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const rootStyle = resolveStyle(
+    INTERNAL_DEFAULTS["doc-checkbox"].root,
+    docStyle?.["doc-checkbox"],
+    b.style,
+  );
   return (
-    <span data-block-id={b.id} className="inline-flex items-center gap-2">
-      <span
-        aria-hidden
-        className="inline-block h-3 w-3 border border-zinc-400 rounded-sm bg-white"
-      />
-      {b.label && <span className="text-[10.5px] text-zinc-800">{b.label}</span>}
+    <span data-block-id={b.id} style={rootStyle}>
+      <span aria-hidden style={INTERNAL_DEFAULTS["doc-checkbox"].box} />
+      {b.label && <span style={INTERNAL_DEFAULTS["doc-checkbox"].label}>{b.label}</span>}
     </span>
   );
 }
 
-function DocSignaturePlaceholder({ b }: { b: Extract<Block, { type: "doc-signature" }> }) {
+function DocSignaturePlaceholder({
+  b,
+  docStyle,
+}: {
+  b: Extract<Block, { type: "doc-signature" }>;
+  docStyle: DocStyle | undefined;
+}) {
+  const rootStyle = resolveStyle(
+    INTERNAL_DEFAULTS["doc-signature"].root,
+    docStyle?.["doc-signature"],
+    b.style,
+  );
   return (
-    <div data-block-id={b.id} className="my-3 flex flex-col gap-0.5">
-      <div className="h-[36px] border-b border-zinc-400" />
-      <p className="text-[9px] uppercase tracking-[0.15em] text-zinc-500">
+    <div data-block-id={b.id} style={rootStyle}>
+      <div style={INTERNAL_DEFAULTS["doc-signature"].line} />
+      <p style={INTERNAL_DEFAULTS["doc-signature"].label}>
         Signature
         {b.recipientIndex !== undefined ? ` · Signer ${b.recipientIndex + 1}` : ""}
       </p>
@@ -508,8 +636,13 @@ function DocSignaturePlaceholder({ b }: { b: Extract<Block, { type: "doc-signatu
 
 function CustomHtmlView({ b }: { b: Extract<Block, { type: "custom-html" }> }) {
   // Server-side sanitised on write; SPA trusts stored value.
+  const rootStyle = resolveStyle(
+    INTERNAL_DEFAULTS["custom-html"].root,
+    undefined, // custom-html intentionally opaque — no docStyle override
+    b.style,
+  );
   return (
-    <div data-block-id={b.id} data-block-custom-id={b.id} className="my-3">
+    <div data-block-id={b.id} data-block-custom-id={b.id} style={rootStyle}>
       {b.css && <style dangerouslySetInnerHTML={{ __html: b.css }} />}
       <div dangerouslySetInnerHTML={{ __html: b.html }} />
     </div>
