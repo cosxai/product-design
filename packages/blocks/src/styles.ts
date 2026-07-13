@@ -153,6 +153,19 @@ export function resolveStyle(
 // ──────────────────────────────────────────────────────────────────
 
 const ACCENT = "var(--ck-accent, #4f46e5)";
+// Editorial-style serif for headings. Follows the same token +
+// fallback pattern as ACCENT: SPA consumers can define
+// `--ck-font-display` at :root (metaroom's chrome-editorial CSS
+// does this via @cosxai/ui) to swap the display font per theme
+// (editorial / minimal / neobrutalism / …). Renderers without a
+// stylesheet (htmlproc's puppeteer HTML, third-party consumers)
+// fall through to Playfair Display Variable — the same @font-face
+// mesh's htmlproc sidecar loads via build-fonts-css.mjs. Explicit
+// fallback chain terminates in Georgia + `serif` so a bare-metal
+// renderer without either token OR the Playfair @font-face still
+// renders in a serif face.
+const SERIF_DISPLAY =
+  "var(--ck-font-display, 'Playfair Display Variable'), 'Playfair Display', Georgia, serif";
 const ACCENT_BG_8 = "color-mix(in oklab, var(--ck-accent, #4f46e5) 8%, transparent)";
 const ACCENT_BG_10 = "color-mix(in oklab, var(--ck-accent, #4f46e5) 10%, transparent)";
 
@@ -181,6 +194,7 @@ const EYEBROW: CSSProperties = {
 };
 
 const HEADING_1: CSSProperties = {
+  fontFamily: SERIF_DISPLAY,
   fontSize: "24px",
   fontWeight: 300,
   letterSpacing: "-0.025em",
@@ -190,6 +204,7 @@ const HEADING_1: CSSProperties = {
 };
 
 const HEADING_2: CSSProperties = {
+  fontFamily: SERIF_DISPLAY,
   fontSize: "14px",
   fontWeight: 600,
   letterSpacing: "-0.025em",
@@ -198,6 +213,8 @@ const HEADING_2: CSSProperties = {
   marginBottom: "0.5rem",
 };
 
+// heading-3 stays on the sans body font (metaroom uses it as a
+// small-caps eyebrow-style label, not an editorial display heading).
 const HEADING_3: CSSProperties = {
   fontSize: "11px",
   fontWeight: 600,

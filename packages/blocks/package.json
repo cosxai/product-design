@@ -1,6 +1,6 @@
 {
   "name": "@cosxai/blocks",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Block-based content renderer with data-driven inline styles. BlockRenderer emits self-contained inline style — no external CSS bundle required. Cascade: block.style > docStyle[type] > INTERNAL_DEFAULTS[type]. Consumed by product-meta SPA (viewing) and product-mesh htmlproc sidecar (PDF + thumbnails).",
   "license": "UNLICENSED",
   "type": "module",
