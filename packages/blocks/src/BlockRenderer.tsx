@@ -243,15 +243,22 @@ function CalloutView({
   docStyle: DocStyle | undefined;
 }) {
   const calloutBank = docStyle?.callout;
-  // Compose base + tone at both package and doc layers. block.style is
-  // applied last at the outermost element only (single-node blocks).
-  const base: CSSProperties = {
-    ...INTERNAL_DEFAULTS.callout.base,
-    ...calloutBank?.base,
-    ...INTERNAL_DEFAULTS.callout.tones[b.tone],
-    ...calloutBank?.tones?.[b.tone],
-  };
-  const style = resolveStyle(base, undefined, b.style);
+  // Compose base + tone at both package and doc layers. Package
+  // layers go into packageDefault (trusted); doc layers into docLayer
+  // (routed through resolveStyle's stripBlacklisted so persisted
+  // banks can't smuggle blacklisted position/transform/zIndex).
+  // block.style is applied last at the outermost element only.
+  const style = resolveStyle(
+    {
+      ...INTERNAL_DEFAULTS.callout.base,
+      ...INTERNAL_DEFAULTS.callout.tones[b.tone],
+    },
+    {
+      ...calloutBank?.base,
+      ...calloutBank?.tones?.[b.tone],
+    },
+    b.style,
+  );
   return (
     <div
       data-block-id={b.id}
@@ -314,14 +321,22 @@ function ImageView({
 }) {
   const imageBank = docStyle?.image;
   const align = b.align ?? "left";
-  const base: CSSProperties = {
-    ...INTERNAL_DEFAULTS.image.base,
-    ...imageBank?.base,
-    ...INTERNAL_DEFAULTS.image.align[align],
-    ...imageBank?.align?.[align],
-    ...(b.width !== undefined ? { width: b.width } : {}),
-  };
-  const style = resolveStyle(base, undefined, b.style);
+  // Package base + align go into packageDefault (trusted); doc base +
+  // align through resolveStyle's docLayer so stripBlacklisted runs.
+  // block.width is a well-known block prop from the schema so it
+  // rides on packageDefault (not user data, no strip needed).
+  const style = resolveStyle(
+    {
+      ...INTERNAL_DEFAULTS.image.base,
+      ...INTERNAL_DEFAULTS.image.align[align],
+      ...(b.width !== undefined ? { width: b.width } : {}),
+    },
+    {
+      ...imageBank?.base,
+      ...imageBank?.align?.[align],
+    },
+    b.style,
+  );
   return <img data-block-id={b.id} src={b.src} alt={b.alt} style={style} />;
 }
 
@@ -582,11 +597,23 @@ function TableView({
             {b.columns.map((c) => {
               const tone: keyof typeof INTERNAL_DEFAULTS.table.tones =
                 c.tone === "accent" ? "accent" : c.tone === "muted" ? "muted" : "default";
+              // Package th + tone are trusted; tableBank.th + .tones[tone]
+              // are user data → routed through resolveStyle's docLayer
+              // so stripBlacklisted runs before merge. alignStyle +
+              // widthStyleFor come from block schema (trusted) and
+              // apply on top for column-specific overrides.
               const style: CSSProperties = {
-                ...INTERNAL_DEFAULTS.table.th,
-                ...tableBank?.th,
-                ...INTERNAL_DEFAULTS.table.tones[tone],
-                ...tableBank?.tones?.[tone],
+                ...resolveStyle(
+                  {
+                    ...INTERNAL_DEFAULTS.table.th,
+                    ...INTERNAL_DEFAULTS.table.tones[tone],
+                  },
+                  {
+                    ...tableBank?.th,
+                    ...tableBank?.tones?.[tone],
+                  },
+                  undefined,
+                ),
                 ...alignStyle(c.align),
                 ...widthStyleFor(c.widthFr),
               };
@@ -604,12 +631,20 @@ function TableView({
               {b.columns.map((c) => {
                 const cellHtml = row.cells[c.id] ?? "";
                 const emphasis = row.emphasis?.[c.id] ?? "normal";
+                // Same sanitisation pattern as th above.
                 const style: CSSProperties = {
-                  ...INTERNAL_DEFAULTS.table.td,
-                  ...tableBank?.td,
+                  ...resolveStyle(
+                    {
+                      ...INTERNAL_DEFAULTS.table.td,
+                      ...INTERNAL_DEFAULTS.table.emphasis[emphasis],
+                    },
+                    {
+                      ...tableBank?.td,
+                      ...tableBank?.emphasis?.[emphasis],
+                    },
+                    undefined,
+                  ),
                   ...alignStyle(c.align),
-                  ...INTERNAL_DEFAULTS.table.emphasis[emphasis],
-                  ...tableBank?.emphasis?.[emphasis],
                 };
                 return (
                   <td

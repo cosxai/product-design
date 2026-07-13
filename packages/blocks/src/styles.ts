@@ -234,6 +234,13 @@ export type DocStyle = {
   "doc-checkbox"?: DocCheckboxBank;
   "doc-signature"?: DocSignatureBank;
   "custom-html"?: CustomHtmlBank;
+  // Index signature preserves the "unknown keys ignored" forward-
+  // compat promise. Consumers whose persisted docStyle carries a
+  // block type not yet known to this @cosxai/blocks version (e.g.
+  // a doc authored against a newer package that added a block
+  // type) don't trip TS excess-property errors, and the extra key
+  // is silently ignored at render time by BlockRenderer.
+  [blockType: string]: unknown;
 };
 
 // ──────────────────────────────────────────────────────────────────
@@ -324,9 +331,13 @@ export function resolveStyle(
 // fontSize, fontWeight, letterSpacing, textTransform, lineHeight,
 // border*, padding*, margin*, borderRadius, dimensional theme picks
 // like a marker's height) is REMOVED and must be supplied by
-// docStyle. Renderers with docStyle absent will paint an unstyled
-// but structurally-correct DOM (flex containers still flex, lists
-// still don't render marker glyphs, tables still collapse borders).
+// docStyle. Renderers with docStyle absent still emit a
+// structurally-correct DOM (flex containers still flex, tables still
+// collapse borders, bullet-list markers still emit their glyph
+// characters) — but the appearance falls back to the browser's user-
+// agent stylesheet: text in whatever UA font/size/color, no theme
+// spacing or borders. That "unthemed but readable" state is the
+// intended tell that the doc's own style data is missing.
 //
 // Kept structural props are those whose absence would collapse the
 // block's LAYOUT (not its appearance) — e.g. `display: flex` on a
