@@ -288,15 +288,27 @@ function TwoColumnView({
   b: Extract<Block, { type: "two-column" }>;
   docStyle: DocStyle | undefined;
 }) {
-  // rightWidth accepts a CSS length ("280px", "20rem", "30%") applied
-  // via inline style — the portable path since v0.6.0 dropped
-  // className flows entirely. Legacy Tailwind class fragments
-  // ("w-[280px]") passed here have no effect (className removed from
-  // this component); document authors should switch to CSS lengths.
+  // rightWidth resolution:
+  //   1. Plain CSS length ("280px", "20rem", "30%") — apply as
+  //      inline `width` + `flex: 0 0 auto`. Portable path since
+  //      v0.6.0 dropped className flows entirely.
+  //   2. Legacy Tailwind arbitrary-value class fragment
+  //      ("w-[280px]", "w-[30%]") — extract the value between the
+  //      brackets and apply the same way. Preserves back-compat
+  //      with stored docs authored against v0.5.x when className
+  //      fragments were accepted here. See blocks.ts::TwoColumnBlock
+  //      docs.
+  //   3. Anything else / undefined — fall back to flex:1 so the
+  //      right column shares width with left.
   const rw = b.rightWidth;
-  const isCssLength = !!rw && /^-?[\d.]+(px|%|rem|em|vw|vh|ch|pt|cm|mm|in)$/.test(rw);
-  const rightStyle: CSSProperties = isCssLength
-    ? { width: rw, flex: "0 0 auto" }
+  const bracketMatch = rw ? /^w-\[(.+)\]$/.exec(rw) : null;
+  const cssLength = bracketMatch
+    ? bracketMatch[1]
+    : rw && /^-?[\d.]+(px|%|rem|em|vw|vh|ch|pt|cm|mm|in)$/.test(rw)
+      ? rw
+      : null;
+  const rightStyle: CSSProperties = cssLength
+    ? { width: cssLength, flex: "0 0 auto" }
     : INTERNAL_DEFAULTS["two-column"]["right-flex"];
   const rootStyle = resolveStyle(
     INTERNAL_DEFAULTS["two-column"].root,

@@ -142,8 +142,14 @@ export function resolveStyle(
 //   cell-*     — table cell base
 //
 // Values translated from the pre-v0.6.0 Tailwind classNames in
-// BlockRenderer.tsx. Any drift is a visual regression — see
-// BlockRenderer.test.tsx for the pin.
+// BlockRenderer.tsx. Any drift is a visual regression — until the
+// vitest harness lands (deferred, see workdoc), the validation
+// path is downstream integration smoke:
+//   - product-meta SPA viewer renders a fixture doc → visual review
+//   - product-mesh htmlproc PDF renders same fixture → PDF pixel
+//     diff vs. the SPA snapshot
+// Edits to values below should be paired with a smoke pass at
+// merge time.
 // ──────────────────────────────────────────────────────────────────
 
 const ACCENT = "var(--ck-accent, #4f46e5)";
