@@ -10,6 +10,13 @@
 //
 // The Go validator MUST match this file. If they drift, malformed
 // content sneaks through the write path and blows up on render.
+//
+// Since v0.6.0 every block optionally carries `style?: BlockStyle`
+// — a CSS override applied to the block's primary/root element via
+// the cascade `block.style > docStyle[type] > package defaults`.
+// See styles.ts for the resolver + the internal defaults bank.
+
+import type { BlockStyle } from "./styles.js";
 
 export type Block =
   | HeadingBlock
@@ -37,6 +44,14 @@ interface BaseBlock {
   // Stable id; rendered as data-block-id="<id>" on the block root.
   // Used for editor selection and (eventually) block-anchored comments.
   id: string;
+  // Per-block style override — highest-priority layer in the cascade
+  // (see styles.ts `resolveStyle`). Applies to the block's primary
+  // element (h1/h2/h3 for headings, <p> for prose, <ul> for
+  // bullet-list, outer wrapper for structural blocks, etc.). At
+  // v0.6.0 sub-part overrides (heading eyebrow, bullet marker,
+  // table cell tones) are NOT user-customisable — they stay on the
+  // package defaults; growing the API is a v0.7.0 extension.
+  style?: BlockStyle;
 }
 
 // Common blocks -----------------------------------------------------------

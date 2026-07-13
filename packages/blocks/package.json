@@ -1,7 +1,7 @@
 {
   "name": "@cosxai/blocks",
-  "version": "0.5.0",
-  "description": "Block-based content renderer — Slide + Doc chrome + BlockRenderer for the shared block schema. Consumed by product-meta SPA (viewing) and product-mesh htmlproc sidecar (thumbnails).",
+  "version": "0.6.0",
+  "description": "Block-based content renderer with data-driven inline styles. BlockRenderer emits self-contained inline style — no external CSS bundle required. Cascade: block.style > docStyle[type] > INTERNAL_DEFAULTS[type]. Consumed by product-meta SPA (viewing) and product-mesh htmlproc sidecar (PDF + thumbnails).",
   "license": "UNLICENSED",
   "type": "module",
   "main": "./dist/index.js",
