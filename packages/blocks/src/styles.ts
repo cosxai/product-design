@@ -152,22 +152,45 @@ export function resolveStyle(
 // merge time.
 // ──────────────────────────────────────────────────────────────────
 
-const ACCENT = "var(--ck-accent, #4f46e5)";
-// Editorial-style serif for headings. Follows the same token +
-// fallback pattern as ACCENT: SPA consumers can define
-// `--ck-font-display` at :root (metaroom's chrome-editorial CSS
-// does this via @cosxai/ui) to swap the display font per theme
-// (editorial / minimal / neobrutalism / …). Renderers without a
-// stylesheet (htmlproc's puppeteer HTML, third-party consumers)
-// fall through to Playfair Display Variable — the same @font-face
-// mesh's htmlproc sidecar loads via build-fonts-css.mjs. Explicit
-// fallback chain terminates in Georgia + `serif` so a bare-metal
-// renderer without either token OR the Playfair @font-face still
-// renders in a serif face.
-const SERIF_DISPLAY =
-  "var(--ck-font-display, 'Playfair Display Variable'), 'Playfair Display', Georgia, serif";
-const ACCENT_BG_8 = "color-mix(in oklab, var(--ck-accent, #4f46e5) 8%, transparent)";
-const ACCENT_BG_10 = "color-mix(in oklab, var(--ck-accent, #4f46e5) 10%, transparent)";
+// v0.6.1 · pure hardcoded values.
+//
+// Prior to 0.6.1 these constants referenced consumer CSS variables
+// (`var(--ck-accent, …)`, `var(--ck-font-display, …)`) so a
+// consumer's :root stylesheet could theme block visuals via
+// element-cascade side channel. That contradicted the plan's
+// "content = self-contained" premise: two renderers of the same
+// content data (SPA vs htmlproc vs third-party) could paint
+// different bytes just because one had a stylesheet swap the vars.
+//
+// From 0.6.1, INTERNAL_DEFAULTS is FULLY hardcoded — no `var()`
+// references, no dependency on any external stylesheet or DOM
+// attribute. Every block-root style declares its own fontFamily
+// (font is CSS-inherited, so children pick up the parent block's
+// font without redeclaring). Themes are ONLY changeable via the
+// cascade the plan explicitly named:
+//
+//   block.style > docStyle[block.type] > INTERNAL_DEFAULTS
+//
+// Workspace-level presets (D4) will land as docStyle blobs the
+// SPA copies into doc.metadata.style — same channel.
+const ACCENT = "#4f46e5";
+const ACCENT_BG_8 = "rgba(79, 70, 229, 0.08)";
+const ACCENT_BG_10 = "rgba(79, 70, 229, 0.10)";
+
+// Display font for editorial headings. First entry matches the
+// @font-face family mesh's htmlproc sidecar embeds via
+// build-fonts-css.mjs (Playfair Display Variable). Plain
+// 'Playfair Display' catches the non-variable Google Fonts naming.
+// Georgia / serif terminate the chain for bare-metal renderers
+// where no Playfair is loaded at all.
+const SERIF_DISPLAY = "'Playfair Display Variable', 'Playfair Display', Georgia, serif";
+
+// Body font for prose, list items, cards, table cells, and all
+// other non-display text. Matches the @font-face family mesh's
+// htmlproc sidecar embeds (Geist Variable) with plain-name
+// fallback and a system-ui chain for consumers without either.
+const SANS_BODY =
+  "'Geist Variable', 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 
 // Zinc palette (Tailwind zinc-*).
 const Z_50 = "#fafafa";
@@ -185,6 +208,7 @@ const EMERALD_600 = "#059669";
 // Reusable eyebrow — 9px uppercase caps used above headings and
 // stat rows.
 const EYEBROW: CSSProperties = {
+  fontFamily: SANS_BODY,
   fontSize: "9px",
   textTransform: "uppercase",
   letterSpacing: "0.2em",
@@ -213,9 +237,10 @@ const HEADING_2: CSSProperties = {
   marginBottom: "0.5rem",
 };
 
-// heading-3 stays on the sans body font (metaroom uses it as a
-// small-caps eyebrow-style label, not an editorial display heading).
+// heading-3 uses the body sans — metaroom uses it as a small-caps
+// eyebrow-style label, not an editorial display heading.
 const HEADING_3: CSSProperties = {
+  fontFamily: SANS_BODY,
   fontSize: "11px",
   fontWeight: 600,
   textTransform: "uppercase",
@@ -226,6 +251,7 @@ const HEADING_3: CSSProperties = {
 };
 
 const PROSE_BODY: CSSProperties = {
+  fontFamily: SANS_BODY,
   fontSize: "10.5px",
   lineHeight: 1.625,
   color: Z_800,
@@ -234,6 +260,7 @@ const PROSE_BODY: CSSProperties = {
 };
 
 const PROSE_BODY_TIGHT: CSSProperties = {
+  fontFamily: SANS_BODY,
   fontSize: "10.5px",
   lineHeight: 1.625,
   color: Z_800,
@@ -249,6 +276,7 @@ const DIVIDER_ROOT: CSSProperties = {
 };
 
 const FOOTER_NOTE_ROOT: CSSProperties = {
+  fontFamily: SANS_BODY,
   fontSize: "9px",
   textTransform: "uppercase",
   letterSpacing: "0.15em",
@@ -257,6 +285,7 @@ const FOOTER_NOTE_ROOT: CSSProperties = {
 };
 
 const CALLOUT_BASE: CSSProperties = {
+  fontFamily: SANS_BODY,
   fontSize: "10.5px",
   lineHeight: 1.625,
   color: Z_800,
@@ -286,6 +315,7 @@ const CALLOUT_TONES: Record<"info" | "accent" | "muted", CSSProperties> = {
 };
 
 const BULLET_LIST_ROOT: CSSProperties = {
+  fontFamily: SANS_BODY,
   marginTop: "0.75rem",
   marginBottom: "0.75rem",
   fontSize: "10.5px",
@@ -346,6 +376,7 @@ const CARD_GRID_ROOT: CSSProperties = {
 };
 
 const CARD: CSSProperties = {
+  fontFamily: SANS_BODY,
   borderRadius: "0.25rem",
   borderWidth: "1px",
   borderStyle: "solid",
@@ -391,6 +422,7 @@ const STAT_GRID_ROOT: CSSProperties = {
 };
 
 const STAT_CELL: CSSProperties = {
+  fontFamily: SANS_BODY,
   display: "flex",
   flexDirection: "column",
   gap: "0.125rem",
@@ -413,6 +445,7 @@ const STAT_VALUE: CSSProperties = {
 };
 
 const TIMELINE_VERTICAL: CSSProperties = {
+  fontFamily: SANS_BODY,
   marginTop: "0.75rem",
   marginBottom: "0.75rem",
   listStyle: "none",
@@ -423,6 +456,7 @@ const TIMELINE_VERTICAL: CSSProperties = {
 };
 
 const TIMELINE_HORIZONTAL: CSSProperties = {
+  fontFamily: SANS_BODY,
   marginTop: "0.75rem",
   marginBottom: "0.75rem",
   listStyle: "none",
@@ -498,6 +532,7 @@ const TABLE_WRAPPER: CSSProperties = {
 };
 
 const TABLE_ROOT: CSSProperties = {
+  fontFamily: SANS_BODY,
   width: "100%",
   fontSize: "10px",
   borderCollapse: "collapse",
@@ -537,6 +572,7 @@ const TABLE_TD_BASE: CSSProperties = {
 };
 
 const DOC_SECTION_ROOT: CSSProperties = {
+  fontFamily: SANS_BODY,
   marginTop: "1rem",
   marginBottom: "1rem",
 };
@@ -571,6 +607,7 @@ const DOC_SECTION_CHILDREN: CSSProperties = {
 };
 
 const DOC_FIELD_TABLE_ROOT: CSSProperties = {
+  fontFamily: SANS_BODY,
   marginTop: "0.5rem",
   marginBottom: "0.5rem",
   width: "100%",
@@ -601,6 +638,7 @@ const DOC_FIELD_TABLE_VALUE: CSSProperties = {
 };
 
 const DOC_INPUT_ROOT: CSSProperties = {
+  fontFamily: SANS_BODY,
   display: "inline-block",
   verticalAlign: "middle",
 };
@@ -618,6 +656,7 @@ const DOC_INPUT_INNER: CSSProperties = {
 };
 
 const DOC_TEXTAREA_ROOT: CSSProperties = {
+  fontFamily: SANS_BODY,
   marginTop: "0.5rem",
   marginBottom: "0.5rem",
   borderWidth: "1px",
@@ -633,6 +672,7 @@ const DOC_TEXTAREA_ROOT: CSSProperties = {
 };
 
 const DOC_CHECKBOX_ROOT: CSSProperties = {
+  fontFamily: SANS_BODY,
   display: "inline-flex",
   alignItems: "center",
   gap: "0.5rem",
@@ -655,6 +695,7 @@ const DOC_CHECKBOX_LABEL: CSSProperties = {
 };
 
 const DOC_SIGNATURE_ROOT: CSSProperties = {
+  fontFamily: SANS_BODY,
   marginTop: "0.75rem",
   marginBottom: "0.75rem",
   display: "flex",
