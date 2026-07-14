@@ -12,6 +12,8 @@ export { MobileTabBar } from "./MobileTabBar";
 export type { MobileTabBarProps, MobileTab } from "./MobileTabBar";
 export { RightSidebarPanel } from "./RightSidebarPanel";
 export type { RightSidebarPanelProps } from "./RightSidebarPanel";
+export { SidePanel } from "./SidePanel";
+export type { SidePanelProps } from "./SidePanel";
 export { StickyBanner } from "./StickyBanner";
 export type { StickyBannerProps } from "./StickyBanner";
 export { NavSection } from "./NavSection";

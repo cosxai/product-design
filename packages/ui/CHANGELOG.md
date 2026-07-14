@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.0 (2026-07-14)
+
+- **feat(layout)**: New `<SidePanel>` — right-docked, backdrop-less panel that slides in from the right edge and pushes main content left via `--ck-sidepanel-width` (stamped on `:root` while open). For editors, activity feeds, share managers, and other admin surfaces where the reader should keep interacting with the main content while the panel is open (Notion / Linear / Slack right-panel UX). Distinct from `<RightSidebarPanel>` (scoped floating card at edge offset): SidePanel is full-height and reshapes layout via a CSS var; RightSidebarPanel is a smaller ephemeral card. Portal-mounted to `document.body` (escapes transform ancestors), `role="complementary"`, ESC-to-close, focus lands on the close button (no focus trap — main surface stays interactive). Prototyped in product-meta's block_doc editor; graduated after Ben validated the API against the Edit document surface. Layout consumers opt into the push-left by summing `var(--ck-sidepanel-width, 0px)` into their right inset.
+
 ## 0.10.4 (2026-07-09)
 
 - **fix(actionbar)**: Admin mode is now session-only (was persisted to `localStorage` under `<storageKey>:admin`). Two problems the persistence caused:
