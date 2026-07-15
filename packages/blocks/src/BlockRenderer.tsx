@@ -3,6 +3,31 @@ import type { CSSProperties } from "react";
 import type { Block } from "./blocks.js";
 import { INTERNAL_DEFAULTS, alignStyle, resolveStyle, type DocStyle } from "./styles.js";
 
+// asArray — defensive wrapper for schema fields that MUST be arrays
+// but occasionally aren't (hand-edited JSON in the draft editor,
+// missing fields from schema drift, agent-generated content that
+// dropped a shape). Renderer collapses to an empty list instead of
+// throwing `d.map is not a function` on the whole page (v0.7.1 fix
+// following QA reports on 2026-07-15). See the per-type comments
+// where it's used.
+function asArray<T>(v: unknown): T[] {
+  return Array.isArray(v) ? (v as T[]) : [];
+}
+
+// Long text guard — hashes, URLs, storage keys and other unbroken
+// identifier strings should wrap mid-word rather than horizontally
+// overflow the page. `overflow-wrap: anywhere` gives the browser
+// permission to break at any character as a last resort; it
+// preserves natural word boundaries for prose that DOES have
+// spaces. Applied to every text-carrying block's root inline
+// style at build time so a rogue long line can't visually escape
+// the artboard (QA 2026-07-15 · long checksums broke past the
+// slide edge).
+const TEXT_OVERFLOW_GUARD: CSSProperties = {
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
+};
+
 // BlockRenderer — dispatch + per-type views for content-as-data
 // block_doc pages. Signing-form blocks render as read-only placeholders
 // here; live signing interactions live in the signing surface, not the
@@ -111,9 +136,14 @@ export interface BlockListProps {
 
 /** BlockList — helper that maps a Block[] to a rendered list. */
 export function BlockList({ blocks, docStyle }: BlockListProps) {
+  // Defensive: any caller passing a non-array (schema-drifted
+  // container blocks whose left/right/valueBlocks came through as a
+  // string or object) collapses to an empty list rather than
+  // crashing the whole render tree with `d.map is not a function`.
+  const safe = asArray<Block>(blocks);
   return (
     <>
-      {blocks.map((b) => (
+      {safe.map((b) => (
         <BlockRenderer key={b.id} block={b} docStyle={docStyle} />
       ))}
     </>
@@ -137,12 +167,15 @@ function HeadingView({
       {b.eyebrow}
     </p>
   ) : null;
+  // TEXT_OVERFLOW_GUARD is spread on every heading level so long
+  // unbroken text (URLs, checksums, storage keys) wraps at any
+  // character as a last resort instead of horizontally overflowing
+  // the artboard.
   if (b.level === 1) {
-    const style = resolveStyle(
-      INTERNAL_DEFAULTS.heading["level-1"],
-      headingBank?.["level-1"],
-      b.style,
-    );
+    const style = {
+      ...resolveStyle(INTERNAL_DEFAULTS.heading["level-1"], headingBank?.["level-1"], b.style),
+      ...TEXT_OVERFLOW_GUARD,
+    };
     return (
       <div data-block-id={b.id}>
         {eyebrow}
@@ -151,11 +184,10 @@ function HeadingView({
     );
   }
   if (b.level === 2) {
-    const style = resolveStyle(
-      INTERNAL_DEFAULTS.heading["level-2"],
-      headingBank?.["level-2"],
-      b.style,
-    );
+    const style = {
+      ...resolveStyle(INTERNAL_DEFAULTS.heading["level-2"], headingBank?.["level-2"], b.style),
+      ...TEXT_OVERFLOW_GUARD,
+    };
     return (
       <div data-block-id={b.id}>
         {eyebrow}
@@ -163,11 +195,10 @@ function HeadingView({
       </div>
     );
   }
-  const style = resolveStyle(
-    INTERNAL_DEFAULTS.heading["level-3"],
-    headingBank?.["level-3"],
-    b.style,
-  );
+  const style = {
+    ...resolveStyle(INTERNAL_DEFAULTS.heading["level-3"], headingBank?.["level-3"], b.style),
+    ...TEXT_OVERFLOW_GUARD,
+  };
   return (
     <div data-block-id={b.id}>
       {eyebrow}
@@ -185,11 +216,10 @@ function ProseView({
 }) {
   const proseBank = docStyle?.prose;
   const subKey = b.tight ? "body-tight" : "body";
-  const style = resolveStyle(
-    INTERNAL_DEFAULTS.prose[subKey],
-    proseBank?.[subKey],
-    b.style,
-  );
+  const style = {
+    ...resolveStyle(INTERNAL_DEFAULTS.prose[subKey], proseBank?.[subKey], b.style),
+    ...TEXT_OVERFLOW_GUARD,
+  };
   return (
     <p
       data-block-id={b.id}
@@ -221,11 +251,14 @@ function FooterNoteView({
   b: Extract<Block, { type: "footer-note" }>;
   docStyle: DocStyle | undefined;
 }) {
-  const style = resolveStyle(
-    INTERNAL_DEFAULTS["footer-note"].root,
-    docStyle?.["footer-note"]?.root,
-    b.style,
-  );
+  const style = {
+    ...resolveStyle(
+      INTERNAL_DEFAULTS["footer-note"].root,
+      docStyle?.["footer-note"]?.root,
+      b.style,
+    ),
+    ...TEXT_OVERFLOW_GUARD,
+  };
   return (
     <p
       data-block-id={b.id}
@@ -300,12 +333,12 @@ function BulletListView({
   );
   return (
     <ul data-block-id={b.id} style={rootStyle}>
-      {b.items.map((it, i) => (
+      {asArray<{ html: string }>(b.items).map((it, i) => (
         <li key={i} style={i === 0 ? itemFirstStyle : itemStyle}>
           <span aria-hidden style={markerStyle}>
             {marker}
           </span>
-          <span dangerouslySetInnerHTML={{ __html: it.html }} />
+          <span dangerouslySetInnerHTML={{ __html: it?.html ?? "" }} />
         </li>
       ))}
     </ul>
@@ -436,7 +469,12 @@ function CardGridView({
   );
   return (
     <div data-block-id={b.id} style={rootStyle}>
-      {b.cards.map((c, i) => (
+      {asArray<{
+        image?: string;
+        title?: string;
+        body?: string;
+        foot?: string;
+      }>(b.cards).map((c, i) => (
         <div key={i} style={cardStyle}>
           {c.image && <img src={c.image} alt="" style={cardImgStyle} />}
           {c.title && <h4 style={cardTitleStyle}>{c.title}</h4>}
@@ -458,9 +496,10 @@ function StatGridView({
   docStyle: DocStyle | undefined;
 }) {
   const statBank = docStyle?.["stat-grid"];
+  const stats = asArray<{ label: string; value: string }>(b.stats);
   const rootStyle: CSSProperties = {
     ...resolveStyle(INTERNAL_DEFAULTS["stat-grid"].root, statBank?.root, b.style),
-    gridTemplateColumns: `repeat(${b.stats.length}, minmax(0, 1fr))`,
+    gridTemplateColumns: `repeat(${Math.max(1, stats.length)}, minmax(0, 1fr))`,
   };
   const cellStyle = resolveStyle(
     INTERNAL_DEFAULTS["stat-grid"].cell,
@@ -479,7 +518,7 @@ function StatGridView({
   );
   return (
     <div data-block-id={b.id} style={rootStyle}>
-      {b.stats.map((s, i) => (
+      {stats.map((s, i) => (
         <div key={i} style={cellStyle}>
           <p style={labelStyle}>{s.label}</p>
           <p style={valueStyle}>{s.value}</p>
@@ -542,7 +581,13 @@ function TimelineView({
   );
   return (
     <ol data-block-id={b.id} style={rootStyle}>
-      {b.steps.map((step, i) => (
+      {asArray<{
+        num?: string;
+        eyebrow?: string;
+        title: string;
+        body?: string;
+        output?: string;
+      }>(b.steps).map((step, i) => (
         <li key={i} style={stepStyle}>
           {!isHorizontal && <span aria-hidden style={dotStyle} />}
           <div style={{ flex: 1 }}>
@@ -568,13 +613,28 @@ function TableView({
   docStyle: DocStyle | undefined;
 }) {
   const tableBank = docStyle?.table;
+  // Defensive: table.columns / .rows must be arrays. Schema drift
+  // or hand-edited draft JSON that dropped either would crash the
+  // whole page render. Collapse to [] instead — the table simply
+  // renders empty.
+  const columns = asArray<{
+    id: string;
+    header: string;
+    align?: "left" | "center" | "right";
+    tone?: "default" | "accent" | "muted";
+    widthFr?: number;
+  }>(b.columns);
+  const rows = asArray<{
+    cells: Record<string, string>;
+    emphasis?: Record<string, "normal" | "muted" | "lead">;
+  }>(b.rows);
   // widthFr is a fractional weight per column. Rendered as a
   // percentage of the total assigned weight so the values compose
   // consistently on a regular <table> (fr units are grid-only and
   // invalid on `width`). Columns without widthFr contribute 0 to
   // the total; when no column carries a weight, we skip the style
   // and let the browser auto-size.
-  const totalFr = b.columns.reduce((sum, c) => sum + (c.widthFr ?? 0), 0);
+  const totalFr = columns.reduce((sum, c) => sum + (c.widthFr ?? 0), 0);
   const widthStyleFor = (widthFr: number | undefined): CSSProperties | undefined => {
     if (widthFr === undefined || totalFr <= 0) return undefined;
     return { width: `${(widthFr / totalFr) * 100}%` };
@@ -594,7 +654,7 @@ function TableView({
       <table style={tableStyle}>
         <thead>
           <tr>
-            {b.columns.map((c) => {
+            {columns.map((c) => {
               const tone: keyof typeof INTERNAL_DEFAULTS.table.tones =
                 c.tone === "accent" ? "accent" : c.tone === "muted" ? "muted" : "default";
               // Package th + tone are trusted; tableBank.th + .tones[tone]
@@ -626,10 +686,10 @@ function TableView({
           </tr>
         </thead>
         <tbody>
-          {b.rows.map((row, ri) => (
+          {rows.map((row, ri) => (
             <tr key={ri}>
-              {b.columns.map((c) => {
-                const cellHtml = row.cells[c.id] ?? "";
+              {columns.map((c) => {
+                const cellHtml = row.cells?.[c.id] ?? "";
                 const emphasis = row.emphasis?.[c.id] ?? "normal";
                 // Same sanitisation pattern as th above.
                 const style: CSSProperties = {
@@ -748,10 +808,13 @@ function DocFieldTableView({
         <col />
       </colgroup>
       <tbody>
-        {b.rows.map((r, i) => (
+        {asArray<{ label: string; valueBlocks: Block[] }>(b.rows).map((r, i) => (
           <tr key={i} style={rowStyle}>
             <th style={labelStyle}>{r.label}</th>
             <td style={valueStyle}>
+              {/* r.valueBlocks may be non-array under schema drift;
+                  BlockList's own asArray guard collapses it to []
+                  rather than crashing. */}
               <BlockList blocks={r.valueBlocks} docStyle={docStyle} />
             </td>
           </tr>
