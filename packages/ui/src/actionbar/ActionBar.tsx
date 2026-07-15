@@ -415,18 +415,25 @@ export function ActionBar({
         alignItems: "center",
         gap: 4,
         zIndex: 80,
-        // Bar chrome stays constant across admin/viewer modes — the
-        // whole-bar tint + accent border in earlier versions competed
-        // with the shield toggle for signal and produced awkward hue
-        // shifts under the item hover overlay (cool grey on tinted
-        // warm base read as green). Mode state lives entirely on the
-        // shield now: outline glyph = off, filled glyph = on.
+        // Bar background stays constant across modes — the earlier
+        // whole-bar tint composited under the item hover overlay
+        // (cool grey on tinted warm base) produced an awkward green
+        // cast on hover, and competed with the shield toggle for
+        // signal. Border colour DOES swap to accent when admin mode
+        // is on so the elevated state reads at a glance without a
+        // heavy surface change; the shield glyph adds a second cue
+        // (outline off → filled on) at the toggle itself.
         background: "var(--ck-bg-surface)",
-        border: "1px solid var(--ck-border-subtle)",
+        border: `1px solid ${
+          adminMode
+            ? "var(--ck-accent, #4f46e5)"
+            : "var(--ck-border-subtle)"
+        }`,
         borderRadius: 999,
         boxShadow: "var(--ck-shadow-3)",
         fontFamily: "var(--ck-font-sans)",
         color: "var(--ck-text-primary)",
+        transition: "border-color 200ms var(--ck-ease, ease)",
         ...style,
       }}
     >
