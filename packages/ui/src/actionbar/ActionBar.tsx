@@ -415,23 +415,18 @@ export function ActionBar({
         alignItems: "center",
         gap: 4,
         zIndex: 80,
-        // Subtle accent tint when admin mode is active so the bar reads
-        // as "elevated privileges on" without a full colour swap.
-        background: adminMode
-          ? "color-mix(in oklab, var(--ck-accent, #4f46e5) 8%, var(--ck-bg-surface))"
-          : "var(--ck-bg-surface)",
-        border: `1px solid ${
-          adminMode
-            ? "var(--ck-accent, #4f46e5)"
-            : "var(--ck-border-subtle)"
-        }`,
+        // Bar chrome stays constant across admin/viewer modes — the
+        // whole-bar tint + accent border in earlier versions competed
+        // with the shield toggle for signal and produced awkward hue
+        // shifts under the item hover overlay (cool grey on tinted
+        // warm base read as green). Mode state lives entirely on the
+        // shield now: outline glyph = off, filled glyph = on.
+        background: "var(--ck-bg-surface)",
+        border: "1px solid var(--ck-border-subtle)",
         borderRadius: 999,
         boxShadow: "var(--ck-shadow-3)",
         fontFamily: "var(--ck-font-sans)",
         color: "var(--ck-text-primary)",
-        transition:
-          "background 260ms cubic-bezier(0.34, 1.56, 0.64, 1)," +
-          "border-color 260ms cubic-bezier(0.34, 1.56, 0.64, 1)",
         ...style,
       }}
     >
@@ -481,8 +476,9 @@ export function ActionBar({
       {/* Admin-mode toggle. Only renders when at least one registered
           item has adminOnly=true. Borderless, transparent bg — same
           visual weight as the drag grip and the item icons around
-          it. Muted stroke by default, accent stroke + subtle scale
-          when active. Icon: shield (elevated privileges). */}
+          it. State polarity lives on the glyph itself: outline shield
+          (off) → filled shield (on). No background pill, no whole-bar
+          tint — the icon is the whole affordance. */}
       {hasAdminItems && (
         <button
           type="button"
@@ -508,20 +504,18 @@ export function ActionBar({
               : "var(--ck-text-secondary, #666)",
             border: "none",
             cursor: "pointer",
-            transform: adminMode ? "scale(1.06)" : "scale(1)",
-            // Spring-ish easing so the tint + scale feel connected
-            // rather than mechanical — matches ck-actionbar-enter's
-            // curve for family consistency.
-            transition:
-              "color 260ms cubic-bezier(0.34, 1.56, 0.64, 1)," +
-              "transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+            transition: "color 200ms var(--ck-ease, ease)",
           }}
         >
           <svg
             width="16"
             height="16"
             viewBox="0 0 24 24"
-            fill="none"
+            // Outline when off, filled when on. Stroke stays on in
+            // both states so the silhouette is identical — only the
+            // interior fills — which reads as "same shape, different
+            // state" instead of two distinct glyphs.
+            fill={adminMode ? "currentColor" : "none"}
             stroke="currentColor"
             strokeWidth="1.8"
             strokeLinecap="round"
