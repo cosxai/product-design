@@ -857,6 +857,12 @@ function DocInputPlaceholder({
   // read; unbaked renders keep the empty placeholder for authors
   // previewing the template.
   const isBaked = typeof b.bakedValue === "string" && b.bakedValue.length > 0;
+  // v0.10.0 · surface the autoFill affordance the same way
+  // DocTextareaPlaceholder does — "AUTO-FILLED AT SIGNING" copy
+  // when the block is signing-service-driven and hasn't been baked
+  // yet, so authors previewing the template see the signing intent
+  // instead of the raw placeholder ("DD/MM/YYYY").
+  const showAutoFillHint = !isBaked && !!b.autoFill;
   return (
     <span
       data-block-id={b.id}
@@ -868,7 +874,11 @@ function DocInputPlaceholder({
       style={rootStyle}
     >
       <span style={innerStyle}>
-        {isBaked ? b.bakedValue : (b.placeholder ?? " ")}
+        {isBaked
+          ? b.bakedValue
+          : showAutoFillHint
+            ? autoFillHintCopy(b.autoFill)
+            : (b.placeholder ?? " ")}
       </span>
     </span>
   );
@@ -1073,6 +1083,25 @@ function DocSignaturePlaceholder({
       </div>
     );
   }
+  // v0.10.0 · SIGN HERE affordance. Empty signature block previously
+  // rendered as just a dashed line + tiny "Signature · Signer N"
+  // caption below — hard to distinguish from a regular divider. Add
+  // an inline hint (matches agent-dataroom reference) ABOVE the line:
+  // "SIGNER N · SIGN HERE" so authors previewing the template + real
+  // signers on the /sign page both see the block's intent at a glance.
+  //
+  // Also: prefer the caller-authored parties[0].label ("Party A
+  // signature" / "Recipient signature") for the below caption over
+  // the generic "Signature · Signer N" — the label carries context
+  // the raw index can't.
+  const signerHint = b.recipientIndex !== undefined
+    ? `SIGNER ${b.recipientIndex + 1} · SIGN HERE`
+    : "SIGN HERE";
+  const caption =
+    b.parties?.[0]?.label ??
+    (b.recipientIndex !== undefined
+      ? `Signature · Signer ${b.recipientIndex + 1}`
+      : "Signature");
   return (
     <div
       data-block-id={b.id}
@@ -1081,11 +1110,9 @@ function DocSignaturePlaceholder({
       data-recipient-index={b.recipientIndex}
       style={rootStyle}
     >
+      <p style={{ ...labelStyle, marginBottom: "0.25rem" }}>{signerHint}</p>
       <div style={lineStyle} />
-      <p style={labelStyle}>
-        Signature
-        {b.recipientIndex !== undefined ? ` · Signer ${b.recipientIndex + 1}` : ""}
-      </p>
+      <p style={labelStyle}>{caption}</p>
     </div>
   );
 }
