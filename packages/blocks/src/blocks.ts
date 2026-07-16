@@ -234,6 +234,11 @@ export interface DocTextareaBlock extends BaseBlock {
   placeholder: string;
   rows?: number;
   required?: boolean;
+  // v0.9.0 · autoFill added for parity with DocInputBlock. Same enum,
+  // same server-side resolution semantics — when set, the textarea
+  // renders disabled during fill and the signing worker writes the
+  // value at capture time.
+  autoFill?: "signing-date" | "signer-name" | "signer-email" | "signer-title";
   // v0.8.0 · bilateral signing assignment. Same cascade as
   // DocSignatureBlock / DocInputBlock (block > enclosing doc-section
   // > default). Unset means the field is filled by whichever party's
@@ -247,6 +252,16 @@ export interface DocCheckboxBlock extends BaseBlock {
   fieldId: string;
   label: string;
   required?: boolean;
+  // v0.9.0 · bilateral signing assignment. Same cascade as the other
+  // signable blocks (block > enclosing doc-section > default).
+  // Without this, checkboxes in a bilateral doc rendered interactive
+  // for whoever was currently signing regardless of intended
+  // ownership — the resolution check `'recipientIndex' in block`
+  // was always false for checkbox.
+  recipientIndex?: number;
+  // v0.9.0 · server-side bake-in for the checked state (true/false).
+  // Mirrors DocInputBlock.bakedValue lifecycle.
+  bakedValue?: boolean;
 }
 
 // Escape hatch -------------------------------------------------------------

@@ -25,11 +25,12 @@
 // Keeping the resolver in this package so both server (via htmlproc
 // consumption of @cosxai/blocks) and client (SPA) call the same code.
 //
-// Design note: doc-checkbox is intentionally NOT in the cascade
-// today. Checkboxes are treated as owner-side form defaults; if we
-// later ship "recipient-scoped checkboxes" (per-signer consent
-// boxes), extend `SigningFormBlock` to include DocCheckboxBlock and
-// grow the union.
+// v0.9.0 change: doc-checkbox JOINS the cascade. Bilateral flows
+// need per-signer consent checkboxes (e.g. "Party B agrees to
+// arbitration") and without recipientIndex the SPA can't tell
+// whose responsibility a required checkbox is → the interactive
+// variant renders for whoever's currently signing. Extending the
+// union closes that.
 
 import type { Block, DocSectionBlock } from "./blocks.js";
 
@@ -42,7 +43,7 @@ import type { Block, DocSectionBlock } from "./blocks.js";
  */
 export type RecipientAwareBlock = Extract<
   Block,
-  { type: "doc-signature" | "doc-input" | "doc-textarea" | "doc-section" }
+  { type: "doc-signature" | "doc-input" | "doc-textarea" | "doc-checkbox" | "doc-section" }
 >;
 
 /**
@@ -103,6 +104,7 @@ export function isRecipientAware(block: Block): block is RecipientAwareBlock {
     block.type === "doc-signature" ||
     block.type === "doc-input" ||
     block.type === "doc-textarea" ||
+    block.type === "doc-checkbox" ||
     block.type === "doc-section"
   );
 }

@@ -891,18 +891,47 @@ function DocTextareaPlaceholder({
     minHeight: `${rows * 1.3}em`,
   };
   const isBaked = typeof b.bakedValue === "string" && b.bakedValue.length > 0;
+  // v0.9.0 · autoFill support mirrors DocInputPlaceholder. When the
+  // block carries a known autoFill enum and hasn't been baked yet
+  // (server hasn't run resolveAutoFill), show the "AUTO-FILLED AT
+  // SIGNING" affordance so the signer knows the field is out of
+  // their hands.
+  const showAutoFillHint = !isBaked && !!b.autoFill;
   return (
     <div
       data-block-id={b.id}
       data-block-type="doc-textarea"
       data-required={b.required ? "1" : undefined}
       data-recipient-index={b.recipientIndex}
+      data-autofill={b.autoFill}
       data-baked={isBaked ? "1" : undefined}
       style={rootStyle}
     >
-      {isBaked ? b.bakedValue : (b.placeholder ?? "")}
+      {isBaked
+        ? b.bakedValue
+        : showAutoFillHint
+          ? autoFillHintCopy(b.autoFill)
+          : (b.placeholder ?? "")}
     </div>
   );
+}
+
+// autoFillHintCopy — human-readable "AUTO-FILLED AT <SOMETHING>"
+// captions for the four known enum values. Kept in one place so the
+// input + textarea renderers agree on the wording.
+function autoFillHintCopy(af: string | undefined): string {
+  switch (af) {
+    case "signing-date":
+      return "AUTO-FILLED AT SIGNING";
+    case "signer-name":
+      return "AUTO-FILLED WITH NAME";
+    case "signer-email":
+      return "AUTO-FILLED WITH EMAIL";
+    case "signer-title":
+      return "AUTO-FILLED WITH TITLE";
+    default:
+      return "AUTO-FILLED AT SIGNING";
+  }
 }
 
 function DocCheckboxPlaceholder({
@@ -928,14 +957,28 @@ function DocCheckboxPlaceholder({
     checkboxBank?.label,
     undefined,
   );
+  // v0.9.0 · surface data-recipient-index + bakedValue.
+  // Read-only mode renders a filled box when bakedValue === true so
+  // signed checkboxes visually differ from unchecked ones (before
+  // this, the placeholder only had one visual state).
+  const isBaked = typeof b.bakedValue === "boolean";
   return (
     <span
       data-block-id={b.id}
       data-block-type="doc-checkbox"
       data-required={b.required ? "1" : undefined}
+      data-recipient-index={b.recipientIndex}
+      data-baked={isBaked ? "1" : undefined}
+      data-checked={b.bakedValue ? "1" : undefined}
       style={rootStyle}
     >
-      <span aria-hidden style={boxStyle} />
+      <span
+        aria-hidden
+        style={{
+          ...boxStyle,
+          ...(b.bakedValue === true ? { background: "currentColor" } : undefined),
+        }}
+      />
       {b.label && <span style={labelStyle}>{b.label}</span>}
     </span>
   );
