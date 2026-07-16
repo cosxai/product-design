@@ -767,7 +767,7 @@ function DocSectionView({
       style={rootStyle}
     >
       <div style={headerStyle}>
-        {b.num !== undefined && <span style={numStyle}>§{b.num}</span>}
+        {b.num !== undefined && <span style={numStyle}>{b.num}</span>}
         <h3 style={titleStyle}>{b.title}</h3>
       </div>
       <div style={childrenStyle}>
