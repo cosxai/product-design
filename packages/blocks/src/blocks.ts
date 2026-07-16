@@ -71,6 +71,14 @@ export interface ProseBlock extends BaseBlock {
   // valueBlocks where each cell already has padding, or anywhere the
   // surrounding container provides its own spacing.
   tight?: boolean;
+  // Signing consent marker (v0.8.0). When set, the signing service
+  // uses this block's HTML as the consent text presented at commit
+  // time + snapshots it onto `signing_sessions.consent_text_snapshot`
+  // for audit. A template with `requires_nda=true` MUST contain at
+  // least one block with `consentRole='signing-consent'` for the NDA
+  // template picker to accept it. Non-signing renders ignore this
+  // marker entirely.
+  consentRole?: "signing-consent";
 }
 
 export interface BulletListBlock extends BaseBlock {
@@ -83,6 +91,10 @@ export interface CalloutBlock extends BaseBlock {
   type: "callout";
   tone: "info" | "accent" | "muted";
   html: string;
+  // Signing consent marker (v0.8.0). See ProseBlock.consentRole for
+  // semantics — same field mirrored so authors can pick either block
+  // shape for consent copy.
+  consentRole?: "signing-consent";
 }
 
 export interface TwoColumnBlock extends BaseBlock {
@@ -182,6 +194,15 @@ export interface DocSignatureBlock extends BaseBlock {
   bakedSignerName?: string;
   bakedSignedAt?: string;
   bakedSignerEmail?: string;
+  // v0.8.0 · signing session bake-in extensions.
+  // Consent snapshot — the exact text of the consent block the signer
+  // agreed to at the moment of signing. Rendered under the signature
+  // in baked mode as a quiet footnote for audit trail visibility.
+  bakedConsentTextSnapshot?: string;
+  // DocuSeal certification link — post-finalize, mesh writes the URL
+  // of the audit-log PDF. Baked view surfaces a small badge linking
+  // to it so the reader can verify the certificate.
+  bakedDocuSealCertificateUrl?: string;
 }
 
 export interface DocInputBlock extends BaseBlock {
@@ -213,6 +234,11 @@ export interface DocTextareaBlock extends BaseBlock {
   placeholder: string;
   rows?: number;
   required?: boolean;
+  // v0.8.0 · bilateral signing assignment. Same cascade as
+  // DocSignatureBlock / DocInputBlock (block > enclosing doc-section
+  // > default). Unset means the field is filled by whichever party's
+  // filling context the SPA is in.
+  recipientIndex?: number;
   bakedValue?: string;
 }
 

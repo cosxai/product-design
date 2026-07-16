@@ -85,3 +85,14 @@ export type {
   SlideDecorationBlock,
   DocPageContent,
 } from "./blocks.js";
+
+// v0.8.0 · signing cascade utilities.
+export {
+  resolveRecipientIndex,
+  nextCascadeContext,
+  isRecipientAware,
+} from "./recipient-cascade.js";
+export type {
+  RecipientAwareBlock,
+  CascadeContext,
+} from "./recipient-cascade.js";

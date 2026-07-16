@@ -760,7 +760,12 @@ function DocSectionView({
     undefined,
   );
   return (
-    <section data-block-id={b.id} style={rootStyle}>
+    <section
+      data-block-id={b.id}
+      data-block-type="doc-section"
+      data-recipient-index={b.recipientIndex}
+      style={rootStyle}
+    >
       <div style={headerStyle}>
         {b.num !== undefined && <span style={numStyle}>§{b.num}</span>}
         <h3 style={titleStyle}>{b.title}</h3>
@@ -847,9 +852,24 @@ function DocInputPlaceholder({
     inputBank?.inner,
     undefined,
   );
+  // v0.8.0 · when baked, render the value as plain text instead of
+  // the placeholder pill. Bake is set server-side on signing-session
+  // read; unbaked renders keep the empty placeholder for authors
+  // previewing the template.
+  const isBaked = typeof b.bakedValue === "string" && b.bakedValue.length > 0;
   return (
-    <span data-block-id={b.id} style={rootStyle}>
-      <span style={innerStyle}>{b.placeholder ?? " "}</span>
+    <span
+      data-block-id={b.id}
+      data-block-type="doc-input"
+      data-required={b.required ? "1" : undefined}
+      data-recipient-index={b.recipientIndex}
+      data-autofill={b.autoFill}
+      data-baked={isBaked ? "1" : undefined}
+      style={rootStyle}
+    >
+      <span style={innerStyle}>
+        {isBaked ? b.bakedValue : (b.placeholder ?? " ")}
+      </span>
     </span>
   );
 }
@@ -870,9 +890,17 @@ function DocTextareaPlaceholder({
     ),
     minHeight: `${rows * 1.3}em`,
   };
+  const isBaked = typeof b.bakedValue === "string" && b.bakedValue.length > 0;
   return (
-    <div data-block-id={b.id} style={rootStyle}>
-      {b.placeholder ?? ""}
+    <div
+      data-block-id={b.id}
+      data-block-type="doc-textarea"
+      data-required={b.required ? "1" : undefined}
+      data-recipient-index={b.recipientIndex}
+      data-baked={isBaked ? "1" : undefined}
+      style={rootStyle}
+    >
+      {isBaked ? b.bakedValue : (b.placeholder ?? "")}
     </div>
   );
 }
@@ -901,7 +929,12 @@ function DocCheckboxPlaceholder({
     undefined,
   );
   return (
-    <span data-block-id={b.id} style={rootStyle}>
+    <span
+      data-block-id={b.id}
+      data-block-type="doc-checkbox"
+      data-required={b.required ? "1" : undefined}
+      style={rootStyle}
+    >
       <span aria-hidden style={boxStyle} />
       {b.label && <span style={labelStyle}>{b.label}</span>}
     </span>
@@ -931,8 +964,80 @@ function DocSignaturePlaceholder({
     sigBank?.label,
     undefined,
   );
+  // v0.8.0 · baked mode. When the mesh bake middleware has spread
+  // the signer's captured PNG + identity onto this block, render the
+  // signed artefact in place of the empty line. Everything else
+  // (unbaked template preview, non-signing viewer) keeps the
+  // placeholder line + role label.
+  const isBaked =
+    typeof b.bakedSignaturePng === "string" && b.bakedSignaturePng.length > 0;
+  if (isBaked) {
+    const signedAt = b.bakedSignedAt ? formatSignedAt(b.bakedSignedAt) : "";
+    return (
+      <div
+        data-block-id={b.id}
+        data-block-type="doc-signature"
+        data-recipient-index={b.recipientIndex}
+        data-baked="1"
+        style={rootStyle}
+      >
+        <img
+          alt={
+            b.bakedSignerName
+              ? `Signature of ${b.bakedSignerName}`
+              : "Signature"
+          }
+          src={b.bakedSignaturePng}
+          style={{
+            display: "block",
+            maxWidth: "100%",
+            height: (lineStyle as CSSProperties).height ?? "36px",
+            objectFit: "contain",
+            objectPosition: "left bottom",
+          }}
+        />
+        <div style={{ ...labelStyle, textTransform: "none" as const }}>
+          {b.bakedSignerName ?? b.bakedSignerEmail ?? "Signed"}
+          {signedAt ? ` · ${signedAt}` : ""}
+        </div>
+        {b.bakedConsentTextSnapshot ? (
+          <div
+            style={{
+              ...labelStyle,
+              fontSize:
+                (labelStyle as CSSProperties).fontSize ?? "9px",
+              opacity: 0.7,
+              textTransform: "none" as const,
+              marginTop: "0.25rem",
+            }}
+            title={b.bakedConsentTextSnapshot}
+          >
+            Consented to: {truncateConsent(b.bakedConsentTextSnapshot)}
+          </div>
+        ) : null}
+        {b.bakedDocuSealCertificateUrl ? (
+          <div style={{ ...labelStyle, textTransform: "none" as const, marginTop: "0.125rem" }}>
+            <a
+              href={b.bakedDocuSealCertificateUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "inherit", textDecoration: "underline" }}
+            >
+              View certificate
+            </a>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
   return (
-    <div data-block-id={b.id} style={rootStyle}>
+    <div
+      data-block-id={b.id}
+      data-block-type="doc-signature"
+      data-required="1"
+      data-recipient-index={b.recipientIndex}
+      style={rootStyle}
+    >
       <div style={lineStyle} />
       <p style={labelStyle}>
         Signature
@@ -940,6 +1045,26 @@ function DocSignaturePlaceholder({
       </p>
     </div>
   );
+}
+
+// ISO-8601 → short human date. Keep in the module (not a util file)
+// because it's the only place we need it and consumers may want to
+// reformat via their own locale — bake shows a stable server-formatted
+// date to avoid hydration mismatch.
+function formatSignedAt(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.valueOf())) return iso;
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+// Truncate consent text to a single-line preview. Full text visible
+// via the title tooltip; audit trail carries the full string.
+function truncateConsent(text: string): string {
+  const flat = text.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+  return flat.length > 80 ? `${flat.slice(0, 77)}…` : flat;
 }
 
 // ──────────────────────────────────────────────────────────────────
