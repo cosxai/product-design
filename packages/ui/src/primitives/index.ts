@@ -28,3 +28,5 @@ export { PageHeader } from "./PageHeader";
 export type { PageHeaderProps } from "./PageHeader";
 export { MentionCombobox, findActiveMentionStart, extractQuery } from "./MentionCombobox";
 export type { MentionComboboxProps, MentionComboboxHandle } from "./MentionCombobox";
+export { SignaturePad } from "./SignaturePad";
+export type { SignaturePadProps, SignaturePadHandle } from "./SignaturePad";
