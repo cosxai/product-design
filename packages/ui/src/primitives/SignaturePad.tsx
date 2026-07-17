@@ -165,6 +165,30 @@ export const SignaturePad = forwardRef<SignaturePadHandle, SignaturePadProps>(
       };
     }, [fontReady]);
 
+    // Mode switch — clear the canvas so a stale typed baseline
+    // doesn't hang around behind a drawn signature (or vice versa).
+    // MUST be declared BEFORE the typed-repaint + drawn-restore
+    // effects: effects run in declaration order, and v0.13.0 had
+    // this clear declared LAST — on switching to typed mode with a
+    // prefilled name the repaint painted first and this then wiped
+    // it (QA 2026-07-17: Type tab showed an empty pad until the
+    // signer edited the name). Skips the mount run so a parent-held
+    // captured value isn't nulled on first render.
+    const prevModeRef = useRef(mode);
+    useEffect(() => {
+      if (prevModeRef.current === mode) return;
+      prevModeRef.current = mode;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      dirtyRef.current = false;
+      onChange(null);
+      // Only fire when mode itself changes.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mode]);
+
     // Repaint on typedName / mode / fontReady change. Drawn mode
     // doesn't repaint imperatively — strokes are appended as the user
     // draws.
@@ -230,20 +254,6 @@ export const SignaturePad = forwardRef<SignaturePadHandle, SignaturePadProps>(
         dirtyRef.current = true;
       };
       img.src = value;
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [mode]);
-
-    // Mode switch — clear the canvas so a stale typed baseline
-    // doesn't hang around behind a drawn signature (or vice versa).
-    useEffect(() => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      dirtyRef.current = false;
-      onChange(null);
-      // Only fire when mode itself changes.
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mode]);
 
