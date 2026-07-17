@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.0 (2026-07-17)
+
+- **feat(primitives)**: New `<CopyField>` — read-only value field with an embedded Copy button inside the frame (mirrors `Input`'s suffix-addon chrome: 36px height, muted slab, hairline divider). Value renders mono + ellipsized; Copy flips to "Copied ✓" for a beat (`copiedForMs`, default 1500ms) and writes via the Clipboard API with a silent select-the-text fallback for non-secure origins. For share links, signing URLs, tokens, API keys — anywhere the next action is overwhelmingly "copy this". Graduated from product-meta's Signing tab where the URL box + separate COPY button read as two disconnected controls.
+
 ## 0.11.0 (2026-07-14)
 
 - **feat(layout)**: New `<SidePanel>` — right-docked, backdrop-less panel that slides in from the right edge and pushes main content left via `--ck-sidepanel-width` (stamped on `:root` while open). For editors, activity feeds, share managers, and other admin surfaces where the reader should keep interacting with the main content while the panel is open (Notion / Linear / Slack right-panel UX). Distinct from `<RightSidebarPanel>` (scoped floating card at edge offset): SidePanel is full-height and reshapes layout via a CSS var; RightSidebarPanel is a smaller ephemeral card. Portal-mounted to `document.body` (escapes transform ancestors), `role="complementary"`, ESC-to-close, focus lands on the close button (no focus trap — main surface stays interactive). Prototyped in product-meta's block_doc editor; graduated after Ben validated the API against the Edit document surface. Layout consumers opt into the push-left by summing `var(--ck-sidepanel-width, 0px)` into their right inset.

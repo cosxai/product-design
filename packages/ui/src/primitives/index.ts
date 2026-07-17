@@ -30,3 +30,5 @@ export { MentionCombobox, findActiveMentionStart, extractQuery } from "./Mention
 export type { MentionComboboxProps, MentionComboboxHandle } from "./MentionCombobox";
 export { SignaturePad } from "./SignaturePad";
 export type { SignaturePadProps, SignaturePadHandle } from "./SignaturePad";
+export { CopyField } from "./CopyField";
+export type { CopyFieldProps } from "./CopyField";
