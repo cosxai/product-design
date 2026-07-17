@@ -156,14 +156,29 @@ export const SignaturePad = forwardRef<SignaturePadHandle, SignaturePadProps>(
         return;
       }
       let cancelled = false;
-      void fonts.ready.then(() => {
-        if (cancelled) return;
-        setFontReady(true);
-      });
+      // Actively REQUEST the typed font. @font-face registration
+      // (fontsource CSS etc.) doesn't fetch the file until some
+      // rendered text uses it — and this component's only consumer
+      // of the font is the canvas, whose fillText silently falls
+      // back to the next family when the face isn't loaded yet.
+      // fonts.load() forces the fetch; fonts.ready is the safety
+      // net for browsers without it / faces not registered.
+      const kick =
+        typeof fonts.load === "function"
+          ? fonts.load(`32px ${typedFontFamily}`).catch(() => [])
+          : Promise.resolve([]);
+      void kick
+        .then(() => fonts.ready)
+        .then(() => {
+          if (cancelled) return;
+          setFontReady(true);
+        });
       return () => {
         cancelled = true;
       };
-    }, [fontReady]);
+      // typedFontFamily is config-stable per consumer; re-kicking on
+      // change is correct anyway.
+    }, [fontReady, typedFontFamily]);
 
     // Mode switch — clear the canvas so a stale typed baseline
     // doesn't hang around behind a drawn signature (or vice versa).
