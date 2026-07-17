@@ -875,7 +875,14 @@ function DocInputPlaceholder({
     >
       <span style={innerStyle}>
         {isBaked ? (
-          b.bakedValue
+          // Signed value REPLACES the AUTO-FILLED hint. Render it as
+          // real content (dark sans, slightly larger) rather than
+          // inheriting the placeholder's muted color — matches
+          // agent-dataroom DocBlocks.tsx:229-235 where signed values
+          // render `text-zinc-900 text-[12px]`. The dashed line
+          // underneath (from b.style / bank) stays as a
+          // "this was a fillable field" cue.
+          <span style={bakedValueStyle}>{b.bakedValue}</span>
         ) : showAutoFillHint ? (
           <span style={autoFillHintTextStyle}>{autoFillHintCopy(b.autoFill)}</span>
         ) : (
@@ -920,7 +927,7 @@ function DocTextareaPlaceholder({
       style={rootStyle}
     >
       {isBaked ? (
-        b.bakedValue
+        <span style={bakedValueStyle}>{b.bakedValue}</span>
       ) : showAutoFillHint ? (
         <span style={autoFillHintTextStyle}>{autoFillHintCopy(b.autoFill)}</span>
       ) : (
@@ -1167,6 +1174,17 @@ const autoFillHintTextStyle: CSSProperties = {
   textTransform: "uppercase",
   fontFamily:
     "var(--ck-font-mono, ui-monospace, 'SF Mono', 'Menlo', 'Consolas', monospace)",
+};
+
+// bakedValueStyle — signed / auto-filled value rendering. Dark, sans,
+// slightly larger than the placeholder so a filled-in date reads as
+// real content (not another placeholder). The dashed line underneath
+// stays via the block's own root style ("fillable field" cue).
+const bakedValueStyle: CSSProperties = {
+  fontSize: "12px",
+  color: "#18181b",
+  fontFamily:
+    "var(--ck-font-sans, 'Geist Variable', 'Geist', system-ui, -apple-system, sans-serif)",
 };
 
 // ISO-8601 → short human date. Keep in the module (not a util file)
