@@ -251,13 +251,21 @@ export const SignaturePad = forwardRef<SignaturePadHandle, SignaturePadProps>(
       strokeColor,
     ]);
 
-    // Restore a previously-captured value into the canvas on remount.
-    // Typed mode uses the effect above; drawn mode needs to explicitly
-    // paint the dataURL back onto the canvas so subsequent strokes
-    // continue on top of it (rather than starting from blank).
+    // Restore a previously-captured value into the canvas on MOUNT
+    // only (parent phase round-trips remount the pad). Typed mode
+    // uses the repaint effect above; drawn mode needs to explicitly
+    // paint the dataURL back so subsequent strokes continue on top.
+    //
+    // Deliberately NOT re-run on mode switch: the clear effect wipes
+    // the canvas on switch, and re-painting the old capture here
+    // resurrected the TYPED baseline inside the drawn pad (v0.13.2
+    // regression — switching Type → Draw showed the handwriting-font
+    // bake as if it had been drawn).
+    const didRestoreRef = useRef(false);
     useEffect(() => {
-      if (mode !== "drawn") return;
-      if (!value) return;
+      if (didRestoreRef.current) return;
+      didRestoreRef.current = true;
+      if (mode !== "drawn" || !value) return;
       const canvas = canvasRef.current;
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
@@ -270,7 +278,7 @@ export const SignaturePad = forwardRef<SignaturePadHandle, SignaturePadProps>(
       };
       img.src = value;
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [mode]);
+    }, []);
 
     const clear = useCallback(() => {
       const canvas = canvasRef.current;
