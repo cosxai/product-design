@@ -29,7 +29,7 @@
 // bundlers also handle the `.js` suffix in source imports fine.
 
 export { BlockRenderer, BlockList } from "./BlockRenderer.js";
-export type { BlockRendererProps, BlockListProps } from "./BlockRenderer.js";
+export type { BlockRendererProps, BlockListProps, BlockOverride } from "./BlockRenderer.js";
 
 export {
   INTERNAL_DEFAULTS,

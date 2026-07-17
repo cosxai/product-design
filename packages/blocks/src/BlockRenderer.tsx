@@ -1,6 +1,12 @@
-import type { CSSProperties } from "react";
+import { createContext, useContext, type CSSProperties, type ReactNode } from "react";
 
 import type { Block } from "./blocks.js";
+import {
+  isRecipientAware,
+  nextCascadeContext,
+  resolveRecipientIndex,
+  type CascadeContext,
+} from "./recipient-cascade.js";
 import { INTERNAL_DEFAULTS, alignStyle, resolveStyle, type DocStyle } from "./styles.js";
 
 // asArray — defensive wrapper for schema fields that MUST be arrays
@@ -60,6 +66,37 @@ const TEXT_OVERFLOW_GUARD: CSSProperties = {
 //     values; renders inside a data-block-custom-id scope so the
 //     server-prefixed selectors match.
 
+/**
+ * BlockOverride — consumer hook-point for replacing individual
+ * blocks with a custom render while every OTHER block keeps the
+ * package's full default chrome (v0.11.0).
+ *
+ * Called for EVERY block in the tree — including blocks nested
+ * inside doc-section children, two-column halves and
+ * doc-field-table valueBlocks — before the default view renders.
+ * Return a ReactNode to take over that block entirely; return
+ * null / undefined to fall through to the default render.
+ *
+ * `ctx.recipientIndex` is the block's EFFECTIVE recipient per the
+ * recipient-cascade rules (leaf recipientIndex > nearest enclosing
+ * doc-section > null). Non-recipient-aware block types always get
+ * null. Primary consumer: the signing surface, which swaps only the
+ * current party's signable blocks for live interactive variants.
+ *
+ * The override MUST NOT render `<BlockRenderer>` for the same block
+ * it was called with — that recurses infinitely. Compose your own
+ * DOM instead.
+ */
+export type BlockOverride = (
+  block: Block,
+  ctx: { recipientIndex: number | null },
+) => ReactNode | null | undefined;
+
+const BlockOverrideContext = createContext<BlockOverride | null>(null);
+// Cascade context threaded by DocSectionView so overrides on nested
+// blocks see their inherited recipient. Root value: no inheritance.
+const RecipientCascadeContext = createContext<CascadeContext>(null);
+
 export interface BlockRendererProps {
   block: Block;
   /**
@@ -73,6 +110,15 @@ export interface BlockRendererProps {
 }
 
 export function BlockRenderer({ block, docStyle }: BlockRendererProps) {
+  const override = useContext(BlockOverrideContext);
+  const cascade = useContext(RecipientCascadeContext);
+  if (override) {
+    const recipientIndex = isRecipientAware(block)
+      ? resolveRecipientIndex(block, cascade)
+      : null;
+    const el = override(block, { recipientIndex });
+    if (el !== null && el !== undefined) return <>{el}</>;
+  }
   switch (block.type) {
     case "heading":
       return <HeadingView b={block} docStyle={docStyle} />;
@@ -132,21 +178,33 @@ export interface BlockListProps {
    * Optional doc-level style override threaded to every BlockRenderer.
    */
   docStyle?: DocStyle | undefined;
+  /**
+   * v0.11.0 — per-block render override applied to this list AND
+   * every nested block (section children, two-column halves,
+   * field-table valueBlocks). See the BlockOverride type doc.
+   * Nested BlockList calls inside the package never pass this prop;
+   * they inherit the outermost caller's override via context.
+   */
+  blockOverride?: BlockOverride | undefined;
 }
 
 /** BlockList — helper that maps a Block[] to a rendered list. */
-export function BlockList({ blocks, docStyle }: BlockListProps) {
+export function BlockList({ blocks, docStyle, blockOverride }: BlockListProps) {
   // Defensive: any caller passing a non-array (schema-drifted
   // container blocks whose left/right/valueBlocks came through as a
   // string or object) collapses to an empty list rather than
   // crashing the whole render tree with `d.map is not a function`.
   const safe = asArray<Block>(blocks);
-  return (
+  const list = (
     <>
       {safe.map((b) => (
         <BlockRenderer key={b.id} block={b} docStyle={docStyle} />
       ))}
     </>
+  );
+  if (!blockOverride) return list;
+  return (
+    <BlockOverrideContext.Provider value={blockOverride}>{list}</BlockOverrideContext.Provider>
   );
 }
 
@@ -733,6 +791,9 @@ function DocSectionView({
   b: Extract<Block, { type: "doc-section" }>;
   docStyle: DocStyle | undefined;
 }) {
+  // Push this section's recipientIndex (if any) onto the cascade so
+  // BlockOverride consumers see nested blocks' EFFECTIVE recipient.
+  const cascade = useContext(RecipientCascadeContext);
   const sectBank = docStyle?.["doc-section"];
   const rootStyle = resolveStyle(
     INTERNAL_DEFAULTS["doc-section"].root,
@@ -771,7 +832,9 @@ function DocSectionView({
         <h3 style={titleStyle}>{b.title}</h3>
       </div>
       <div style={childrenStyle}>
-        <BlockList blocks={b.children} docStyle={docStyle} />
+        <RecipientCascadeContext.Provider value={nextCascadeContext(b, cascade)}>
+          <BlockList blocks={b.children} docStyle={docStyle} />
+        </RecipientCascadeContext.Provider>
       </div>
     </section>
   );
