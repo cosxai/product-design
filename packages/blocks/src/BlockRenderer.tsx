@@ -1099,7 +1099,13 @@ function DocSignaturePlaceholder({
   const isBaked =
     typeof b.bakedSignaturePng === "string" && b.bakedSignaturePng.length > 0;
   if (isBaked) {
-    const signedAt = b.bakedSignedAt ? formatSignedAt(b.bakedSignedAt) : "";
+    // v0.11.1 · signature image only — no name/date/"Signed" caption
+    // and no consent snippet under the ink (agent-dataroom parity:
+    // those live on the audit page, the doc's own Date field row and
+    // the in-doc consent callout; repeating them under the signature
+    // was noise, and the "Signed" fallback carried no information at
+    // all). The DocuSeal certificate link stays — it's the unique,
+    // externally-verifiable artefact of this signature.
     return (
       <div
         data-block-id={b.id}
@@ -1123,25 +1129,6 @@ function DocSignaturePlaceholder({
             objectPosition: "left bottom",
           }}
         />
-        <div style={{ ...labelStyle, textTransform: "none" as const }}>
-          {b.bakedSignerName ?? b.bakedSignerEmail ?? "Signed"}
-          {signedAt ? ` · ${signedAt}` : ""}
-        </div>
-        {b.bakedConsentTextSnapshot ? (
-          <div
-            style={{
-              ...labelStyle,
-              fontSize:
-                (labelStyle as CSSProperties).fontSize ?? "9px",
-              opacity: 0.7,
-              textTransform: "none" as const,
-              marginTop: "0.25rem",
-            }}
-            title={b.bakedConsentTextSnapshot}
-          >
-            Consented to: {truncateConsent(b.bakedConsentTextSnapshot)}
-          </div>
-        ) : null}
         {b.bakedDocuSealCertificateUrl ? (
           <div style={{ ...labelStyle, textTransform: "none" as const, marginTop: "0.125rem" }}>
             <a
@@ -1252,26 +1239,6 @@ const bakedValueStyle: CSSProperties = {
   fontFamily:
     "var(--ck-font-sans, 'Geist Variable', 'Geist', system-ui, -apple-system, sans-serif)",
 };
-
-// ISO-8601 → short human date. Keep in the module (not a util file)
-// because it's the only place we need it and consumers may want to
-// reformat via their own locale — bake shows a stable server-formatted
-// date to avoid hydration mismatch.
-function formatSignedAt(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.valueOf())) return iso;
-  const y = d.getUTCFullYear();
-  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(d.getUTCDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-// Truncate consent text to a single-line preview. Full text visible
-// via the title tooltip; audit trail carries the full string.
-function truncateConsent(text: string): string {
-  const flat = text.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
-  return flat.length > 80 ? `${flat.slice(0, 77)}…` : flat;
-}
 
 // ──────────────────────────────────────────────────────────────────
 // Custom HTML escape hatch
