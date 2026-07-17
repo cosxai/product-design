@@ -1124,7 +1124,13 @@ function DocSignaturePlaceholder({
           style={{
             display: "block",
             maxWidth: "100%",
-            height: (lineStyle as CSSProperties).height ?? "36px",
+            // v0.11.2 · fixed ink height, decoupled from the
+            // PLACEHOLDER line height — the editorial seed sets the
+            // dashed sign-here line to 24px, which squashed the
+            // signature image to a sliver. 48px reads as a real
+            // signature in both the viewer and the printed PDF
+            // (dataroom's placement box is 60px for reference).
+            height: "48px",
             objectFit: "contain",
             objectPosition: "left bottom",
           }}
