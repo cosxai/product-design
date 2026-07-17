@@ -1139,7 +1139,10 @@ const signHereRowStyle: CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: "6px",
-  marginBottom: "0.35rem",
+  // Tight — SIGN HERE sits IMMEDIATELY above the dashed line so the
+  // affordance reads as one unit ("this pill belongs to this line").
+  // 0.35rem previously felt like an accidental gap.
+  marginBottom: "0.15rem",
 };
 
 const signerPillStyle: CSSProperties = {
