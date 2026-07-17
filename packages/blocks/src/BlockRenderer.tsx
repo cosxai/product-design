@@ -874,11 +874,13 @@ function DocInputPlaceholder({
       style={rootStyle}
     >
       <span style={innerStyle}>
-        {isBaked
-          ? b.bakedValue
-          : showAutoFillHint
-            ? autoFillHintCopy(b.autoFill)
-            : (b.placeholder ?? " ")}
+        {isBaked ? (
+          b.bakedValue
+        ) : showAutoFillHint ? (
+          <span style={autoFillHintTextStyle}>{autoFillHintCopy(b.autoFill)}</span>
+        ) : (
+          b.placeholder ?? " "
+        )}
       </span>
     </span>
   );
@@ -917,11 +919,13 @@ function DocTextareaPlaceholder({
       data-baked={isBaked ? "1" : undefined}
       style={rootStyle}
     >
-      {isBaked
-        ? b.bakedValue
-        : showAutoFillHint
-          ? autoFillHintCopy(b.autoFill)
-          : (b.placeholder ?? "")}
+      {isBaked ? (
+        b.bakedValue
+      ) : showAutoFillHint ? (
+        <span style={autoFillHintTextStyle}>{autoFillHintCopy(b.autoFill)}</span>
+      ) : (
+        (b.placeholder ?? "")
+      )}
     </div>
   );
 }
@@ -1083,20 +1087,18 @@ function DocSignaturePlaceholder({
       </div>
     );
   }
-  // v0.10.0 · SIGN HERE affordance. Empty signature block previously
-  // rendered as just a dashed line + tiny "Signature · Signer N"
-  // caption below — hard to distinguish from a regular divider. Add
-  // an inline hint (matches agent-dataroom reference) ABOVE the line:
-  // "SIGNER N · SIGN HERE" so authors previewing the template + real
-  // signers on the /sign page both see the block's intent at a glance.
+  // v0.10.1 · SIGN HERE affordance — split into a coloured SIGNER pill
+  // + a mono "SIGN HERE" caption so the empty signature area is
+  // unmistakable as an interaction target. Matches agent-dataroom
+  // reference exactly. Palette uses --ck-accent so the platform's
+  // brand colour drives the pill; per-signer differentiation happens
+  // at the product layer via a portal overlay (product-meta's
+  // SigningConfigOverlay does this in admin config mode).
   //
-  // Also: prefer the caller-authored parties[0].label ("Party A
-  // signature" / "Recipient signature") for the below caption over
-  // the generic "Signature · Signer N" — the label carries context
-  // the raw index can't.
-  const signerHint = b.recipientIndex !== undefined
-    ? `SIGNER ${b.recipientIndex + 1} · SIGN HERE`
-    : "SIGN HERE";
+  // Below caption prefers the caller-authored parties[0].label
+  // ("Party A signature" / "Recipient signature") over the generic
+  // "Signature · Signer N" — the authored label carries context the
+  // raw index can't.
   const caption =
     b.parties?.[0]?.label ??
     (b.recipientIndex !== undefined
@@ -1110,12 +1112,62 @@ function DocSignaturePlaceholder({
       data-recipient-index={b.recipientIndex}
       style={rootStyle}
     >
-      <p style={{ ...labelStyle, marginBottom: "0.25rem" }}>{signerHint}</p>
+      <div style={signHereRowStyle}>
+        {b.recipientIndex !== undefined && (
+          <span style={signerPillStyle}>SIGNER {b.recipientIndex + 1}</span>
+        )}
+        <span style={signHereTextStyle}>SIGN HERE</span>
+      </div>
       <div style={lineStyle} />
       <p style={labelStyle}>{caption}</p>
     </div>
   );
 }
+
+// Sign-here affordance styles kept module-scoped so they don't
+// re-allocate per render. Deliberately don't push into DocStyle bank
+// yet — palette is single-colour (product layer can layer a per-
+// signer colour via portal overlay when needed).
+const signHereRowStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+  marginBottom: "0.35rem",
+};
+
+const signerPillStyle: CSSProperties = {
+  display: "inline-block",
+  padding: "1px 6px",
+  fontSize: "9px",
+  fontWeight: 700,
+  letterSpacing: "0.08em",
+  color: "#ffffff",
+  background: "var(--ck-accent, #4f46e5)",
+  borderRadius: "3px",
+  fontFamily:
+    "var(--ck-font-mono, ui-monospace, 'SF Mono', 'Menlo', 'Consolas', monospace)",
+};
+
+const signHereTextStyle: CSSProperties = {
+  fontSize: "10px",
+  letterSpacing: "0.12em",
+  color: "#71717a",
+  textTransform: "uppercase",
+  fontFamily:
+    "var(--ck-font-mono, ui-monospace, 'SF Mono', 'Menlo', 'Consolas', monospace)",
+};
+
+// autoFillHintTextStyle — mono treatment for the AUTO-FILLED hint
+// inside doc-input / doc-textarea. Matches the SIGN HERE caption
+// above so all signing-service affordances read as one visual family.
+const autoFillHintTextStyle: CSSProperties = {
+  fontSize: "10px",
+  letterSpacing: "0.12em",
+  color: "#71717a",
+  textTransform: "uppercase",
+  fontFamily:
+    "var(--ck-font-mono, ui-monospace, 'SF Mono', 'Menlo', 'Consolas', monospace)",
+};
 
 // ISO-8601 → short human date. Keep in the module (not a util file)
 // because it's the only place we need it and consumers may want to
