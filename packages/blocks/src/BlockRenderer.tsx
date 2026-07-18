@@ -1075,6 +1075,13 @@ function DocSignaturePlaceholder({
   b: Extract<Block, { type: "doc-signature" }>;
   docStyle: DocStyle | undefined;
 }) {
+  // v0.11.4 · the SIGNER pill honours the recipient CASCADE, not just
+  // the block's own recipientIndex — a signature inside a
+  // recipientIndex-carrying doc-section (section-level party binding)
+  // is just as much "Signer N"'s as one bound directly. Own index
+  // still wins when both are present (resolveRecipientIndex).
+  const cascade = useContext(RecipientCascadeContext);
+  const effectiveRecipient = resolveRecipientIndex(b, cascade) ?? undefined;
   const sigBank = docStyle?.["doc-signature"];
   const rootStyle = resolveStyle(
     INTERNAL_DEFAULTS["doc-signature"].root,
@@ -1164,20 +1171,20 @@ function DocSignaturePlaceholder({
   // raw index can't.
   const caption =
     b.parties?.[0]?.label ??
-    (b.recipientIndex !== undefined
-      ? `Signature · Signer ${b.recipientIndex + 1}`
+    (effectiveRecipient !== undefined
+      ? `Signature · Signer ${effectiveRecipient + 1}`
       : "Signature");
   return (
     <div
       data-block-id={b.id}
       data-block-type="doc-signature"
       data-required="1"
-      data-recipient-index={b.recipientIndex}
+      data-recipient-index={effectiveRecipient}
       style={rootStyle}
     >
       <div style={signHereRowStyle}>
-        {b.recipientIndex !== undefined && (
-          <span style={signerPillStyle}>SIGNER {b.recipientIndex + 1}</span>
+        {effectiveRecipient !== undefined && (
+          <span style={signerPillStyle}>SIGNER {effectiveRecipient + 1}</span>
         )}
         <span style={signHereTextStyle}>SIGN HERE</span>
       </div>
