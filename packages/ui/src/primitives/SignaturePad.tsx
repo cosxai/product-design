@@ -380,7 +380,13 @@ export const SignaturePad = forwardRef<SignaturePadHandle, SignaturePadProps>(
         display: "flex",
         flexDirection: "column",
         gap: 8,
+        // fit-content sizes to the canvas's intrinsic `width` prop —
+        // which is exactly what overflowed narrow phones: the wrapper
+        // itself grew to 480px, so the canvas's own maxWidth:100%
+        // resolved against an already-overflowing parent. Cap the
+        // wrapper too; the flex-column children then shrink with it.
         width: "fit-content",
+        maxWidth: "100%",
       }),
       [],
     );
