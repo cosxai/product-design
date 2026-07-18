@@ -963,15 +963,15 @@ function DocTextareaPlaceholder({
   b: Extract<Block, { type: "doc-textarea" }>;
   docStyle: DocStyle | undefined;
 }) {
-  const rows = b.rows ?? 3;
-  const rootStyle: CSSProperties = {
-    ...resolveStyle(
-      INTERNAL_DEFAULTS["doc-textarea"].root,
-      docStyle?.["doc-textarea"]?.root,
-      b.style,
-    ),
-    minHeight: `${rows * 1.3}em`,
-  };
+  // dataroom parity: `rows` does NOT drive the empty-state height —
+  // an unfilled textarea reads as a single input line; filled/baked
+  // content grows the box naturally. (rows stays in the schema as an
+  // authoring hint only.)
+  const rootStyle: CSSProperties = resolveStyle(
+    INTERNAL_DEFAULTS["doc-textarea"].root,
+    docStyle?.["doc-textarea"]?.root,
+    b.style,
+  );
   const isBaked = typeof b.bakedValue === "string" && b.bakedValue.length > 0;
   // v0.9.0 · autoFill support mirrors DocInputPlaceholder. When the
   // block carries a known autoFill enum and hasn't been baked yet
