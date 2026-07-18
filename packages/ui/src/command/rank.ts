@@ -16,6 +16,11 @@ interface Ranked {
 }
 
 function scoreOne(item: CommandItem, q: string): number | null {
+  // Secret items exist only for their exact phrase — never in empty
+  // listings, never via partial/label matches.
+  if (item.secret) {
+    return q.trim().toLowerCase() === item.secret.toLowerCase() ? 200 : null;
+  }
   if (!q) return 1; // empty query — everyone passes, sorted by registration order
   const ql = q.toLowerCase();
   const lab = item.label.toLowerCase();

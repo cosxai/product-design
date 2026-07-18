@@ -23,4 +23,10 @@ export interface CommandItem {
   // palette — useful when the command opens a sub-flow that wants
   // to keep the palette open.
   run: (api: { close: () => void }) => void;
+  // Cheat-code gating: when set, the item is INVISIBLE to every
+  // query except an exact (case-insensitive, trimmed) match of this
+  // phrase — it never appears in empty-query listings or partial
+  // matches. Use for hidden debug/test menus; pair with a "Debug"
+  // group so the reveal is self-describing.
+  secret?: string;
 }
