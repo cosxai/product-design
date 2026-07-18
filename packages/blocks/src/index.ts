@@ -96,3 +96,4 @@ export type {
   RecipientAwareBlock,
   CascadeContext,
 } from "./recipient-cascade.js";
+export { SIGNER_PALETTE, signerColor } from "./signer-palette.js";

@@ -7,6 +7,7 @@ import {
   resolveRecipientIndex,
   type CascadeContext,
 } from "./recipient-cascade.js";
+import { signerColor } from "./signer-palette.js";
 import { INTERNAL_DEFAULTS, alignStyle, resolveStyle, type DocStyle } from "./styles.js";
 
 // asArray — defensive wrapper for schema fields that MUST be arrays
@@ -186,10 +187,19 @@ export interface BlockListProps {
    * they inherit the outermost caller's override via context.
    */
   blockOverride?: BlockOverride | undefined;
+  /**
+   * v0.12.0 — party display names by recipient index (from the
+   * product layer's party roster). The in-doc SIGNER pill renders
+   * the matching name (uppercased, truncated) instead of the generic
+   * "SIGNER N". Absent entries fall back to the numbered form.
+   */
+  partyLabels?: readonly string[] | undefined;
 }
 
+const PartyLabelsContext = createContext<readonly string[] | null>(null);
+
 /** BlockList — helper that maps a Block[] to a rendered list. */
-export function BlockList({ blocks, docStyle, blockOverride }: BlockListProps) {
+export function BlockList({ blocks, docStyle, blockOverride, partyLabels }: BlockListProps) {
   // Defensive: any caller passing a non-array (schema-drifted
   // container blocks whose left/right/valueBlocks came through as a
   // string or object) collapses to an empty list rather than
@@ -202,9 +212,14 @@ export function BlockList({ blocks, docStyle, blockOverride }: BlockListProps) {
       ))}
     </>
   );
-  if (!blockOverride) return list;
+  const withLabels = partyLabels ? (
+    <PartyLabelsContext.Provider value={partyLabels}>{list}</PartyLabelsContext.Provider>
+  ) : (
+    list
+  );
+  if (!blockOverride) return withLabels;
   return (
-    <BlockOverrideContext.Provider value={blockOverride}>{list}</BlockOverrideContext.Provider>
+    <BlockOverrideContext.Provider value={blockOverride}>{withLabels}</BlockOverrideContext.Provider>
   );
 }
 
@@ -1082,6 +1097,17 @@ function DocSignaturePlaceholder({
   // still wins when both are present (resolveRecipientIndex).
   const cascade = useContext(RecipientCascadeContext);
   const effectiveRecipient = resolveRecipientIndex(b, cascade) ?? undefined;
+  // v0.12.0 — party-aware pill: name from the product layer's roster
+  // (uppercased, truncated to keep the pill pill-sized), colour from
+  // the shared SIGNER_PALETTE so this pill, the product overlay's
+  // binding badges and any other signer UI stay visually coherent.
+  const partyLabels = useContext(PartyLabelsContext);
+  const pillText =
+    effectiveRecipient !== undefined
+      ? (partyLabels?.[effectiveRecipient]?.trim()
+          ? truncatePill(partyLabels[effectiveRecipient] as string)
+          : `SIGNER ${effectiveRecipient + 1}`)
+      : null;
   const sigBank = docStyle?.["doc-signature"];
   const rootStyle = resolveStyle(
     INTERNAL_DEFAULTS["doc-signature"].root,
@@ -1183,8 +1209,12 @@ function DocSignaturePlaceholder({
       style={rootStyle}
     >
       <div style={signHereRowStyle}>
-        {effectiveRecipient !== undefined && (
-          <span style={signerPillStyle}>SIGNER {effectiveRecipient + 1}</span>
+        {effectiveRecipient !== undefined && pillText !== null && (
+          <span
+            style={{ ...signerPillStyle, background: signerColor(effectiveRecipient) }}
+          >
+            {pillText}
+          </span>
         )}
         <span style={signHereTextStyle}>SIGN HERE</span>
       </div>
@@ -1207,6 +1237,13 @@ const signHereRowStyle: CSSProperties = {
   // 0.35rem previously felt like an accidental gap.
   marginBottom: "0.15rem",
 };
+
+// truncatePill — party names go UPPERCASE and cap at 14 chars so a
+// long roster label ("Client Representative") stays pill-sized.
+function truncatePill(label: string): string {
+  const up = label.trim().toUpperCase();
+  return up.length > 14 ? up.slice(0, 13) + "…" : up;
+}
 
 const signerPillStyle: CSSProperties = {
   display: "inline-block",
