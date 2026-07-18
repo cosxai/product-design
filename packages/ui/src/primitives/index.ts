@@ -32,3 +32,5 @@ export { SignaturePad } from "./SignaturePad";
 export type { SignaturePadProps, SignaturePadHandle } from "./SignaturePad";
 export { CopyField } from "./CopyField";
 export type { CopyFieldProps } from "./CopyField";
+export { SegmentedControl } from "./SegmentedControl";
+export type { SegmentedControlProps, SegmentedControlOption } from "./SegmentedControl";
