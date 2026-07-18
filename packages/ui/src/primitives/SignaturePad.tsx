@@ -387,6 +387,11 @@ export const SignaturePad = forwardRef<SignaturePadHandle, SignaturePadProps>(
     const canvasStyle: CSSProperties = useMemo(
       () => ({
         width,
+        // Never overflow a narrow container (phone signing surface) —
+        // the bitmap keeps its logical resolution and the pointer
+        // handlers already rescale via getBoundingClientRect, so CSS
+        // shrink is loss-free for drawing accuracy.
+        maxWidth: "100%",
         height,
         border: "1px solid var(--ck-border-subtle, #d4d4d8)",
         borderRadius: "var(--ck-radius-sm, 6px)",
@@ -409,6 +414,8 @@ export const SignaturePad = forwardRef<SignaturePadHandle, SignaturePadProps>(
         fontSize: 14,
         fontFamily: "inherit",
         width,
+        maxWidth: "100%",
+        boxSizing: "border-box",
       }),
       [width],
     );
