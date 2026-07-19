@@ -107,3 +107,18 @@ a:visited { color: var(--ck-accent); }
     animation: none;
   }
 }
+
+/* Scrollbars — macOS renders auto-hiding overlay bars, but Windows
+   (and Linux) render CLASSIC opaque gutters that read as heavy grey
+   slabs against the kit's editorial surfaces (QA: Ben, 2026-07-19).
+   The standard properties slim them down and tint the thumb from
+   the theme's border token so both light and dark chrome stay
+   coherent. `scrollbar-color` inherits from :root; `scrollbar-width`
+   doesn't, hence the universal selector. Browsers without support
+   (older Safari) keep their native overlay bars — already fine. */
+* {
+  scrollbar-width: thin;
+}
+:root {
+  scrollbar-color: var(--ck-border-strong, rgba(0, 0, 0, 0.25)) transparent;
+}
