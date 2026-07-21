@@ -1057,9 +1057,12 @@ function DocCheckboxPlaceholder({
     undefined,
   );
   // v0.9.0 · surface data-recipient-index + bakedValue.
-  // Read-only mode renders a filled box when bakedValue === true so
-  // signed checkboxes visually differ from unchecked ones (before
-  // this, the placeholder only had one visual state).
+  // v0.12.1 · checked state draws a REAL tick inside the box.
+  // The v0.9.0 shortcut filled the whole box with currentColor,
+  // which read as a solid black square in signed PDFs — nothing
+  // like the tick signers saw in the form UI (2026-07-21 QA). The
+  // SVG stroke inherits currentColor so themed docStyles keep
+  // controlling the tick colour via the box's color property.
   const isBaked = typeof b.bakedValue === "boolean";
   return (
     <span
@@ -1071,13 +1074,28 @@ function DocCheckboxPlaceholder({
       data-checked={b.bakedValue ? "1" : undefined}
       style={rootStyle}
     >
-      <span
-        aria-hidden
-        style={{
-          ...boxStyle,
-          ...(b.bakedValue === true ? { background: "currentColor" } : undefined),
-        }}
-      />
+      <span aria-hidden style={{ ...boxStyle, position: "relative" }}>
+        {b.bakedValue === true && (
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <path
+              d="M3.2 8.6l3.2 3.2 6.4-7.4"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </span>
       {b.label && <span style={labelStyle}>{b.label}</span>}
     </span>
   );

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.12.1 (2026-07-21)
+- fix: doc-checkbox checked state renders a tick (SVG, currentColor) instead of filling the box solid — signed PDFs showed black squares (QA 2026-07-21)
+
 ## 0.11.0 (2026-07-17)
 
 - **feat**: `BlockList` accepts an optional `blockOverride` prop — a per-block render hook called for EVERY block in the tree (including blocks nested in doc-section children, two-column halves and doc-field-table valueBlocks) before the default view. Return a ReactNode to take the block over; return null/undefined to fall through to the package's full default chrome. The hook receives the block's EFFECTIVE `recipientIndex` per the recipient-cascade rules (threaded through nested doc-sections via context). Primary consumer: the signing surface, which previously re-implemented the container walk meta-side and lost doc-section heading chrome in the process.
