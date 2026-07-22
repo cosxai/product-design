@@ -117,3 +117,22 @@ export interface ActionBarStatusDot {
   // pulsing reads as attention-grabbing.
   pulse?: boolean;
 }
+
+// Registered via `useActionBarPanel()` — the bar-intrinsic popover
+// slot (design#13). The BAR owns positioning (docked above itself,
+// following drag natively) and the chrome themes own the panel's
+// visual identity via `.ck-actionbar-panel`; the consumer owns only
+// the content subtree. One panel at a time (last call wins).
+export interface ActionBarPanel {
+  // Controlled visibility. The bar calls onOpenChange(false) on
+  // outside-click and Escape; the consumer toggles open from its
+  // own affordance (typically the status dot's onClick).
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  // Content subtree. Rendered inside the themed panel container.
+  content: ReactNode;
+  // Panel width in px. Default 320; always viewport-clamped.
+  width?: number;
+  // aria-label for the panel region. Default "Panel".
+  ariaLabel?: string;
+}

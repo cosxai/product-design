@@ -182,3 +182,11 @@ html[data-ck-chrome="bento"] [data-ck-bento-cell][data-interactive="true"]:hover
   transform: translateY(-3px);
   box-shadow: var(--ck-shadow-3);
 }
+
+html[data-ck-chrome="bento"] .ck-actionbar-panel,
+html[data-ck-chrome="bento"] .ck-actionbar-toast {
+  background: var(--ck-bg-surface);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 16px;
+  box-shadow: var(--ck-shadow-2);
+}

@@ -329,3 +329,11 @@ html[data-ck-chrome="riso"] hr {
 }
 .ck-riso-marks::before { top: 4px; left: 8px; }
 .ck-riso-marks::after  { bottom: 4px; right: 8px; }
+
+html[data-ck-chrome="riso"] .ck-actionbar-panel,
+html[data-ck-chrome="riso"] .ck-actionbar-toast {
+  background: var(--ck-bg-surface);
+  border: 2px solid var(--ck-text-primary);
+  border-radius: 4px;
+  box-shadow: 5px 5px 0 var(--ck-riso-blue);
+}

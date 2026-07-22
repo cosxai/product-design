@@ -1,5 +1,6 @@
 import { createContext } from "react";
-import type { ActionBarItem, ActionBarCategories, ActionBarStatusDot } from "./types";
+import type { ReactNode } from "react";
+import type { ActionBarItem, ActionBarCategories, ActionBarStatusDot, ActionBarPanel } from "./types";
 
 // Registry + expansion + category catalog + status-dot slot. Items are
 // pushed by pages through useActionBarItems(); the status dot is
@@ -23,6 +24,13 @@ export interface ActionBarContextValue {
   // has registered one. Last call to setStatusDot wins.
   statusDot: ActionBarStatusDot | null;
   setStatusDot: (dot: ActionBarStatusDot | null) => void;
+  // Bar-intrinsic popover slot (design#13). Registered by
+  // useActionBarPanel; the bar positions + themes it.
+  panel: ActionBarPanel | null;
+  setPanel: (panel: ActionBarPanel | null) => void;
+  // Transient bubble above the bar (completion toasts etc.).
+  toast: ReactNode | null;
+  setToast: (toast: ReactNode | null) => void;
 }
 
 export const ActionBarContext = createContext<ActionBarContextValue | null>(null);

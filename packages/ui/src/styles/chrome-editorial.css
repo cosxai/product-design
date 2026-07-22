@@ -158,3 +158,11 @@ html[data-ck-chrome="editorial"] [role="dialog"] > div:first-child {
 [data-ck-spotlight] .ck-card .ck-tag {
   color: var(--ck-text-secondary);
 }
+
+/* ActionBar panel/toast — flat paper, hairline, no drop glow. */
+html[data-ck-chrome="editorial"] .ck-actionbar-panel,
+html[data-ck-chrome="editorial"] .ck-actionbar-toast {
+  background: var(--ck-bg-surface);
+  border-color: var(--ck-border-subtle);
+  box-shadow: var(--ck-shadow-1, 0 2px 8px rgba(0, 0, 0, 0.06));
+}

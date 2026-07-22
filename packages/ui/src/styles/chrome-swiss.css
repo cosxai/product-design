@@ -255,3 +255,11 @@ html[data-ck-chrome="swiss"] a {
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
 }
+
+html[data-ck-chrome="swiss"] .ck-actionbar-panel,
+html[data-ck-chrome="swiss"] .ck-actionbar-toast {
+  background: var(--ck-bg-canvas);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 0;
+  box-shadow: var(--ck-shadow-1, 0 2px 8px rgba(0, 0, 0, 0.08));
+}

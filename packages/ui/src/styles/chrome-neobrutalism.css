@@ -316,3 +316,11 @@ html[data-ck-chrome="neobrutalism"] [role="switch"] {
     box-shadow: 4px 4px 0 0 var(--neobrut-ink);
   }
 }
+
+html[data-ck-chrome="neobrutalism"] .ck-actionbar-panel,
+html[data-ck-chrome="neobrutalism"] .ck-actionbar-toast {
+  border: 2px solid var(--neobrut-ink);
+  border-radius: 5px;
+  box-shadow: 4px 4px 0 0 var(--neobrut-ink);
+  background: var(--ck-bg-surface);
+}

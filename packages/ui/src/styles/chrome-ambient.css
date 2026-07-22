@@ -223,3 +223,13 @@ html[data-ck-chrome="ambient"] [role="dialog"] > div > div {
     transition: none !important;
   }
 }
+
+html[data-ck-chrome="ambient"] .ck-actionbar-panel,
+html[data-ck-chrome="ambient"] .ck-actionbar-toast {
+  background: var(--ck-bg-sidebar);
+  backdrop-filter: var(--ck-blur-overlay);
+  -webkit-backdrop-filter: var(--ck-blur-overlay);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 20px;
+  box-shadow: var(--ck-shadow-2);
+}

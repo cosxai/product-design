@@ -261,3 +261,12 @@ html[data-ck-chrome="terminal"] [role="dialog"] > div > div {
   box-shadow: none;
   font-family: var(--ck-font-mono);
 }
+
+html[data-ck-chrome="terminal"] .ck-actionbar-panel,
+html[data-ck-chrome="terminal"] .ck-actionbar-toast {
+  background: var(--ck-bg-surface);
+  border: 1px solid var(--ck-border-subtle);
+  border-radius: 2px;
+  box-shadow: none;
+  font-family: var(--ck-font-mono);
+}

@@ -122,3 +122,30 @@ a:visited { color: var(--ck-accent); }
 :root {
   scrollbar-color: var(--ck-border-strong, rgba(0, 0, 0, 0.25)) transparent;
 }
+
+/* ── ActionBar panel + toast slots (design#13) ─────────────────────
+   Base chrome for the bar-intrinsic popover (useActionBarPanel) and
+   transient bubble (useActionBarToast). Token-driven so every theme
+   reads correctly by default; chrome-*.css sharpens identity themes
+   (neobrutalism ink shadows, sketch wobble, terminal flatness). */
+.ck-actionbar-panel {
+  background: var(--ck-bg-surface, #fff);
+  border: 1px solid var(--ck-border-subtle, #e5e7eb);
+  border-radius: 12px;
+  box-shadow: var(--ck-shadow-3, 0 16px 48px rgba(0, 0, 0, 0.12));
+  padding: 16px;
+  font-family: var(--ck-font-sans, system-ui, sans-serif);
+  color: var(--ck-text-primary);
+  user-select: none;
+}
+.ck-actionbar-toast {
+  background: var(--ck-bg-surface, #fff);
+  border: 1px solid var(--ck-border-subtle, #e5e7eb);
+  border-radius: 10px;
+  box-shadow: var(--ck-shadow-3, 0 16px 48px rgba(0, 0, 0, 0.12));
+  padding: 10px 14px;
+  font-size: 12px;
+  font-family: var(--ck-font-sans, system-ui, sans-serif);
+  color: var(--ck-text-primary);
+  user-select: none;
+}

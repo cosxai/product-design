@@ -1,6 +1,7 @@
 import {
   useCallback,
   useContext,
+  useLayoutEffect,
   useEffect,
   useMemo,
   useRef,
@@ -154,7 +155,7 @@ export function ActionBar({
   if (!ctx) {
     throw new Error("<ActionBar> must be inside <ActionBarProvider>");
   }
-  const { items, categories, expandedKey, setExpandedKey, statusDot } = ctx;
+  const { items, categories, expandedKey, setExpandedKey, statusDot, panel, toast } = ctx;
   const vp = useViewport();
   const isPhone = vp.isPhone;
 
@@ -382,6 +383,42 @@ export function ActionBar({
     );
   }
 
+  // ----- Panel slot (design#13): outside-click + Escape close. -----
+  const panelOpen = Boolean(panel?.open);
+  const panelClose = panel?.onOpenChange;
+  useEffect(() => {
+    if (!panelOpen || !panelClose) return;
+    const onDown = (e: MouseEvent) => {
+      const t = e.target as Node | null;
+      if (t && barRef.current?.contains(t)) return;
+      panelClose(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") panelClose(false);
+    };
+    window.addEventListener("mousedown", onDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [panelOpen, panelClose]);
+
+  // Horizontal clamp: centred on the bar unless that would push the
+  // panel past a viewport edge — then shift just enough to fit.
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    if (!panelOpen) return;
+    const el = panelRef.current;
+    if (!el) return;
+    el.style.marginLeft = "0px";
+    const rect = el.getBoundingClientRect();
+    let shift = 0;
+    if (rect.left < 8) shift = 8 - rect.left;
+    else if (rect.right > window.innerWidth - 8) shift = window.innerWidth - 8 - rect.right;
+    if (shift !== 0) el.style.marginLeft = `${Math.round(shift)}px`;
+  }, [panelOpen, pos]);
+
   // ----- Full bar -----
   const isDefault = pos.type === "default";
   return (
@@ -437,6 +474,44 @@ export function ActionBar({
         ...style,
       }}
     >
+      {/* Panel slot (design#13) — the bar positions + the chrome
+          themes style it (.ck-actionbar-panel); consumers own only
+          the content. Rendered inside the bar root so it follows
+          drags natively. */}
+      {panel?.open && (
+        <div
+          ref={panelRef}
+          className="ck-actionbar-panel"
+          role="region"
+          aria-label={panel.ariaLabel ?? "Panel"}
+          style={{
+            position: "absolute",
+            bottom: "calc(100% + 8px)",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: panel.width ?? 320,
+            maxWidth: "calc(100vw - 16px)",
+            cursor: "default",
+          }}
+        >
+          {panel.content}
+        </div>
+      )}
+      {toast != null && !panel?.open && (
+        <div
+          className="ck-actionbar-toast"
+          role="status"
+          style={{
+            position: "absolute",
+            bottom: "calc(100% + 8px)",
+            left: "50%",
+            transform: "translateX(-50%)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {toast}
+        </div>
+      )}
       {/* Left-edge button. Phone = collapse; desktop = drag grip. */}
       {isPhone && collapsibleOnPhone ? (
         <button
