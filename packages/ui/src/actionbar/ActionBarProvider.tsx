@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { ActionBarContext } from "./actionbar-context";
-import type { ActionBarItem, ActionBarCategories, ActionBarStatusDot, ActionBarPanel } from "./types";
+import type { ActionBarItem, ActionBarCategories, ActionBarStatusDot, ActionBarPanelMeta } from "./types";
 
 // Provider for the action-bar registry + expansion state +
 // category catalog. Mount once near the app root, inside the
@@ -24,8 +24,10 @@ export function ActionBarProvider({
   const [sources, setSources] = useState<Record<string, ActionBarItem[]>>({});
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [statusDot, setStatusDot] = useState<ActionBarStatusDot | null>(null);
-  const [panel, setPanel] = useState<ActionBarPanel | null>(null);
-  const [toast, setToast] = useState<ReactNode | null>(null);
+  const [panel, setPanel] = useState<ActionBarPanelMeta | null>(null);
+  const [panelHost, setPanelHost] = useState<HTMLDivElement | null>(null);
+  const [toastActive, setToastActive] = useState(false);
+  const [toastHost, setToastHost] = useState<HTMLDivElement | null>(null);
 
   const register = useCallback((sourceKey: string, items: ActionBarItem[]) => {
     setSources((prev) => {
@@ -71,10 +73,14 @@ export function ActionBarProvider({
       setStatusDot,
       panel,
       setPanel,
-      toast,
-      setToast,
+      panelHost,
+      setPanelHost,
+      toastActive,
+      setToastActive,
+      toastHost,
+      setToastHost,
     }),
-    [register, unregister, items, categories, expandedKey, statusDot, panel, toast],
+    [register, unregister, items, categories, expandedKey, statusDot, panel, panelHost, toastActive, toastHost],
   );
 
   return (

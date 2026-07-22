@@ -1,6 +1,5 @@
 import { createContext } from "react";
-import type { ReactNode } from "react";
-import type { ActionBarItem, ActionBarCategories, ActionBarStatusDot, ActionBarPanel } from "./types";
+import type { ActionBarItem, ActionBarCategories, ActionBarStatusDot, ActionBarPanelMeta } from "./types";
 
 // Registry + expansion + category catalog + status-dot slot. Items are
 // pushed by pages through useActionBarItems(); the status dot is
@@ -24,13 +23,23 @@ export interface ActionBarContextValue {
   // has registered one. Last call to setStatusDot wins.
   statusDot: ActionBarStatusDot | null;
   setStatusDot: (dot: ActionBarStatusDot | null) => void;
-  // Bar-intrinsic popover slot (design#13). Registered by
-  // useActionBarPanel; the bar positions + themes it.
-  panel: ActionBarPanel | null;
-  setPanel: (panel: ActionBarPanel | null) => void;
-  // Transient bubble above the bar (completion toasts etc.).
-  toast: ReactNode | null;
-  setToast: (toast: ReactNode | null) => void;
+  // Bar-intrinsic popover slot (design#13). useActionBarPanel
+  // registers META only (open/onOpenChange/width/ariaLabel); the bar
+  // renders an empty themed container and publishes its DOM node via
+  // panelHost, into which the hook PORTALS the consumer's content.
+  // Content never enters context state — a fresh JSX identity per
+  // consumer render would otherwise re-render-loop through setPanel.
+  panel: ActionBarPanelMeta | null;
+  setPanel: (panel: ActionBarPanelMeta | null) => void;
+  panelHost: HTMLDivElement | null;
+  setPanelHost: (el: HTMLDivElement | null) => void;
+  // Transient bubble above the bar (completion toasts etc.) — same
+  // portal-host pattern: consumers register only "active", content
+  // portals into toastHost.
+  toastActive: boolean;
+  setToastActive: (active: boolean) => void;
+  toastHost: HTMLDivElement | null;
+  setToastHost: (el: HTMLDivElement | null) => void;
 }
 
 export const ActionBarContext = createContext<ActionBarContextValue | null>(null);

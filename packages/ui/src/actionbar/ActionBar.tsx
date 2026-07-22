@@ -155,7 +155,7 @@ export function ActionBar({
   if (!ctx) {
     throw new Error("<ActionBar> must be inside <ActionBarProvider>");
   }
-  const { items, categories, expandedKey, setExpandedKey, statusDot, panel, toast } = ctx;
+  const { items, categories, expandedKey, setExpandedKey, statusDot, panel, setPanelHost, toastActive, setToastHost } = ctx;
   const vp = useViewport();
   const isPhone = vp.isPhone;
 
@@ -355,9 +355,26 @@ export function ActionBar({
     };
   }, [panelOpen, panelClose]);
 
+  // Host refs — stable callbacks publishing the container DOM nodes
+  // through context so the consumer hooks can portal content in.
+  // useCallback keeps React from detach/re-attach churn per render.
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const panelHostRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      panelRef.current = el;
+      setPanelHost(el);
+    },
+    [setPanelHost],
+  );
+  const toastHostRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      setToastHost(el);
+    },
+    [setToastHost],
+  );
+
   // Horizontal clamp: centred on the bar unless that would push the
   // panel past a viewport edge — then shift just enough to fit.
-  const panelRef = useRef<HTMLDivElement | null>(null);
   useLayoutEffect(() => {
     if (!panelOpen) return;
     const el = panelRef.current;
@@ -478,11 +495,13 @@ export function ActionBar({
     >
       {/* Panel slot (design#13) — the bar positions + the chrome
           themes style it (.ck-actionbar-panel); consumers own only
-          the content. Rendered inside the bar root so it follows
+          the content, PORTALLED in via useActionBarPanel (the div
+          here is an empty host — content never flows through
+          context state). Rendered inside the bar root so it follows
           drags natively. */}
       {panel?.open && (
         <div
-          ref={panelRef}
+          ref={panelHostRef}
           className="ck-actionbar-panel"
           role="region"
           aria-label={panel.ariaLabel ?? "Panel"}
@@ -495,12 +514,11 @@ export function ActionBar({
             maxWidth: "calc(100vw - 16px)",
             cursor: "default",
           }}
-        >
-          {panel.content}
-        </div>
+        />
       )}
-      {toast != null && !panel?.open && (
+      {toastActive && !panel?.open && (
         <div
+          ref={toastHostRef}
           className="ck-actionbar-toast"
           role="status"
           style={{
@@ -510,9 +528,7 @@ export function ActionBar({
             transform: "translateX(-50%)",
             whiteSpace: "nowrap",
           }}
-        >
-          {toast}
-        </div>
+        />
       )}
       {/* Left-edge button. Phone = collapse; desktop = drag grip. */}
       {isPhone && collapsibleOnPhone ? (

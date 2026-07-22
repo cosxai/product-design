@@ -129,10 +129,19 @@ export interface ActionBarPanel {
   // own affordance (typically the status dot's onClick).
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  // Content subtree. Rendered inside the themed panel container.
+  // Content subtree. Portalled into the themed panel container the
+  // bar renders — it stays in the CONSUMER's React tree (fresh JSX
+  // identity per render is fine; content never flows through
+  // context state, which would re-render-loop).
   content: ReactNode;
   // Panel width in px. Default 320; always viewport-clamped.
   width?: number;
   // aria-label for the panel region. Default "Panel".
   ariaLabel?: string;
 }
+
+// What the context actually stores for the panel slot: the config
+// minus `content`. Only stable primitives + the onOpenChange
+// callback go through context state, so the registration effect
+// re-runs on real changes only.
+export type ActionBarPanelMeta = Omit<ActionBarPanel, "content">;

@@ -22,6 +22,7 @@ export type {
   ActionBarItemSlot,
   ActionBarStatusDot,
   ActionBarPanel,
+  ActionBarPanelMeta,
   ActionBarCategory,
   ActionBarCategories,
 } from "./types";
