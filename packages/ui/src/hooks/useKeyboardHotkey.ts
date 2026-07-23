@@ -60,11 +60,17 @@ export function useKeyboardHotkey(
       if (skipInputs) {
         const ae = document.activeElement as HTMLElement | null;
         const tag = ae?.tagName;
+        // Containers marked data-hotkey-passthrough host editables
+        // the user never types into (e.g. a canvas spreadsheet's
+        // hidden cell-editor focus trap) — hotkeys stay live there.
+        // Mirrors the same convention in consumer apps.
+        const passthrough = !!ae?.closest?.('[data-hotkey-passthrough="true"]');
         if (
-          tag === "INPUT" ||
-          tag === "TEXTAREA" ||
-          tag === "SELECT" ||
-          ae?.isContentEditable
+          !passthrough &&
+          (tag === "INPUT" ||
+            tag === "TEXTAREA" ||
+            tag === "SELECT" ||
+            ae?.isContentEditable)
         ) {
           return;
         }

@@ -1,3 +1,6 @@
+## 0.18.1 (2026-07-23)
+- fix(hooks): useKeyboardHotkey honors `data-hotkey-passthrough="true"` containers — hotkeys stay live when focus sits in an editable the user never types into (canvas spreadsheet focus traps)
+
 # Changelog
 
 ## 0.13.0 (2026-07-17)
