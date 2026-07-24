@@ -123,6 +123,32 @@ a:visited { color: var(--ck-accent); }
   scrollbar-color: var(--ck-border-strong, rgba(0, 0, 0, 0.25)) transparent;
 }
 
+/* Chromium < 121 doesn't know the standard properties above and fell
+   back to the classic arrow-button gutters (QA: Ben, 2026-07-24 —
+   the first pass "didn't cover everything"; it actually didn't cover
+   older ENGINES). The ::-webkit-scrollbar layer is the fallback for
+   those versions; engines that support scrollbar-width IGNORE these
+   pseudo-elements when it's set, so the two blocks never fight. */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--ck-border-strong, rgba(0, 0, 0, 0.25));
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+*::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 /* ── ActionBar panel + toast slots (design#13) ─────────────────────
    Base chrome for the bar-intrinsic popover (useActionBarPanel) and
    transient bubble (useActionBarToast). Token-driven so every theme
