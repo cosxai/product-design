@@ -111,6 +111,16 @@ export function CommandPalettePage() {
         NOT when a modal is open (palette layers on top of dialogs).
       </p>
 
+      <h2>Disabled items</h2>
+      <p>
+        Set <code>disabled</code> on a <code>CommandItem</code> to render it
+        dimmed and non-interactive — arrow keys skip it, it's never the
+        default selection, and <code>run</code> never fires. Use it for a
+        "coming soon" teaser you want visible but not yet actionable.
+        (Contrast <code>secret</code>, which hides the row until its exact
+        cheat phrase is typed.)
+      </p>
+
       <h2>Async sources</h2>
       <p>
         The palette filters registered items client-side, so a

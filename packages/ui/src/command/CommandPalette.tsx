@@ -87,10 +87,17 @@ export function CommandPalette({
   // Flat array for keyboard navigation (sequential across groups).
   const flat = useMemo(() => grouped.flatMap((g) => g.items), [grouped]);
 
-  // Clamp selectedIdx when results shrink.
-  useEffect(() => {
-    if (selectedIdx >= flat.length) setSelectedIdx(Math.max(0, flat.length - 1));
-  }, [flat.length, selectedIdx]);
+  // Effective selection: `selectedIdx` is the raw state the keyboard/mouse
+  // set, but disabled rows and a shrunk list can leave it pointing at a
+  // non-interactive or out-of-range item. Derive the index actually shown
+  // as selected — the first enabled row when the raw one isn't usable — so
+  // a disabled item (e.g. a "coming soon" teaser) is never highlighted and
+  // the default lands on the first real result.
+  const selIdx = useMemo(() => {
+    if (flat.length === 0) return 0;
+    if (selectedIdx < flat.length && !flat[selectedIdx]?.disabled) return selectedIdx;
+    return firstEnabled(flat);
+  }, [flat, selectedIdx]);
 
   const close = () => setOpen(false);
 
@@ -104,34 +111,34 @@ export function CommandPalette({
       }
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelectedIdx((i) => (i + 1) % Math.max(1, flat.length));
+        setSelectedIdx(stepEnabled(flat, selIdx, 1));
         return;
       }
       if (e.key === "ArrowUp") {
         e.preventDefault();
-        setSelectedIdx((i) => (i - 1 + Math.max(1, flat.length)) % Math.max(1, flat.length));
+        setSelectedIdx(stepEnabled(flat, selIdx, -1));
         return;
       }
       if (e.key === "Enter") {
         e.preventDefault();
-        const pick = flat[selectedIdx];
-        if (pick) pick.run({ close });
+        const pick = flat[selIdx];
+        if (pick && !pick.disabled) pick.run({ close });
         return;
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // close + flat + selectedIdx are stable enough; intentionally omit
-    // close from deps so we don't re-bind every render.
+    // close + flat + selIdx are stable enough; intentionally omit close
+    // from deps so we don't re-bind every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, flat, selectedIdx]);
+  }, [open, flat, selIdx]);
 
   // Scroll selected row into view.
   useEffect(() => {
     if (!open) return;
-    const node = listRef.current?.querySelector(`[data-row-idx="${selectedIdx}"]`);
+    const node = listRef.current?.querySelector(`[data-row-idx="${selIdx}"]`);
     (node as HTMLElement | null)?.scrollIntoView({ block: "nearest" });
-  }, [open, selectedIdx]);
+  }, [open, selIdx]);
 
   if (!open) return null;
 
@@ -218,13 +225,15 @@ export function CommandPalette({
                 </div>
                 {g.items.map((it) => {
                   const idx = flat.indexOf(it);
-                  const selected = idx === selectedIdx;
+                  const disabled = !!it.disabled;
+                  const selected = idx === selIdx && !disabled;
                   return (
                     <div
                       key={it.key}
                       data-row-idx={idx}
-                      onMouseEnter={() => setSelectedIdx(idx)}
-                      onClick={() => it.run({ close })}
+                      aria-disabled={disabled || undefined}
+                      onMouseEnter={disabled ? undefined : () => setSelectedIdx(idx)}
+                      onClick={disabled ? undefined : () => it.run({ close })}
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -232,8 +241,13 @@ export function CommandPalette({
                         padding: "8px 12px",
                         borderRadius: "var(--ck-radius-sm)",
                         background: selected ? "var(--ck-accent-muted)" : "transparent",
-                        color: selected ? "var(--ck-accent)" : "var(--ck-text-primary)",
-                        cursor: "pointer",
+                        color: disabled
+                          ? "var(--ck-text-tertiary)"
+                          : selected
+                            ? "var(--ck-accent)"
+                            : "var(--ck-text-primary)",
+                        opacity: disabled ? 0.6 : 1,
+                        cursor: disabled ? "default" : "pointer",
                         font: "400 13px/1.3 var(--ck-font-sans)",
                       }}
                     >
@@ -292,4 +306,24 @@ export function CommandPalette({
     </div>,
     document.body,
   );
+}
+
+// First index whose item isn't disabled, or 0 if every item is (or the
+// list is empty) — the palette has to point somewhere.
+function firstEnabled(list: CommandItem[]): number {
+  const i = list.findIndex((it) => !it.disabled);
+  return i === -1 ? 0 : i;
+}
+
+// Step from `from` in `dir` (+1 down / -1 up), wrapping, skipping disabled
+// rows. Returns `from` when there's no other enabled row to land on.
+function stepEnabled(list: CommandItem[], from: number, dir: 1 | -1): number {
+  const n = list.length;
+  if (n === 0) return 0;
+  let i = from;
+  for (let step = 0; step < n; step++) {
+    i = (i + dir + n) % n;
+    if (!list[i]?.disabled) return i;
+  }
+  return from;
 }
