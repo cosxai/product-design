@@ -21,11 +21,19 @@ export interface CommandPaletteProps {
   // here come last in registration order.
   groupOrder?: string[];
   placeholder?: string;
+  // Fires whenever the query changes — on every keystroke and on the
+  // reset-to-empty when the palette opens. Lets a consumer drive an
+  // ASYNC command source (debounce → fetch → register the results as
+  // items via useCommandSource) that the built-in client-side filter
+  // can't provide on its own. Optional + backward compatible: omit it
+  // and the palette behaves exactly as before (static items only).
+  onQueryChange?: ((query: string) => void) | undefined;
 }
 
 export function CommandPalette({
   groupOrder = [],
   placeholder = "Type a command or search…",
+  onQueryChange,
 }: CommandPaletteProps) {
   const ctx = useContext(CommandContext);
   if (!ctx) throw new Error("<CommandPalette> must be inside <CommandProvider>");
@@ -34,12 +42,21 @@ export function CommandPalette({
   const [selectedIdx, setSelectedIdx] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  // Latest onQueryChange held in a ref so the open-reset effect can
+  // notify it WITHOUT taking it as a dep — an inline callback changes
+  // identity every render, which would otherwise re-run the effect and
+  // clear the query on every keystroke.
+  const onQueryChangeRef = useRef(onQueryChange);
+  onQueryChangeRef.current = onQueryChange;
 
   // Reset query + focus on every open.
   useEffect(() => {
     if (open) {
       setQ("");
       setSelectedIdx(0);
+      // Tell the consumer the query cleared, so an async source drops
+      // its stale results when the palette reopens.
+      onQueryChangeRef.current?.("");
       // RAF so the modal element exists before focus.
       requestAnimationFrame(() => inputRef.current?.focus());
     }
@@ -164,6 +181,7 @@ export function CommandPalette({
           onChange={(e) => {
             setQ(e.target.value);
             setSelectedIdx(0);
+            onQueryChange?.(e.target.value);
           }}
           placeholder={placeholder}
           style={{
