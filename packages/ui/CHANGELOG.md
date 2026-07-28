@@ -1,3 +1,6 @@
+## 0.20.0 (2026-07-28)
+- **feat(command)**: `CommandItem` gains an optional `disabled?: boolean`. A disabled row still renders (dimmed) but is skipped by arrow-key nav, never auto-selected (the default highlight lands on the first enabled row), ignores hover/click, and `run` never fires on it. For "coming soon" teasers — distinct from `secret`, which hides the row entirely. Backward compatible: omit it and rows behave exactly as before.
+
 ## 0.19.0 (2026-07-28)
 - **feat(command)**: `<CommandPalette>` gains an optional `onQueryChange?: (query: string) => void` prop — fires on every keystroke and on the reset-to-empty when the palette opens. Lets a consumer drive an ASYNC command source (debounce → fetch → register results via `useCommandSource`) that the built-in client-side filter can't provide. Backward compatible: omit it and the palette behaves exactly as before. Unblocks product-meta's global document search in the ⌘K palette.
 

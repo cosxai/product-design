@@ -29,4 +29,9 @@ export interface CommandItem {
   // matches. Use for hidden debug/test menus; pair with a "Debug"
   // group so the reveal is self-describing.
   secret?: string;
+  // Non-interactive placeholder: the row still renders (dimmed) but is
+  // skipped by keyboard nav, never auto-selected, and `run` never fires
+  // on it. Use for "coming soon" teasers. Distinct from `secret`, which
+  // HIDES the row; `disabled` SHOWS it as unavailable.
+  disabled?: boolean | undefined;
 }
