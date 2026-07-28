@@ -110,6 +110,17 @@ export function CommandPalettePage() {
         Listener is global and skips when an input is focused but
         NOT when a modal is open (palette layers on top of dialogs).
       </p>
+
+      <h2>Async sources</h2>
+      <p>
+        The palette filters registered items client-side, so a
+        static <code>useCommandSource</code> can't reach a server.
+        Pass <code>onQueryChange</code> to <code>&lt;CommandPalette&gt;</code>{" "}
+        — it fires on every keystroke and on the reset-to-empty when the
+        palette opens. Debounce it, fetch, then register the results as a
+        new command group via <code>useCommandSource</code>; they appear
+        alongside the static commands. Omit the prop and nothing changes.
+      </p>
     </>
   );
 }

@@ -1,3 +1,6 @@
+## 0.19.0 (2026-07-28)
+- **feat(command)**: `<CommandPalette>` gains an optional `onQueryChange?: (query: string) => void` prop — fires on every keystroke and on the reset-to-empty when the palette opens. Lets a consumer drive an ASYNC command source (debounce → fetch → register results via `useCommandSource`) that the built-in client-side filter can't provide. Backward compatible: omit it and the palette behaves exactly as before. Unblocks product-meta's global document search in the ⌘K palette.
+
 ## 0.18.1 (2026-07-23)
 - fix(hooks): useKeyboardHotkey honors `data-hotkey-passthrough="true"` containers — hotkeys stay live when focus sits in an editable the user never types into (canvas spreadsheet focus traps)
 
