@@ -1,6 +1,8 @@
 import { useEffect, type ReactNode, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 
+import { useViewport } from "../hooks/useViewport";
+
 // Modal base. Portals to document.body so it escapes ancestor
 // stacking contexts. Closes on Esc + backdrop click (both opt-out).
 // Caller owns open state and slots in the header/body/footer.
@@ -25,6 +27,16 @@ export interface ModalProps {
   // Optional aria-labelled-by for screen readers (point at the
   // ModalHeader title's id).
   labelledBy?: string;
+  // How the modal presents on PHONE viewports (no effect elsewhere):
+  //   "center" (default) — the desktop card, scaled to fit
+  //   "page"             — full-screen, slides in from the right like
+  //                        a pushed native page. For content dialogs
+  //                        the user enters to work in.
+  //   "sheet"            — bottom sheet rising from the lower edge.
+  //                        For light pickers / short forms.
+  // Confirm-style dialogs should stay "center" — native alerts are
+  // centered cards too.
+  phonePresentation?: "center" | "page" | "sheet";
 }
 
 const WIDTHS = { sm: 340, md: 440, lg: 560, xl: 720, "2xl": 880, "3xl": 1024, "4xl": 1200, "5xl": 1440 };
@@ -37,7 +49,10 @@ export function Modal({
   cardStyle,
   children,
   labelledBy,
+  phonePresentation = "center",
 }: ModalProps) {
+  const vp = useViewport();
+  const mode = vp.isPhone ? phonePresentation : "center";
   useEffect(() => {
     if (!open || !dismissable) return;
     const onKey = (e: KeyboardEvent) => {
@@ -79,9 +94,9 @@ export function Modal({
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         display: "flex",
-        alignItems: "center",
+        alignItems: mode === "sheet" ? "flex-end" : "center",
         justifyContent: "center",
-        padding: 16,
+        padding: mode === "center" ? 16 : 0,
         zIndex: 100,
       }}
       onMouseDown={(e) => {
@@ -93,15 +108,23 @@ export function Modal({
       <div
         style={{
           width: "100%",
-          maxWidth: width,
-          maxHeight: "calc(100vh - 32px)",
+          maxWidth: mode === "center" ? width : "100%",
+          maxHeight:
+            mode === "page" ? "100dvh" : mode === "sheet" ? "92dvh" : "calc(100vh - 32px)",
+          ...(mode === "page" ? { height: "100dvh" } : {}),
           background: "var(--ck-bg-surface)",
           border: "1px solid var(--ck-border-subtle)",
           // Modal cards lift on the `-lg` radius rather than the
           // page's default `-md` so the corners read as softer than
           // the cards underneath them — supports the "this took
           // over" cue alongside the deeper overlay shadow.
-          borderRadius: "var(--ck-radius-lg)",
+          borderRadius:
+            mode === "page"
+              ? 0
+              : mode === "sheet"
+                ? "var(--ck-radius-lg) var(--ck-radius-lg) 0 0"
+                : "var(--ck-radius-lg)",
+          ...(mode === "page" ? { border: "none" } : {}),
           // Overlay shadow > shadow-3. shadow-3 was tuned for cards
           // sitting on a page; a modal needs to read as physically
           // lifted off the page, not as another tier of card.
@@ -113,7 +136,13 @@ export function Modal({
           color: "var(--ck-text-primary)",
           ...cardStyle,
         }}
-        className="ck-anim-popover"
+        className={
+          mode === "page"
+            ? "ck-anim-page-push"
+            : mode === "sheet"
+              ? "ck-anim-sheet-up"
+              : "ck-anim-popover"
+        }
       >
         {children}
       </div>
