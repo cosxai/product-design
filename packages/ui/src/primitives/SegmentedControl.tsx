@@ -67,6 +67,12 @@ export function SegmentedControl<V extends string = string>({
       aria-label={ariaLabel}
       className={cn("ck-segmented", className)}
       data-testid={testId}
+      // The track is deliberately unfilled (owner feedback,
+      // 2026-08-19): a muted-filled track reads as a heavy block on
+      // warm canvases — the hairline border delimits the group and
+      // the raised selected segment carries ALL the contrast. This
+      // also makes the control look right on any surface (canvas,
+      // card, modal) without per-context tuning.
       style={{
         display: fit === "full" ? "flex" : "inline-flex",
         alignItems: "stretch",
@@ -74,7 +80,7 @@ export function SegmentedControl<V extends string = string>({
         padding: 2,
         borderRadius: 8,
         border: "1px solid var(--ck-border-subtle)",
-        background: "var(--ck-bg-muted)",
+        background: "transparent",
         opacity: disabled ? 0.5 : 1,
       }}
     >
@@ -112,7 +118,7 @@ export function SegmentedControl<V extends string = string>({
                 ? "var(--ck-text-primary)"
                 : "var(--ck-text-secondary)",
               background: selected ? "var(--ck-bg-surface)" : "transparent",
-              boxShadow: selected ? "0 1px 2px rgba(0,0,0,0.08)" : "none",
+              boxShadow: selected ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
               borderColor: selected ? "var(--ck-border-subtle)" : "transparent",
               cursor: optDisabled ? "not-allowed" : "pointer",
               opacity: opt.disabled && !disabled ? 0.45 : 1,
