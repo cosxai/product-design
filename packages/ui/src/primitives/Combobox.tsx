@@ -67,6 +67,12 @@ export interface ComboboxProps {
   // Async search. Called after `debounceMs` of quiet with a non-empty
   // trimmed query; the AbortSignal cancels superseded requests.
   search: (query: string, signal: AbortSignal) => Promise<ComboboxOption[]>;
+  // Select-with-search mode: run `search("")` the moment the input
+  // focuses, so clicking the field presents the option list before
+  // any typing — the picker pattern for small, known sets. Off by
+  // default (async person/document searches would fire on every
+  // focus for no gain).
+  searchOnFocus?: boolean | undefined;
   debounceMs?: number | undefined;
   // Free-entry gate: return true when the raw text is committable on
   // its own (e.g. a syntactically valid email). Omit to disable free
@@ -109,6 +115,7 @@ export function Combobox({
   autoFocus,
   disabled,
   search,
+  searchOnFocus,
   debounceMs = DEFAULT_DEBOUNCE_MS,
   allowFreeEntry,
   freeEntryLabel,
@@ -138,7 +145,9 @@ export function Combobox({
     if (debounceRef.current) clearTimeout(debounceRef.current);
     // Search is suspended while a commit is displayed — the input
     // still holds the committed text but shouldn't re-open the list.
-    if (!query.trim() || isCommitted) {
+    // searchOnFocus lifts the non-empty-query requirement while the
+    // field is focused: clicking presents the list, typing narrows.
+    if (isCommitted || (!query.trim() && !(searchOnFocus && focused))) {
       setResults([]);
       setLoading(false);
       return;
@@ -168,7 +177,7 @@ export function Combobox({
       if (debounceRef.current) clearTimeout(debounceRef.current);
       abortRef.current?.abort();
     };
-  }, [query, isCommitted, search, debounceMs]);
+  }, [query, isCommitted, search, debounceMs, searchOnFocus, focused]);
 
   const trimmed = query.trim();
   const freeEntryOk = !!allowFreeEntry && trimmed.length > 0 && allowFreeEntry(trimmed);

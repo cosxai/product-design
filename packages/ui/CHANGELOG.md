@@ -1,6 +1,11 @@
 ## 0.21.0 (2026-08-10)
 - **feat(dialogs)**: `Modal` gains `phonePresentation?: "center" | "page" | "sheet"` — how the modal presents on PHONE viewports (no effect elsewhere). `"page"` renders full-screen and slides in from the right like a pushed native page (for content dialogs the user enters to work in); `"sheet"` rises from the bottom edge (light pickers / short forms); `"center"` (default) keeps today's card. New full-distance motion primitives `ck-anim-page-push` / `ck-anim-sheet-up` back it, both killed under `prefers-reduced-motion`. Backward compatible: omit the prop and nothing changes. Graduated from product-meta's matter split dialogs (fact detail / evidence ruling), whose in-dialog "document takes over + Back" phone flow nests naturally inside a pushed page.
 
+## 0.23.0 (2026-08-19)
+
+- **feat(combobox)**: `searchOnFocus?: boolean` — run `search("")` on
+  focus so clicking the field presents the option list before any
+  typing (select-with-search for small known sets). Off by default.
 ## 0.22.0 (2026-08-19)
 
 - SegmentedControl: unfilled track — hairline border delimits the
