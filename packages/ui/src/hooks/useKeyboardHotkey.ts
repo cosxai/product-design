@@ -78,6 +78,13 @@ export function useKeyboardHotkey(
       if (skipWhenModalOpen && document.querySelector('[role="dialog"]')) {
         return;
       }
+      // The key is OURS once every guard passed — swallow its default
+      // action. Without this, a hotkey that opens a dialog with an
+      // autofocused input sees the same keystroke land as text ("s"
+      // typed into the invite search, meta QA 2026-08-19): the
+      // browser's text-insertion runs AFTER keydown, by which time
+      // focus has moved into the new input.
+      e.preventDefault();
       handlerRef.current(e);
     };
     window.addEventListener("keydown", onKey);
