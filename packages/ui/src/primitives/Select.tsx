@@ -696,14 +696,36 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
           opacity: disabled ? 0.55 : 1,
         }}
       >
-        <span
-          style={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {triggerLabel}
+        <span style={{ display: "inline-grid", overflow: "hidden" }}>
+          {/* fit="auto" width stabiliser: every option label renders
+              invisibly in the same grid cell, so the trigger takes
+              the WIDEST option's width up front. Without it the
+              trigger resized to each selection and the popover
+              (which matches trigger width) truncated longer options
+              to "E-sig…". Skipped for fit="full" (width is the
+              container's) and for searchable lists (potentially
+              hundreds of rows — and those popovers are wide anyway). */}
+          {fit === "auto" &&
+            !searchable &&
+            options.map((o) => (
+              <span
+                key={o.value}
+                aria-hidden
+                style={{ gridArea: "1 / 1", visibility: "hidden", whiteSpace: "nowrap" }}
+              >
+                {o.label}
+              </span>
+            ))}
+          <span
+            style={{
+              gridArea: "1 / 1",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {triggerLabel}
+          </span>
         </span>
         <svg
           width="10"
