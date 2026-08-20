@@ -122,6 +122,10 @@ interface PopoverRect {
   top: number;
   left: number;
   width: number;
+  /** Set when the menu opens UPWARD (trigger near the viewport
+   *  bottom): `top` is then the popover's bottom edge expressed as
+   *  a CSS `bottom` inset. */
+  openUp: boolean;
 }
 
 export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select(
@@ -192,12 +196,20 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
     const el = triggerRef.current;
     if (!el) return null;
     const r = el.getBoundingClientRect();
+    // Flip upward when the space below can't fit the menu but the
+    // space above can (QA 2026-08-20: the last options of a Select
+    // at the bottom of a drawer sat under the fixed action bar).
+    // Worst-case menu height; the listbox scrolls inside either way.
+    const needed = maxOptionsHeight + (searchable ? 48 : 0) + POPOVER_GAP;
+    const below = window.innerHeight - r.bottom;
+    const openUp = below < needed && r.top > below;
     return {
-      top: r.bottom + POPOVER_GAP,
+      top: openUp ? window.innerHeight - r.top + POPOVER_GAP : r.bottom + POPOVER_GAP,
       left: r.left,
       width: r.width,
+      openUp,
     };
-  }, []);
+  }, [maxOptionsHeight, searchable]);
 
   // Position the popover on open + on window resize. Close on
   // page scroll — keeps the popover from drifting off the trigger
@@ -487,7 +499,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
       className="ck-select-popover"
       style={{
         position: "fixed",
-        top: rect.top,
+        ...(rect.openUp ? { bottom: rect.top } : { top: rect.top }),
         left: rect.left,
         width: rect.width,
         zIndex: 1000,
