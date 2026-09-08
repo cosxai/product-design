@@ -76,7 +76,7 @@ Owner feedback on product-meta's `RecipientListPicker` (built on
   critical border, and a sibling `.ck-multi-combobox-invalid-hint`
   (hidden by default, revealed by the same `:has()` + `+` selector)
   carrying `invalidHint` (or Combobox's default). No JS state sharing.
-- **`inputId` on Combobox (addition)**: needed so the host-drawn eyebrow
+- **`inputId` / `inputDescribedBy` on Combobox (addition)**: needed so the host-drawn eyebrow
   label can `htmlFor` the input; otherwise the label would be
   unassociated in inline mode.
 - **Bare CSS specificity**: chrome presets restyle `.ck-input` with
@@ -84,11 +84,27 @@ Owner feedback on product-meta's `RecipientListPicker` (built on
   out-ranks them. The inline frame itself has no per-chrome styling
   yet (looks like the default kit input in every chrome) — follow-up
   alongside `[data-ck-chip]`.
-- **`display: contents`**: the `-entries` `<ul>` and the Combobox
-  wrapper are `display: contents` in inline mode so chips and the input
-  are direct flex items of the frame (input wraps after the last
-  chip). The `<ul>` keeps an explicit `role="list"`, and DOM containment
-  (Backspace scoping) is unaffected.
+- **Inline DOM (after Copilot review on PR #15)**: no `display:
+  contents` anywhere (VoiceOver can drop list semantics). The frame is
+  a `position: relative` `<div class="ck-multi-combobox-field"
+  data-testid="-field">` wrapping the `<ul data-testid="-entries">`,
+  which is the flex-wrap row: chips as `<li>`s plus a last `<li
+  role="presentation">` (`flex: 1 1 140px`) holding the bare Combobox
+  (its root is `position: static`, so the dropdown anchors to the
+  frame). Both testids survive. Backspace scoping uses a callback ref on
+  that `<li>` (a `<div>` in stacked mode). The frame's mousedown also
+  treats the `<ul>` as "empty area" so clicking between chips focuses
+  the input.
+- **Review fixes**: `Input` spreads `...rest` before its `error`-derived
+  `aria-invalid` / `aria-describedby` (both branches; consumer
+  `aria-describedby` is merged, not replaced). `Combobox` gains
+  `inputDescribedBy`; MultiCombobox sets it to the inline invalid
+  hint's id.
+- **Blur-timer guard (found by the smoke)**: Combobox's `handleBlur`
+  runs 150 ms later and set `focused=false` even if the input had been
+  re-focused meanwhile — Tab out then click the inline frame within
+  150 ms left the list unable to open. The timer now returns early when
+  the input is `document.activeElement`.
 - **Ref plumbing**: MultiCombobox now holds the Combobox handle in an
   internal ref (for the frame's empty-area click → focus) and
   re-exposes it via `useImperativeHandle`; consumer-visible handle is

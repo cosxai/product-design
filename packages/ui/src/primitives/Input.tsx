@@ -66,6 +66,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const autoId = useId();
   const inputId = id ?? autoId;
   const hasAddon = !bare && (prefix != null || suffix != null);
+  // `...rest` is spread FIRST so the `error`-derived aria-invalid (and,
+  // non-bare, the helper/error text association) stays authoritative;
+  // a consumer aria-describedby is merged with ours, not replaced.
+  const ownDescribedBy = !bare && (helper || error) ? `${inputId}-helper` : undefined;
+  const describedBy =
+    [rest["aria-describedby"], ownDescribedBy].filter(Boolean).join(" ") || undefined;
 
   if (bare) {
     // Chrome presets restyle .ck-input with !important; the matching
@@ -74,8 +80,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       <input
         ref={ref}
         id={inputId}
-        aria-invalid={error ? true : undefined}
         {...rest}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={describedBy}
         className={cn("ck-input", "ck-input--bare", className)}
         style={{
           minWidth: 0,
@@ -105,9 +112,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     <input
       ref={ref}
       id={inputId}
-      aria-invalid={error ? true : undefined}
-      aria-describedby={(helper || error) ? `${inputId}-helper` : undefined}
       {...rest}
+      aria-invalid={error ? true : undefined}
+      aria-describedby={describedBy}
       className={cn("ck-input", hasAddon ? "ck-input--with-addon" : undefined)}
       style={{
         flex: hasAddon ? "1 1 auto" : undefined,

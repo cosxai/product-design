@@ -114,6 +114,10 @@ export interface ComboboxProps {
   bare?: boolean | undefined;
   // id for the <input>, so a host-drawn <label htmlFor> can target it.
   inputId?: string | undefined;
+  // Extra aria-describedby id(s) for the <input> (e.g. a host-drawn
+  // invalid hint in bare mode). Merged with Input's own error/helper
+  // association, never replacing it.
+  inputDescribedBy?: string | undefined;
   testid?: string | undefined;
 }
 
@@ -158,6 +162,7 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
   clearOnCommit = false,
   bare = false,
   inputId,
+  inputDescribedBy,
   testid = "combobox",
   },
   ref,
@@ -266,6 +271,10 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
   // blurs first) still lands on the row handler.
   const handleBlur = useCallback(() => {
     setTimeout(() => {
+      // Re-focused within the delay (e.g. a host frame click handing
+      // focus straight back, MultiCombobox inline): still editing —
+      // neither close the list nor auto-commit.
+      if (inputRef.current && document.activeElement === inputRef.current) return;
       setFocused(false);
       if (isCommitted) return;
       const raw = trimmed;
@@ -346,6 +355,7 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
       <Input
         ref={inputRef}
         id={inputId}
+        aria-describedby={inputDescribedBy}
         bare={bare}
         label={label}
         data-testid={`${testid}-input`}

@@ -46,9 +46,11 @@ import {
  *
  * Layouts (`layout`): `stacked` (default) — the search field, then
  * the chip row underneath. `inline` — a mail-client "To" field: one
- * Input-like frame (`.ck-multi-combobox-field`) holding the chips
- * with the search input continuing after the last chip; the label
- * renders above as an eyebrow, the editor and hint still below.
+ * Input-like frame (`.ck-multi-combobox-field`) whose `<ul>` is the
+ * flex-wrap row: chips as `<li>`s and the bare search input in a last
+ * presentational `<li>`, so typing continues after the last chip and
+ * wraps with it. The label renders above as an eyebrow; the invalid
+ * hint (aria-describedby on the input), editor and hint stay below.
  *
  * Compose with: Chip (entries), Input (inside `renderEntryEditor`),
  * dialogs collecting recipients.
@@ -83,7 +85,13 @@ export type MultiComboboxLayout = "stacked" | "inline";
 
 export type MultiComboboxProps = Omit<
   ComboboxProps,
-  "committed" | "committedExtra" | "onUncommit" | "clearOnCommit" | "bare" | "inputId"
+  | "committed"
+  | "committedExtra"
+  | "onUncommit"
+  | "clearOnCommit"
+  | "bare"
+  | "inputId"
+  | "inputDescribedBy"
 > & {
   entries: MultiComboboxEntry[];
   // `stacked` (default): field, then chips underneath. `inline`:
@@ -122,9 +130,24 @@ const INLINE_FIELD_STYLE: CSSProperties = {
   borderRadius: "var(--ck-radius-sm, 6px)",
   transition: "border-color var(--ck-dur-fast, 120ms) var(--ck-ease, ease)",
 };
-// The bare Combobox's own root is `position: static` + flex sizing;
-// this wrapper (needed for the Backspace scoping) must not interfere.
-const INLINE_COMBOBOX_WRAP: CSSProperties = { display: "contents" };
+// The `<ul>` inside the frame is the actual flex-wrap row.
+const INLINE_LIST_STYLE: CSSProperties = {
+  listStyle: "none",
+  margin: 0,
+  padding: 0,
+  width: "100%",
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: 6,
+};
+// Last <li>: holds the bare Combobox (its root is `position: static`,
+// so the dropdown anchors to the frame) and takes the remaining width.
+const INLINE_COMBOBOX_ITEM: CSSProperties = {
+  flex: "1 1 140px",
+  minWidth: 140,
+  display: "flex",
+};
 
 export const MultiCombobox = forwardRef<MultiComboboxHandle, MultiComboboxProps>(
   function MultiCombobox(
@@ -146,13 +169,19 @@ export const MultiCombobox = forwardRef<MultiComboboxHandle, MultiComboboxProps>
   ) {
     // Wraps ONLY the embedded Combobox so the Backspace handler can
     // tell its input apart from any input inside `renderEntryEditor`.
-    const comboboxWrapRef = useRef<HTMLDivElement | null>(null);
+    // A <div> in stacked mode, the last <li> in inline mode.
+    const comboboxWrapRef = useRef<HTMLElement | null>(null);
+    const setComboboxWrap = (el: HTMLElement | null): void => {
+      comboboxWrapRef.current = el;
+    };
+    const listRef = useRef<HTMLUListElement | null>(null);
     const handleRef = useRef<ComboboxHandle | null>(null);
     useImperativeHandle(ref, () => ({
       focus: () => handleRef.current?.focus(),
       clear: () => handleRef.current?.clear(),
     }));
     const inputId = useId();
+    const hintId = useId();
     const inline = layout === "inline";
     const editing = entries.find((entry) => entry.editing);
 
@@ -170,19 +199,34 @@ export const MultiCombobox = forwardRef<MultiComboboxHandle, MultiComboboxProps>
     // Clicking the field's empty area (inline) focuses the input, like
     // a mail client's To field. Chip / input clicks handle themselves.
     const handleFieldMouseDown = (e: MouseEvent<HTMLDivElement>): void => {
-      if (e.target !== e.currentTarget) return;
+      if (e.target !== e.currentTarget && e.target !== listRef.current) return;
       e.preventDefault();
       handleRef.current?.focus();
     };
 
+    const comboboxEl = (
+      <Combobox
+        ref={handleRef}
+        {...comboboxProps}
+        label={inline ? undefined : label}
+        bare={inline}
+        inputId={inline ? inputId : undefined}
+        inputDescribedBy={inline ? hintId : undefined}
+        clearOnCommit
+        committed={null}
+        testid={`${testid}-combobox`}
+      />
+    );
+
     const entriesList = (
       <ul
+        ref={listRef}
         role="list"
         aria-label={entriesLabel ?? "Selected items"}
         data-testid={`${testid}-entries`}
         style={
           inline
-            ? { listStyle: "none", margin: 0, padding: 0, display: "contents" }
+            ? INLINE_LIST_STYLE
             : {
                 listStyle: "none",
                 margin: entries.length > 0 ? "8px 0 0" : 0,
@@ -209,22 +253,14 @@ export const MultiCombobox = forwardRef<MultiComboboxHandle, MultiComboboxProps>
             </Chip>
           </li>
         ))}
+        {inline ? (
+          // Not an entry: presentational so the list still counts N
+          // chips for assistive tech.
+          <li ref={setComboboxWrap} role="presentation" style={INLINE_COMBOBOX_ITEM}>
+            {comboboxEl}
+          </li>
+        ) : null}
       </ul>
-    );
-
-    const combobox = (
-      <div ref={comboboxWrapRef} style={inline ? INLINE_COMBOBOX_WRAP : undefined}>
-        <Combobox
-          ref={handleRef}
-          {...comboboxProps}
-          label={inline ? undefined : label}
-          bare={inline}
-          inputId={inline ? inputId : undefined}
-          clearOnCommit
-          committed={null}
-          testid={`${testid}-combobox`}
-        />
-      </div>
     );
 
     return (
@@ -247,9 +283,9 @@ export const MultiCombobox = forwardRef<MultiComboboxHandle, MultiComboboxProps>
               onMouseDown={handleFieldMouseDown}
             >
               {entriesList}
-              {combobox}
             </div>
             <div
+              id={hintId}
               className="ck-multi-combobox-invalid-hint"
               style={{
                 marginTop: 6,
@@ -262,7 +298,7 @@ export const MultiCombobox = forwardRef<MultiComboboxHandle, MultiComboboxProps>
           </>
         ) : (
           <>
-            {combobox}
+            <div ref={setComboboxWrap}>{comboboxEl}</div>
             {entriesList}
           </>
         )}

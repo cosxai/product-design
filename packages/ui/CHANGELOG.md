@@ -10,19 +10,29 @@
   is a mail-client "To" field: one Input-like frame
   (`.ck-multi-combobox-field`, `:focus-within` ring, `:has([aria-invalid])`
   critical border + revealed `invalidHint` line, `:has(:disabled)` dim)
-  holds the chips with the bare search input continuing after the last
-  chip; the label renders above as an eyebrow, the dropdown spans the
-  field, editor + hint stay below. Clicking the frame's empty area
-  focuses the input. Testids unchanged (the `-entries` list lives inside
-  the frame); new `${testid}-field` on the frame.
+  whose `<ul role="list">` is the flex-wrap row — chips as `<li>`s, the
+  bare search input in a last presentational `<li>` — so typing
+  continues after the last chip and wraps with it; the label renders
+  above as an eyebrow, the dropdown spans the frame, the invalid hint is
+  `aria-describedby`-linked to the input, editor + hint stay below.
+  Clicking the frame's empty area focuses the input. Testids unchanged
+  (`-entries` is the `<ul>` inside the frame); new `${testid}-field` on
+  the frame.
 - **feat(primitives)**: `Combobox` gains `bare?: boolean` (input without
   its own field chrome, root `position: static` + `flex: 1 1 140px` so a
   host-drawn `position: relative` frame anchors the dropdown; no label /
-  error text rendered) and `inputId?: string` (for a host `<label
-  htmlFor>`). `Input` gains `bare?: boolean` (only the `<input
+  error text rendered), `inputId?: string` (for a host `<label
+  htmlFor>`) and `inputDescribedBy?: string` (merged into the input's
+  `aria-describedby`). `Input` gains `bare?: boolean` (only the `<input
   class="ck-input ck-input--bare">`, no wrapper / label / helper / error
   / chrome; a boosted-specificity rule in `styles/index.css` strips the
-  chrome presets' `!important` input styling).
+  chrome presets' `!important` input styling). `Input` now spreads
+  `...rest` before its `error`-derived `aria-invalid` / `aria-describedby`
+  (so `error` stays authoritative; a consumer `aria-describedby` is
+  merged with the helper/error id rather than replaced).
+- **fix(combobox)**: the 150 ms blur timer no longer closes the list /
+  auto-commits when the input has been re-focused within the delay
+  (e.g. a host frame click handing focus straight back).
 
 ## 0.24.0 (2026-09-08)
 
