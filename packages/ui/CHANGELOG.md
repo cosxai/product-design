@@ -1,3 +1,35 @@
+## 0.24.0 (2026-09-08)
+
+- **feat(combobox)**: `clearOnCommit?: boolean` — after `onCommit`
+  fires, the input resets to "" and the dropdown closes instead of
+  echoing the committed text (multi-value mode; default false, the
+  single-value behaviour is unchanged). `Combobox` is now
+  `forwardRef<ComboboxHandle>` with `ComboboxHandle = { focus(); clear() }`
+  (`clear` for parents rejecting a duplicate commit).
+- **feat(primitives)**: New `<Chip>` — pill for one selected value
+  (recipient, filter, token): `--ck-bg-muted` slab, 13px sans, tones
+  `neutral` / `accent` / `warning` / `critical`, `selected`, `disabled`,
+  optional `onClick` (label becomes a button) and `onRemove` (× button,
+  `removeLabel` aria-label, default "Remove"). Root
+  `<span class="ck-chip" data-ck-chip data-tone data-selected data-disabled>`
+  is the styling hook for chrome presets — no per-chrome CSS in this
+  release. Deliberately NOT `ck-tag` (the uppercase mono status label).
+- **feat(primitives)**: New `<MultiCombobox>` — `Combobox` in
+  `clearOnCommit` mode + a `<ul role="list">` of `Chip`s + an optional
+  inline editor slot (`renderEntryEditor`, mounts under the row for the
+  entry with `editing: true`) + a `hint` line. Backspace in the EMPTY
+  search input removes the last entry (`backspaceRemovesLast`, default
+  true; scoped to the embedded input so editors are unaffected). Value is
+  parent-owned via `entries` / `onCommit` / `onRemoveEntry`; paste /
+  comma splitting is the consumer's job inside `onCommit`. Forwards
+  `MultiComboboxHandle` (= `ComboboxHandle`). Testids:
+  `${testid}-combobox-input` / `-dropdown` / `-free-entry`,
+  `${testid}-entries`, `${testid}-entry-${key}`, `${testid}-editor`.
+- **feat(layout)**: `LeftNavRail` gains `footerTop?: ReactNode` — a
+  block pinned between the scrolling nav body and the footer rule,
+  always visible above the divider. Graduated from product-meta's local
+  pnpm patch (its agent drawer trigger), which meta can now drop.
+
 ## 0.23.2 (2026-08-19)
 
 - **fix(hooks)**: `useKeyboardHotkey` calls `e.preventDefault()` once

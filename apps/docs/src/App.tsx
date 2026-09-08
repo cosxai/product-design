@@ -24,6 +24,7 @@ export function App() {
       { key: "nav:button", group: "Components", label: "Button", run: ({ close }: { close: () => void }) => { navigate("/components/button"); close(); } },
       { key: "nav:primitives", group: "Components", label: "All primitives", run: ({ close }: { close: () => void }) => { navigate("/components/primitives"); close(); } },
       { key: "nav:bonus", group: "Components", label: "Tooltip / PageHeader / time", run: ({ close }: { close: () => void }) => { navigate("/components/bonus"); close(); } },
+      { key: "nav:multicombobox", group: "Components", label: "Chip / MultiCombobox / Combobox", run: ({ close }: { close: () => void }) => { navigate("/components/multi-combobox"); close(); } },
       { key: "nav:dialogs", group: "Patterns", label: "Dialogs + Modal", run: ({ close }: { close: () => void }) => { navigate("/components/dialogs"); close(); } },
       { key: "nav:shell", group: "Layout", label: "Shell + rails", run: ({ close }: { close: () => void }) => { navigate("/components/layout/shell"); close(); } },
       { key: "nav:crumb", group: "Layout", label: "Breadcrumb", run: ({ close }: { close: () => void }) => { navigate("/components/layout/breadcrumb"); close(); } },

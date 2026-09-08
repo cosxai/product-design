@@ -68,6 +68,7 @@ const GROUPS: NavGroup[] = [
       { to: "/components/button", label: "Button", icon: <Dot /> },
       { to: "/components/primitives", label: "All primitives", icon: <Dot /> },
       { to: "/components/bonus", label: "Tooltip · time", icon: <Dot /> },
+      { to: "/components/multi-combobox", label: "Chip · MultiCombobox", icon: <Dot /> },
     ],
   },
   {
