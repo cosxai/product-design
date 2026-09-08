@@ -9,6 +9,7 @@ import {
   type ComboboxOption,
   type MultiComboboxEntry,
   type MultiComboboxHandle,
+  type MultiComboboxLayout,
 } from "@cosxai/ui";
 
 // Chip + MultiCombobox (+ a short single-value Combobox section, since
@@ -125,7 +126,28 @@ export function MultiComboboxPage() {
         Duplicates are rejected via the handle's <code>clear()</code>.
       </p>
       <Demo column>
-        <RecipientsDemo />
+        <RecipientsDemo layout="stacked" testid="multi-combobox" />
+      </Demo>
+
+      <h3>Inline layout</h3>
+      <p>
+        <code>layout="inline"</code> turns it into a mail-client "To"
+        field: one Input-like frame holds the chips and the search
+        input continues after the last chip (wrapping onto new lines
+        as the list grows). The label renders above as an eyebrow, the
+        dropdown spans the whole field, and the editor + hint stay
+        below. Same props, same testids — only the chrome moves.
+      </p>
+      <Demo column>
+        <RecipientsDemo
+          layout="inline"
+          testid="inline-recipients"
+          initial={[
+            { email: "ada@example.com", name: "Ada Lovelace" },
+            { email: "grace@example.com", name: "Grace Hopper" },
+            { email: "linus@example.com", name: "Linus Torvalds" },
+          ]}
+        />
       </Demo>
 
       <h3>How the pieces fit</h3>
@@ -173,6 +195,7 @@ export function MultiComboboxPage() {
       <PropsTable
         rows={[
           ["entries", "MultiComboboxEntry[]", "Chips to render, in order."],
+          ["layout", "\"stacked\" | \"inline\"", "Default \"stacked\" (field, chips below). \"inline\": chips inside the field, input after the last chip."],
           ["onRemoveEntry", "(key) => void", "× on a chip, or Backspace in the empty input (last entry)."],
           ["onEntryClick", "(key) => void", "Optional; chip labels become buttons."],
           ["renderEntryEditor", "(entry) => ReactNode", "Rendered under the chip row for the entry with editing: true."],
@@ -195,6 +218,9 @@ export function MultiComboboxPage() {
         <code>clearOnCommit</code> (reset the input after{" "}
         <code>onCommit</code> instead of echoing the value — what
         MultiCombobox uses) and a forwarded <code>ComboboxHandle</code>.
+        New in 0.25.0: <code>bare</code> (no field chrome of its own —
+        the host draws the frame; backed by <code>Input bare</code>) and{" "}
+        <code>inputId</code> for a host-drawn label.
       </p>
       <Demo column>
         <SingleDemo />
@@ -208,11 +234,17 @@ export function MultiComboboxPage() {
 
 type Recipient = { email: string; name: string };
 
-function RecipientsDemo() {
+function RecipientsDemo({
+  layout,
+  testid,
+  initial = [{ email: "ada@example.com", name: "Ada Lovelace" }],
+}: {
+  layout: MultiComboboxLayout;
+  testid: string;
+  initial?: Recipient[];
+}) {
   const ref = useRef<MultiComboboxHandle>(null);
-  const [recipients, setRecipients] = useState<Recipient[]>([
-    { email: "ada@example.com", name: "Ada Lovelace" },
-  ]);
+  const [recipients, setRecipients] = useState<Recipient[]>(initial);
   const [editingEmail, setEditingEmail] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
@@ -294,6 +326,8 @@ function RecipientsDemo() {
   return (
     <MultiCombobox
       ref={ref}
+      layout={layout}
+      testid={testid}
       label="Recipients"
       placeholder="Search the directory or type an email…"
       search={search}

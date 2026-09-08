@@ -1,3 +1,29 @@
+## 0.25.0 (2026-09-08)
+
+- **fix(primitives)**: `Chip` no longer steals focus on mousedown — the
+  label button and the × button call `preventDefault()` in
+  `onMouseDown` (the action stays on `onClick`). A host with an inline
+  editor open for another chip no longer sees the editor blur (commit +
+  unmount) swallow the first click.
+- **feat(primitives)**: `MultiCombobox` gains `layout?: "stacked" |
+  "inline"` (default `stacked` — 0.24.0 behaviour unchanged). `inline`
+  is a mail-client "To" field: one Input-like frame
+  (`.ck-multi-combobox-field`, `:focus-within` ring, `:has([aria-invalid])`
+  critical border + revealed `invalidHint` line, `:has(:disabled)` dim)
+  holds the chips with the bare search input continuing after the last
+  chip; the label renders above as an eyebrow, the dropdown spans the
+  field, editor + hint stay below. Clicking the frame's empty area
+  focuses the input. Testids unchanged (the `-entries` list lives inside
+  the frame); new `${testid}-field` on the frame.
+- **feat(primitives)**: `Combobox` gains `bare?: boolean` (input without
+  its own field chrome, root `position: static` + `flex: 1 1 140px` so a
+  host-drawn `position: relative` frame anchors the dropdown; no label /
+  error text rendered) and `inputId?: string` (for a host `<label
+  htmlFor>`). `Input` gains `bare?: boolean` (only the `<input
+  class="ck-input ck-input--bare">`, no wrapper / label / helper / error
+  / chrome; a boosted-specificity rule in `styles/index.css` strips the
+  chrome presets' `!important` input styling).
+
 ## 0.24.0 (2026-09-08)
 
 - **feat(combobox)**: `clearOnCommit?: boolean` — after `onCommit`
