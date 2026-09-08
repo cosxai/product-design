@@ -1,4 +1,10 @@
-import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
+import {
+  forwardRef,
+  type CSSProperties,
+  type HTMLAttributes,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 
 import { cn } from "../lib/cn";
 
@@ -99,6 +105,12 @@ export const Chip = forwardRef<HTMLSpanElement, ChipProps>(function Chip(
   ref,
 ) {
   const clickable = !!onClick && !disabled;
+  // Chip buttons act on click but must NOT take focus on mousedown:
+  // when a host has an inline editor open for another chip, the
+  // editor's blur (commit + unmount) would otherwise run before this
+  // click lands and the click is lost. Keyboard focus via Tab is
+  // unaffected.
+  const keepFocus = (e: MouseEvent<HTMLButtonElement>): void => e.preventDefault();
   return (
     <span
       ref={ref}
@@ -131,6 +143,7 @@ export const Chip = forwardRef<HTMLSpanElement, ChipProps>(function Chip(
         <button
           type="button"
           className="ck-chip-label"
+          onMouseDown={keepFocus}
           onClick={onClick}
           disabled={disabled}
           style={{ ...LABEL_STYLE, cursor: clickable ? "pointer" : "default" }}
@@ -147,6 +160,7 @@ export const Chip = forwardRef<HTMLSpanElement, ChipProps>(function Chip(
           type="button"
           className="ck-chip-remove"
           aria-label={removeLabel ?? "Remove"}
+          onMouseDown={keepFocus}
           onClick={onRemove}
           disabled={disabled}
           style={{

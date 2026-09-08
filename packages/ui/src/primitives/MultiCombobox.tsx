@@ -1,7 +1,21 @@
-import { forwardRef, useRef, type KeyboardEvent, type ReactNode } from "react";
+import {
+  forwardRef,
+  useId,
+  useImperativeHandle,
+  useRef,
+  type CSSProperties,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 
 import { Chip, type ChipTone } from "./Chip";
-import { Combobox, type ComboboxHandle, type ComboboxProps } from "./Combobox";
+import {
+  COMBOBOX_DEFAULT_INVALID_HINT,
+  Combobox,
+  type ComboboxHandle,
+  type ComboboxProps,
+} from "./Combobox";
 
 /**
  * MultiCombobox — a Combobox that collects MANY values. The embedded
@@ -29,6 +43,14 @@ import { Combobox, type ComboboxHandle, type ComboboxProps } from "./Combobox";
  * entry (`backspaceRemovesLast`, default true). The check is scoped
  * to the embedded Combobox's input, so Backspace inside an entry
  * editor never removes anything.
+ *
+ * Layouts (`layout`): `stacked` (default) — the search field, then
+ * the chip row underneath. `inline` — a mail-client "To" field: one
+ * Input-like frame (`.ck-multi-combobox-field`) whose `<ul>` is the
+ * flex-wrap row: chips as `<li>`s and the bare search input in a last
+ * presentational `<li>`, so typing continues after the last chip and
+ * wraps with it. The label renders above as an eyebrow; the invalid
+ * hint (aria-describedby on the input), editor and hint stay below.
  *
  * Compose with: Chip (entries), Input (inside `renderEntryEditor`),
  * dialogs collecting recipients.
@@ -59,11 +81,22 @@ export type MultiComboboxEntry = {
 
 export type MultiComboboxHandle = ComboboxHandle;
 
+export type MultiComboboxLayout = "stacked" | "inline";
+
 export type MultiComboboxProps = Omit<
   ComboboxProps,
-  "committed" | "committedExtra" | "onUncommit" | "clearOnCommit"
+  | "committed"
+  | "committedExtra"
+  | "onUncommit"
+  | "clearOnCommit"
+  | "bare"
+  | "inputId"
+  | "inputDescribedBy"
 > & {
   entries: MultiComboboxEntry[];
+  // `stacked` (default): field, then chips underneath. `inline`:
+  // chips inside the field, input after the last chip.
+  layout?: MultiComboboxLayout | undefined;
   onRemoveEntry: (key: string) => void;
   // When set, chip labels become buttons (e.g. click-to-edit).
   onEntryClick?: ((key: string) => void) | undefined;
@@ -80,6 +113,42 @@ export type MultiComboboxProps = Omit<
   hint?: ReactNode | undefined;
 };
 
+// Inline layout: the host-drawn field mirrors Input's chrome. Focus
+// ring / invalid border / disabled dim come from styles/index.css
+// (`.ck-multi-combobox-field`).
+const INLINE_FIELD_STYLE: CSSProperties = {
+  position: "relative",
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: 6,
+  minHeight: 36,
+  padding: "4px 8px",
+  boxSizing: "border-box",
+  background: "var(--ck-bg-surface, #fff)",
+  border: "1px solid var(--ck-border-strong, #C5C9D2)",
+  borderRadius: "var(--ck-radius-sm, 6px)",
+  transition: "border-color var(--ck-dur-fast, 120ms) var(--ck-ease, ease)",
+};
+// The `<ul>` inside the frame is the actual flex-wrap row.
+const INLINE_LIST_STYLE: CSSProperties = {
+  listStyle: "none",
+  margin: 0,
+  padding: 0,
+  width: "100%",
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: 6,
+};
+// Last <li>: holds the bare Combobox (its root is `position: static`,
+// so the dropdown anchors to the frame) and takes the remaining width.
+const INLINE_COMBOBOX_ITEM: CSSProperties = {
+  flex: "1 1 140px",
+  minWidth: 140,
+  display: "flex",
+};
+
 export const MultiCombobox = forwardRef<MultiComboboxHandle, MultiComboboxProps>(
   function MultiCombobox(
     {
@@ -91,14 +160,29 @@ export const MultiCombobox = forwardRef<MultiComboboxHandle, MultiComboboxProps>
       removeLabel,
       backspaceRemovesLast = true,
       hint,
+      layout = "stacked",
       testid = "multi-combobox",
+      label,
       ...comboboxProps
     },
     ref,
   ) {
     // Wraps ONLY the embedded Combobox so the Backspace handler can
     // tell its input apart from any input inside `renderEntryEditor`.
-    const comboboxWrapRef = useRef<HTMLDivElement | null>(null);
+    // A <div> in stacked mode, the last <li> in inline mode.
+    const comboboxWrapRef = useRef<HTMLElement | null>(null);
+    const setComboboxWrap = (el: HTMLElement | null): void => {
+      comboboxWrapRef.current = el;
+    };
+    const listRef = useRef<HTMLUListElement | null>(null);
+    const handleRef = useRef<ComboboxHandle | null>(null);
+    useImperativeHandle(ref, () => ({
+      focus: () => handleRef.current?.focus(),
+      clear: () => handleRef.current?.clear(),
+    }));
+    const inputId = useId();
+    const hintId = useId();
+    const inline = layout === "inline";
     const editing = entries.find((entry) => entry.editing);
 
     const handleKeyDownCapture = (e: KeyboardEvent<HTMLDivElement>): void => {
@@ -112,48 +196,112 @@ export const MultiCombobox = forwardRef<MultiComboboxHandle, MultiComboboxProps>
       onRemoveEntry(last.key);
     };
 
+    // Clicking the field's empty area (inline) focuses the input, like
+    // a mail client's To field. Chip / input clicks handle themselves.
+    const handleFieldMouseDown = (e: MouseEvent<HTMLDivElement>): void => {
+      if (e.target !== e.currentTarget && e.target !== listRef.current) return;
+      e.preventDefault();
+      handleRef.current?.focus();
+    };
+
+    const comboboxEl = (
+      <Combobox
+        ref={handleRef}
+        {...comboboxProps}
+        label={inline ? undefined : label}
+        bare={inline}
+        inputId={inline ? inputId : undefined}
+        inputDescribedBy={inline ? hintId : undefined}
+        clearOnCommit
+        committed={null}
+        testid={`${testid}-combobox`}
+      />
+    );
+
+    const entriesList = (
+      <ul
+        ref={listRef}
+        role="list"
+        aria-label={entriesLabel ?? "Selected items"}
+        data-testid={`${testid}-entries`}
+        style={
+          inline
+            ? INLINE_LIST_STYLE
+            : {
+                listStyle: "none",
+                margin: entries.length > 0 ? "8px 0 0" : 0,
+                padding: 0,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 6,
+              }
+        }
+      >
+        {entries.map((entry) => (
+          <li key={entry.key} style={{ minWidth: 0, maxWidth: "100%" }}>
+            <Chip
+              data-testid={`${testid}-entry-${entry.key}`}
+              title={entry.subtitle}
+              tone={entry.tone}
+              selected={entry.editing}
+              disabled={comboboxProps.disabled}
+              onClick={onEntryClick ? () => onEntryClick(entry.key) : undefined}
+              onRemove={() => onRemoveEntry(entry.key)}
+              removeLabel={removeLabel?.(entry)}
+            >
+              {entry.title}
+            </Chip>
+          </li>
+        ))}
+        {inline ? (
+          // Not an entry: presentational so the list still counts N
+          // chips for assistive tech.
+          <li ref={setComboboxWrap} role="presentation" style={INLINE_COMBOBOX_ITEM}>
+            {comboboxEl}
+          </li>
+        ) : null}
+      </ul>
+    );
+
     return (
       <div data-testid={testid} onKeyDownCapture={handleKeyDownCapture}>
-        <div ref={comboboxWrapRef}>
-          <Combobox
-            ref={ref}
-            {...comboboxProps}
-            clearOnCommit
-            committed={null}
-            testid={`${testid}-combobox`}
-          />
-        </div>
-
-        <ul
-          role="list"
-          aria-label={entriesLabel ?? "Selected items"}
-          data-testid={`${testid}-entries`}
-          style={{
-            listStyle: "none",
-            margin: entries.length > 0 ? "8px 0 0" : 0,
-            padding: 0,
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 6,
-          }}
-        >
-          {entries.map((entry) => (
-            <li key={entry.key} style={{ minWidth: 0, maxWidth: "100%" }}>
-              <Chip
-                data-testid={`${testid}-entry-${entry.key}`}
-                title={entry.subtitle}
-                tone={entry.tone}
-                selected={entry.editing}
-                disabled={comboboxProps.disabled}
-                onClick={onEntryClick ? () => onEntryClick(entry.key) : undefined}
-                onRemove={() => onRemoveEntry(entry.key)}
-                removeLabel={removeLabel?.(entry)}
+        {inline ? (
+          <>
+            {label ? (
+              <label
+                htmlFor={inputId}
+                className="ck-eyebrow"
+                style={{ color: "var(--ck-text-secondary)", display: "block", marginBottom: 6 }}
               >
-                {entry.title}
-              </Chip>
-            </li>
-          ))}
-        </ul>
+                {label}
+              </label>
+            ) : null}
+            <div
+              className="ck-multi-combobox-field"
+              data-testid={`${testid}-field`}
+              style={INLINE_FIELD_STYLE}
+              onMouseDown={handleFieldMouseDown}
+            >
+              {entriesList}
+            </div>
+            <div
+              id={hintId}
+              className="ck-multi-combobox-invalid-hint"
+              style={{
+                marginTop: 6,
+                font: "400 11px/1.4 var(--ck-font-sans)",
+                color: "var(--ck-critical)",
+              }}
+            >
+              {comboboxProps.invalidHint ?? COMBOBOX_DEFAULT_INVALID_HINT}
+            </div>
+          </>
+        ) : (
+          <>
+            <div ref={setComboboxWrap}>{comboboxEl}</div>
+            {entriesList}
+          </>
+        )}
 
         {editing && renderEntryEditor ? (
           <div data-testid={`${testid}-editor`} style={{ marginTop: 8 }}>

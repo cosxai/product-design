@@ -104,8 +104,24 @@ export interface ComboboxProps {
   // and typically passes `committed={null}`. Default false — the
   // single-value echo-into-input behaviour is unchanged.
   clearOnCommit?: boolean | undefined;
+  // Bare mode: the input renders without its own field chrome (see
+  // Input `bare`) and the root wrapper is `position: static` +
+  // `flex: 1 1 140px`, so a host that draws the field (MultiCombobox
+  // inline layout) can place this after its chips and the dropdown
+  // anchors to the host's `position: relative` container. `label`
+  // and the inline error text are not rendered (the host draws them;
+  // `aria-invalid` is still set on the input). Default false.
+  bare?: boolean | undefined;
+  // id for the <input>, so a host-drawn <label htmlFor> can target it.
+  inputId?: string | undefined;
+  // Extra aria-describedby id(s) for the <input> (e.g. a host-drawn
+  // invalid hint in bare mode). Merged with Input's own error/helper
+  // association, never replacing it.
+  inputDescribedBy?: string | undefined;
   testid?: string | undefined;
 }
+
+export const COMBOBOX_DEFAULT_INVALID_HINT = "Pick from the list to continue.";
 
 // Imperative handle — `focus()` returns focus to the input (e.g. after
 // an inline editor closes); `clear()` wipes the typed text + dropdown
@@ -144,6 +160,9 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
   onCommit,
   onUncommit,
   clearOnCommit = false,
+  bare = false,
+  inputId,
+  inputDescribedBy,
   testid = "combobox",
   },
   ref,
@@ -252,6 +271,10 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
   // blurs first) still lands on the row handler.
   const handleBlur = useCallback(() => {
     setTimeout(() => {
+      // Re-focused within the delay (e.g. a host frame click handing
+      // focus straight back, MultiCombobox inline): still editing —
+      // neither close the list nor auto-commit.
+      if (inputRef.current && document.activeElement === inputRef.current) return;
       setFocused(false);
       if (isCommitted) return;
       const raw = trimmed;
@@ -322,9 +345,18 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
     focused && !isCommitted && (results.length > 0 || offerFree || (hasNoResults && !!emptyHint));
 
   return (
-    <div style={{ position: "relative" }}>
+    <div
+      style={
+        bare
+          ? { position: "static", flex: "1 1 140px", minWidth: 140 }
+          : { position: "relative" }
+      }
+    >
       <Input
         ref={inputRef}
+        id={inputId}
+        aria-describedby={inputDescribedBy}
+        bare={bare}
         label={label}
         data-testid={`${testid}-input`}
         value={query}
@@ -339,7 +371,7 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
         placeholder={placeholder}
         autoFocus={autoFocus}
         autoComplete="off"
-        error={invalid ? (invalidHint ?? "Pick from the list to continue.") : null}
+        error={invalid ? (invalidHint ?? COMBOBOX_DEFAULT_INVALID_HINT) : null}
       />
 
       {showDropdown ? (
