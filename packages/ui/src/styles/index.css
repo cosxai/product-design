@@ -304,3 +304,40 @@ html[data-ck-chrome="seamless"] .ck-card__foot {
     animation: none;
   }
 }
+
+/* ---------- Input bare mode + MultiCombobox inline field ----------
+   `.ck-input--bare` is an <input> whose FIELD is drawn by its host
+   (MultiCombobox inline layout: chips + input in one frame). Chrome
+   presets restyle `.ck-input` with !important at up to (0,5,1)
+   specificity, so this rule uses `:not(#\#)` to out-rank them and
+   strip every trace of field chrome back off. */
+.ck-input.ck-input--bare:not(#\#) {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  height: 28px !important;
+  padding: 0 4px !important;
+}
+
+/* The host-drawn field: looks like .ck-input, carries the focus ring
+   via :focus-within, the invalid border via :has([aria-invalid]) and
+   the disabled dim via :has(:disabled). */
+.ck-multi-combobox-field:focus-within {
+  border-color: var(--ck-accent) !important;
+  box-shadow: 0 0 0 3px var(--ck-accent-muted);
+}
+.ck-multi-combobox-field:has(.ck-input[aria-invalid="true"]) {
+  border-color: var(--ck-critical) !important;
+}
+.ck-multi-combobox-field:has(.ck-input:disabled) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.ck-multi-combobox-invalid-hint {
+  display: none;
+}
+.ck-multi-combobox-field:has(.ck-input[aria-invalid="true"]) + .ck-multi-combobox-invalid-hint {
+  display: block;
+}

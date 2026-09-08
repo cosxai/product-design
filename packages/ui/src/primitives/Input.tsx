@@ -33,6 +33,14 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   // currency symbols, unit labels, search icons, etc.
   prefix?: ReactNode;
   suffix?: ReactNode;
+  // Bare mode: render ONLY the <input> — no wrapper, label, helper,
+  // error text, or field chrome (border / background / height). For
+  // hosts that draw the field themselves (MultiCombobox's inline
+  // layout, where chips and the input share one frame). `label`,
+  // `helper`, `error` text, `prefix`, `suffix` and `fit` are ignored;
+  // `aria-invalid` is still set from `error` so the host can react.
+  // Default false.
+  bare?: boolean;
 }
 
 const ADDON_STYLE = {
@@ -52,12 +60,40 @@ const ADDON_STYLE = {
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { label, helper, error, fit = "full", prefix, suffix, className, id, style, ...rest },
+  { label, helper, error, fit = "full", prefix, suffix, bare = false, className, id, style, ...rest },
   ref,
 ) {
   const autoId = useId();
   const inputId = id ?? autoId;
-  const hasAddon = prefix != null || suffix != null;
+  const hasAddon = !bare && (prefix != null || suffix != null);
+
+  if (bare) {
+    // Chrome presets restyle .ck-input with !important; the matching
+    // .ck-input--bare rule in styles/index.css strips that again.
+    return (
+      <input
+        ref={ref}
+        id={inputId}
+        aria-invalid={error ? true : undefined}
+        {...rest}
+        className={cn("ck-input", "ck-input--bare", className)}
+        style={{
+          minWidth: 0,
+          width: "100%",
+          height: 28,
+          padding: "0 4px",
+          font: "400 13px/1 var(--ck-font-sans)",
+          background: "transparent",
+          color: "var(--ck-text-primary)",
+          border: "none",
+          borderRadius: 0,
+          boxShadow: "none",
+          outline: "none",
+          ...(style ?? {}),
+        }}
+      />
+    );
+  }
 
   // Border / radius live on the WRAPPER when there's an addon so the
   // addon + input share one continuous frame. Otherwise the input

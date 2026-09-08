@@ -104,8 +104,20 @@ export interface ComboboxProps {
   // and typically passes `committed={null}`. Default false — the
   // single-value echo-into-input behaviour is unchanged.
   clearOnCommit?: boolean | undefined;
+  // Bare mode: the input renders without its own field chrome (see
+  // Input `bare`) and the root wrapper is `position: static` +
+  // `flex: 1 1 140px`, so a host that draws the field (MultiCombobox
+  // inline layout) can place this after its chips and the dropdown
+  // anchors to the host's `position: relative` container. `label`
+  // and the inline error text are not rendered (the host draws them;
+  // `aria-invalid` is still set on the input). Default false.
+  bare?: boolean | undefined;
+  // id for the <input>, so a host-drawn <label htmlFor> can target it.
+  inputId?: string | undefined;
   testid?: string | undefined;
 }
+
+export const COMBOBOX_DEFAULT_INVALID_HINT = "Pick from the list to continue.";
 
 // Imperative handle — `focus()` returns focus to the input (e.g. after
 // an inline editor closes); `clear()` wipes the typed text + dropdown
@@ -144,6 +156,8 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
   onCommit,
   onUncommit,
   clearOnCommit = false,
+  bare = false,
+  inputId,
   testid = "combobox",
   },
   ref,
@@ -322,9 +336,17 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
     focused && !isCommitted && (results.length > 0 || offerFree || (hasNoResults && !!emptyHint));
 
   return (
-    <div style={{ position: "relative" }}>
+    <div
+      style={
+        bare
+          ? { position: "static", flex: "1 1 140px", minWidth: 140 }
+          : { position: "relative" }
+      }
+    >
       <Input
         ref={inputRef}
+        id={inputId}
+        bare={bare}
         label={label}
         data-testid={`${testid}-input`}
         value={query}
@@ -339,7 +361,7 @@ export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combo
         placeholder={placeholder}
         autoFocus={autoFocus}
         autoComplete="off"
-        error={invalid ? (invalidHint ?? "Pick from the list to continue.") : null}
+        error={invalid ? (invalidHint ?? COMBOBOX_DEFAULT_INVALID_HINT) : null}
       />
 
       {showDropdown ? (
