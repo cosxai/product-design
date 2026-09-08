@@ -20,7 +20,12 @@ export type {
   ComboboxOption,
   ComboboxCommit,
   ComboboxCommitted,
+  ComboboxHandle,
 } from "./Combobox";
+export { Chip } from "./Chip";
+export type { ChipProps, ChipTone } from "./Chip";
+export { MultiCombobox } from "./MultiCombobox";
+export type { MultiComboboxProps, MultiComboboxEntry, MultiComboboxHandle } from "./MultiCombobox";
 export { Textarea } from "./Textarea";
 export type { TextareaProps } from "./Textarea";
 export { Checkbox } from "./Checkbox";

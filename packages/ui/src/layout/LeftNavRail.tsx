@@ -15,6 +15,13 @@ export interface LeftNavRailProps {
   brand?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
+  /**
+   * footerTop — a block pinned BETWEEN the scrolling nav area and the
+   * footer rule: always visible, above the divider, immune to a long
+   * menu (the nav list scrolls above it). The agent drawer's trigger
+   * is the motivating case.
+   */
+  footerTop?: ReactNode;
   collapsed?: boolean;
   // Expanded / collapsed widths in px. Defaults 256 / 56.
   widthExpanded?: number;
@@ -28,6 +35,7 @@ export function LeftNavRail({
   brand,
   children,
   footer,
+  footerTop,
   collapsed = false,
   widthExpanded = 256,
   widthCollapsed = 56,
@@ -111,6 +119,11 @@ export function LeftNavRail({
       >
         {children}
       </div>
+      {footerTop && (
+        <div style={{ padding: collapsed ? "4px 4px 8px" : "4px 8px 12px", flexShrink: 0 }}>
+          {footerTop}
+        </div>
+      )}
       {footer && (
         <div
           style={{

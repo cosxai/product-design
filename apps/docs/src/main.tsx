@@ -12,6 +12,7 @@ import { TokensPage } from "./routes/tokens";
 import { ButtonPage } from "./routes/components/button";
 import { PrimitivesPage } from "./routes/components/primitives";
 import { BonusPage } from "./routes/components/bonus";
+import { MultiComboboxPage } from "./routes/components/multi-combobox";
 import { DialogsPage } from "./routes/components/dialogs";
 import { ShellPage } from "./routes/components/layout/shell";
 import { BreadcrumbPage } from "./routes/components/layout/breadcrumb";
@@ -67,6 +68,7 @@ const router = createBrowserRouter([
       { path: "components/button", element: <ButtonPage /> },
       { path: "components/primitives", element: <PrimitivesPage /> },
       { path: "components/bonus", element: <BonusPage /> },
+      { path: "components/multi-combobox", element: <MultiComboboxPage /> },
       { path: "components/dialogs", element: <DialogsPage /> },
       { path: "components/layout/shell", element: <ShellPage /> },
       { path: "components/layout/breadcrumb", element: <BreadcrumbPage /> },
