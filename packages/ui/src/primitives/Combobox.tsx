@@ -1,6 +1,8 @@
 import {
+  forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useRef,
   useState,
   type KeyboardEvent,
@@ -96,8 +98,22 @@ export interface ComboboxProps {
   // Fired when the user edits the input after a commit, or clicks the
   // card's ×. Parent clears its committed state.
   onUncommit?: (() => void) | undefined;
+  // Multi-value mode: after `onCommit` fires, reset the input to ""
+  // and close the dropdown instead of echoing the committed text. The
+  // parent renders the committed values itself (see MultiCombobox)
+  // and typically passes `committed={null}`. Default false — the
+  // single-value echo-into-input behaviour is unchanged.
+  clearOnCommit?: boolean | undefined;
   testid?: string | undefined;
 }
+
+// Imperative handle — `focus()` returns focus to the input (e.g. after
+// an inline editor closes); `clear()` wipes the typed text + dropdown
+// (e.g. a parent rejecting a duplicate commit).
+export type ComboboxHandle = {
+  focus: () => void;
+  clear: () => void;
+};
 
 const DEFAULT_DEBOUNCE_MS = 250;
 
@@ -109,7 +125,8 @@ function defaultMatch(raw: string, option: ComboboxOption): boolean {
   );
 }
 
-export function Combobox({
+export const Combobox = forwardRef<ComboboxHandle, ComboboxProps>(function Combobox(
+  {
   label,
   placeholder,
   autoFocus,
@@ -126,8 +143,11 @@ export function Combobox({
   committedExtra,
   onCommit,
   onUncommit,
+  clearOnCommit = false,
   testid = "combobox",
-}: ComboboxProps): ReactNode {
+  },
+  ref,
+) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ComboboxOption[]>([]);
   const [loading, setLoading] = useState(false);
@@ -140,6 +160,20 @@ export function Combobox({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const isCommitted = !!committed;
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus: () => inputRef.current?.focus(),
+      clear: () => {
+        setQuery("");
+        setResults([]);
+        setHighlight(0);
+        setInvalid(false);
+      },
+    }),
+    [],
+  );
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -191,11 +225,13 @@ export function Combobox({
       setResults([]);
       setHighlight(0);
       // Reflect the commit in the input so a half-typed query never
-      // sits next to a card naming someone else.
-      setQuery(option.subtitle ?? option.title);
+      // sits next to a card naming someone else — unless the parent
+      // collects values (clearOnCommit), where the input resets for
+      // the next entry.
+      setQuery(clearOnCommit ? "" : (option.subtitle ?? option.title));
       onCommit({ kind: "option", option });
     },
-    [onCommit],
+    [onCommit, clearOnCommit],
   );
 
   const commitFree = useCallback(
@@ -203,10 +239,10 @@ export function Combobox({
       setInvalid(false);
       setResults([]);
       setHighlight(0);
-      setQuery(raw);
+      setQuery(clearOnCommit ? "" : raw);
       onCommit({ kind: "free", raw });
     },
-    [onCommit],
+    [onCommit, clearOnCommit],
   );
 
   // Blur auto-commit — the fix for "typed it, tabbed on, looked
@@ -436,4 +472,4 @@ export function Combobox({
       ) : null}
     </div>
   );
-}
+});
