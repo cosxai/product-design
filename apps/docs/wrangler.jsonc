@@ -1,5 +1,5 @@
 {
-  "name": "design",
+  "name": "ui-docs",
   "compatibility_date": "2026-05-28",
   "assets": {
     "directory": "./dist",
@@ -10,7 +10,7 @@
   ],
   "env": {
     "staging": {
-      "name": "design-stag",
+      "name": "ui-docs-stag",
       "routes": [
         { "pattern": "ui.stag.cosx.dev", "custom_domain": true }
       ]
