@@ -33,7 +33,7 @@ if (!src || !existsSync(join(src, "site"))) {
 }
 
 // Partials imported by pages, not pages themselves.
-const PARTIALS = new Set(["Site Header", "Site Nav"]);
+const PARTIALS = new Set(["Site Header", "Site Nav", "Spec Sections", "Spec Sections EN"]);
 
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
@@ -164,11 +164,27 @@ console.log(`links → clean URLs in ${linkFiles} files`);
 
 // Files every page needs, preloaded from <head> by the Worker so they
 // download in parallel instead of one after another.
-const partials = [...PARTIALS].map((n) => `/${encodeURIComponent(n)}.dc.html`);
+// Per page: only the partials that page (or a partial it imports)
+// actually pulls in — not every partial on every page.
+const importsOf = (name) =>
+  [...readFileSync(join(out, `${name}.dc.html`), "utf8").matchAll(/<dc-import[^>]*\sname="([^"]+)"/g)].map((m) => m[1]);
+const partialsByPage = {};
+for (const page of pages) {
+  const seen = new Set();
+  const walk = (name) => {
+    for (const dep of importsOf(name)) {
+      if (!PARTIALS.has(dep) || seen.has(dep)) continue;
+      seen.add(dep);
+      walk(dep);
+    }
+  };
+  walk(page);
+  partialsByPage[page] = [...seen].map((n) => `/${encodeURIComponent(n)}.dc.html`);
+}
 const ds = readdirSync(join(out, "_ds"))[0];
 writeFileSync(
   join(app, "src", "preload.json"),
-  JSON.stringify({ scripts: preload, fetches: partials, bundle: `/_ds/${ds}/_ds_bundle.js` }, null, 2) + "\n",
+  JSON.stringify({ scripts: preload, fetches: partialsByPage, bundle: `/_ds/${ds}/_ds_bundle.js` }, null, 2) + "\n",
 );
 
 pages.sort();

@@ -38,3 +38,11 @@ test("cache policy", () => {
   assert.match(cacheControlFor("/button"), /max-age=600/);
   assert.match(cacheControlFor("/_ds/x/_ds_bundle.js"), /stale-while-revalidate/);
 });
+
+import { preloadHTML } from "./index.ts";
+
+test("each page preloads only the partials it imports", () => {
+  assert.match(preloadHTML("Home"), /Site%20Header/);
+  assert.doesNotMatch(preloadHTML("Home"), /Spec%20Sections/);
+  assert.match(preloadHTML("Button"), /Spec%20Sections/);
+});

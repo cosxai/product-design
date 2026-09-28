@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/fonts.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/fonts-cjk.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/colors.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/typography.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/typography-cjk.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/spacing.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/elevation.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/motion.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/compat.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/styles.css">
+  <script src="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/_ds_bundle.js"></script>
+  <script src="../assets/ds-patches.js"></script>
+  <style>html, body { margin: 0; background: var(--paper); -webkit-font-smoothing: antialiased; } a { color: inherit; text-underline-offset: 3px; } a:hover { color: var(--text-secondary); }</style>
+</helmet>
+<div lang="{{ htmlLang }}" class="{{ modeClass }}" style="min-height: 100vh; background: var(--bg-page); color: var(--text-primary); font-family: var(--font-sans-cjk); font-size: 15px;">
+  <dc-import name="Site Header" lang="{{ lang }}" theme="{{ theme }}" section="components" on-lang="{{ toggleLang }}" on-theme="{{ toggleTheme }}" style="position: sticky; top: 0; z-index: 20;" hint-size="100%,64px"></dc-import>
+  <div style="display: flex; align-items: flex-start;">
+    <dc-import name="Site Nav" lang="{{ lang }}" current="mobile" style="position: sticky; top: 64px; flex: none;" hint-size="248px,600px"></dc-import>
+    <main style="flex: 1; min-width: 0; padding: 48px 56px 64px; box-sizing: border-box;"><div style="max-width: 1000px; margin: 0 auto 0 0;">
+<div style="display: flex; flex-direction: column; gap: 14px; padding-bottom: 8px;"><div style="font-size: 13px; font-weight: 500; color: var(--text-secondary);"><span style="display: {{ dz }}; line-height: inherit; letter-spacing: inherit;">组件 · 手机端</span><span style="display: {{ de }}; line-height: inherit; letter-spacing: inherit;">Components · Mobile</span></div><h1 style="margin: 0; font-size: 44px; font-weight: 500; line-height: 1.15; letter-spacing: -.02em; text-wrap: pretty;"><span style="display: {{ dz }}; line-height: inherit; letter-spacing: inherit;">手机上：一层内容，底部标签，触控目标不小于 44px</span><span style="display: {{ de }}; line-height: inherit; letter-spacing: inherit;">On phones: one layer, bottom tabs, targets of 44px or more</span></h1><p style="margin: 0; font-size: 17px; line-height: 1.7; color: var(--text-secondary); max-width: 40em; text-wrap: pretty;"><span style="display: {{ dz }}; line-height: inherit; letter-spacing: inherit;">来自 MetaRoom 组件规范。界面示例为英文。</span><span style="display: {{ de }}; line-height: inherit; letter-spacing: inherit;">From the MetaRoom component spec.</span></p><div style="display: flex; gap: 8px; flex-wrap: wrap;"><span style="font-size: 12px; font-weight: 500; padding: 4px 8px; border-radius: 6px; background: var(--bg-sunk);"><span style="display: {{ dz }}; line-height: inherit; letter-spacing: inherit;">MetaRoom</span><span style="display: {{ de }}; line-height: inherit; letter-spacing: inherit;">MetaRoom</span></span><span style="font-size: 12px; font-weight: 500; padding: 4px 8px; border-radius: 6px; background: var(--bg-sunk);"><span style="display: {{ dz }}; line-height: inherit; letter-spacing: inherit;">稳定</span><span style="display: {{ de }}; line-height: inherit; letter-spacing: inherit;">Stable</span></span></div></div><div style="margin-top: 8px; border-top: 1px solid var(--rule);"><sc-if value="{{ zh }}" hint-placeholder-val="{{ true }}"><dc-import name="Spec Sections" only="s11" theme="{{ theme }}" hint-size="100%,1400px"></dc-import></sc-if><sc-if value="{{ en }}"><dc-import name="Spec Sections EN" only="s11" theme="{{ theme }}" hint-size="100%,1400px"></dc-import></sc-if></div>
+<footer style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; padding: 40px 0 0; margin-top: 96px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--text-secondary);"><img src="../assets/logo-wordmark.svg" alt="COSX" style="height: 18px; display: {{ lightD }};"><img src="../assets/logo-wordmark-white.svg" alt="COSX" style="height: 18px; display: {{ darkD }};"><span><span style="display: {{ dz }}; line-height: inherit; letter-spacing: inherit;">© 2026 COSINE X LTD 保留所有权利 · <a href="/terms">使用条款</a></span><span style="display: {{ de }}; line-height: inherit; letter-spacing: inherit;">© 2026 COSINE X LTD. All rights reserved. · <a href="/terms">Terms of use</a></span></span><div style="flex: 1;"></div><span><span style="display: {{ dz }}; line-height: inherit; letter-spacing: inherit;">COSX Design System 3.0 · 最近更新 2026 年 9 月 28 日</span><span style="display: {{ de }}; line-height: inherit; letter-spacing: inherit;">COSX Design System 3.0 · Updated 28 September 2026</span></span></footer>
+    </div></main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  dict = {"zh":{},"en":{}};
+  state = Object.assign({ lang: this.pref('cosx-site-lang', 'en'), theme: this.pref('cosx-site-theme', 'light') }, {});
+  pref(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } }
+  save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  componentDidMount() { this._sync = () => this.setState({ lang: this.pref('cosx-site-lang', 'en'), theme: this.pref('cosx-site-theme', 'light') }); window.addEventListener('storage', this._sync); }
+  componentWillUnmount() { window.removeEventListener('storage', this._sync); clearTimeout(this._t); }
+  pv(g) { var P = { paper: ['#FEFDFB','#F5F2EC','#ECE9E3','#111111','#696969','rgba(17,17,17,.10)','rgba(17,17,17,.06)','#F7F6F4'], yellow: ['#FFE3A0','#FFF1D6','#F7D98F','#111111','rgba(17,17,17,.7)','rgba(17,17,17,.14)','rgba(17,17,17,.08)','#F7D98F'], ink: ['#111111','#1B1B1B','#232221','#F5F2EC','#9E9E9E','rgba(245,242,236,.18)','rgba(245,242,236,.09)','#1F1E1D'] }[g] || []; return { bgPage: P[0], bgSunk: P[1], bgWell: P[2], tp: P[3], ts: P[4], rule: P[5], ruleSoft: P[6], hover: P[7] }; }
+  seg(key, opts) { var set = {}, on = {}, self = this; opts.forEach(function (o) { set[key + '_' + o] = function () { self.setState({ [key]: o }); }; var a = self.state[key] === o; on[key + '_' + o] = { bg: a ? 'var(--brand-field, var(--yellow))' : 'transparent', fg: a ? 'var(--ink)' : 'var(--text-primary)' }; }); return { set: set, on: on }; }
+  merge(parts) { var set = {}, on = {}; parts.forEach(function (p) { Object.assign(set, p.set); Object.assign(on, p.on); }); return { set: set, on: on }; }
+  copyText(txt) { try { navigator.clipboard && navigator.clipboard.writeText(txt); } catch (e) {} this.setState({ copied: true }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ copied: false }), 1400); }
+
+  base() { var s = this.state, zh = s.lang === 'zh', dark = s.theme === 'dark'; return { lang: s.lang, theme: s.theme, zh: zh, en: !zh, dark: dark, T: this.dict[zh ? 'zh' : 'en'], dz: zh ? 'inline' : 'none', de: zh ? 'none' : 'inline', htmlLang: zh ? 'zh-CN' : 'en-GB', modeClass: dark ? 'ink-mode' : '', ground: dark ? 'ink' : 'paper', lightD: dark ? 'none' : 'block', darkD: dark ? 'block' : 'none', copyLabel: s.copied ? (zh ? '已复制' : 'Copied') : (zh ? '复制' : 'Copy'), copyIcon: s.copied ? 'check' : 'copy', toggleLang: () => { var l = zh ? 'en' : 'zh'; this.save('cosx-site-lang', l); this.setState({ lang: l }); }, toggleTheme: () => { var t = dark ? 'light' : 'dark'; this.save('cosx-site-theme', t); this.setState({ theme: t }); }, go: { colour: () => { location.href = '/colour'; }, button: () => { location.href = '/button'; }, spec: () => { location.href = '../ui-spec/MetaRoom Components.dc.html'; }, portal: () => { location.href = '../pages/MetaRoom Customer Portal.dc.html'; } } }; }
+  page(b) { return {}; }
+  renderVals() { var b = this.base(); return Object.assign(b, this.page(b)); }
+}
+</script>
+</body>
+</html>

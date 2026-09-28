@@ -56,12 +56,16 @@ const PLACEHOLDER_STYLE = `.sc-placeholder{background:transparent!important;bord
 
 // Everything a page needs, requested from <head> in parallel instead of
 // one after another as the runtime discovers it.
-const PRELOAD_HTML =
+const PRELOAD_SCRIPTS =
   preload.scripts
     .map((s) => `<link rel="preload" as="script" href="${s.href}" integrity="${s.integrity}" crossorigin="anonymous">`)
-    .join("") +
-  `<link rel="preload" as="script" href="${preload.bundle}">` +
-  preload.fetches.map((f) => `<link rel="preload" as="fetch" href="${f}" crossorigin="anonymous">`).join("");
+    .join("") + `<link rel="preload" as="script" href="${preload.bundle}">`;
+
+/** Preloads for one page: the shared scripts + the partials it imports. */
+export function preloadHTML(page: string): string {
+  const fetches = (preload.fetches as Record<string, string[]>)[page] ?? [];
+  return PRELOAD_SCRIPTS + fetches.map((f) => `<link rel="preload" as="fetch" href="${f}" crossorigin="anonymous">`).join("");
+}
 
 /** Cache policy by path: vendored libraries are versioned by name and
  * never change; everything else may change on the next sync. */
@@ -95,7 +99,7 @@ function decorate(res: Response, page: string): Response {
     .on("head", {
       element(el) {
         // Preloads go first so they start before support.js runs.
-        el.prepend(PRELOAD_HTML, { html: true });
+        el.prepend(preloadHTML(page), { html: true });
         el.append(
           `<title>${title}</title>` +
             `<meta name="description" content="Brand, foundations, components and product patterns of COSX.">` +
