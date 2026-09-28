@@ -17,7 +17,7 @@ with the real components.
 - [x] Local check through the Worker: routes, 301 from old file URLs, partial fetches, screenshots
 - [ ] First deploy (`wrangler deploy`) → Worker `design` + custom domain design.cosx.co
 - [ ] Connect Workers Builds (root `apps/design`, deploy `npx wrangler deploy`)
-- [ ] Contact address for the terms page (owner to supply)
+- [x] Contact address: hello@cosx.co
 
 ## Decisions
 - Public, © COSINE X LIMITED, all rights reserved; terms list third-party material (fonts, Lucide, React, Babel, Claude Design runtime).
