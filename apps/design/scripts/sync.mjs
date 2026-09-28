@@ -105,6 +105,26 @@ const fixName = (dir) => {
 fixName(out);
 console.log(`company name → COSINE X LTD in ${nameFixes} files`);
 
+// Copyright notice in each page's own footer (where "COSINE X LTD ·
+// cosx.co" stood), switching with the site language like the rest of
+// the footer ({{ dz }} / {{ de }}), linking the terms of use.
+const year = new Date().getFullYear();
+const span = (v, text) => `<span style="display: {{ ${v} }}; line-height: inherit; letter-spacing: inherit;">${text}</span>`;
+const notice =
+  `<span>` +
+  span("dz", `© ${year} COSINE X LTD 保留所有权利 · <a href="/terms">使用条款</a>`) +
+  span("de", `© ${year} COSINE X LTD. All rights reserved. · <a href="/terms">Terms of use</a>`) +
+  `</span>`;
+let notices = 0;
+for (const f of readdirSync(out).filter((f) => f.endsWith(".dc.html"))) {
+  const p = join(out, f);
+  const html = readFileSync(p, "utf8");
+  const next = html.replaceAll("<span>COSINE X LTD · cosx.co</span>", notice);
+  if (next !== html) { writeFileSync(p, next); notices++; }
+}
+if (notices !== pages.length) throw new Error(`copyright notice placed in ${notices} of ${pages.length} pages — the footer changed, review sync.mjs`);
+console.log(`copyright notice in ${notices} page footers`);
+
 // Default language: English. The site keeps the choice per visitor in
 // localStorage (key cosx-site-lang); only the fallback changes here.
 let langDefaults = 0;

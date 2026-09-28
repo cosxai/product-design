@@ -9,7 +9,8 @@
 //     (Site Header.dc.html …) by file name, so those requests are
 //     served as files, never redirected — only top-level navigations
 //     (Sec-Fetch-Dest: document) are.
-//   - a title, the site icon and the copyright notice on every page.
+//   - a title and the site icon on every page (the copyright notice sits
+//     in each page's own footer, placed by scripts/sync.mjs).
 //   - /terms, the terms of use.
 
 import pages from "./pages.json" with { type: "json" };
@@ -88,22 +89,6 @@ const SPECULATION_RULES = `<script type="speculationrules">${JSON.stringify({
 // instead of blanking (Chrome, Edge, Safari 18.2+).
 const TRANSITION_STYLE = `@view-transition{navigation:auto}`;
 
-const LEGAL_STYLE = `
-.cosx-legal{font-family:var(--font-sans-cjk,system-ui,sans-serif);font-size:12px;line-height:1.6;color:var(--grey,#696969);
-  max-width:1280px;margin:0 auto;padding:24px 24px 40px;display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between}
-.cosx-legal a{color:inherit;text-underline-offset:3px}
-.cosx-legal a:hover{color:var(--ink,#111)}
-`;
-
-// Built per request: outside a request the Workers clock reads the
-// epoch, so a module-level year would print 1970.
-function legalHTML(): string {
-  return `<footer class="cosx-legal" role="contentinfo">
-<span>© ${new Date().getUTCFullYear()} COSINE X LTD. All rights reserved. 保留所有权利。</span>
-<span><a href="/terms">Terms of use · 使用条款</a></span>
-</footer>`;
-}
-
 function decorate(res: Response, page: string): Response {
   const title = page === HOME ? SITE : `${page} · ${SITE}`;
   return new HTMLRewriter()
@@ -115,15 +100,10 @@ function decorate(res: Response, page: string): Response {
           `<title>${title}</title>` +
             `<meta name="description" content="Brand, foundations, components and product patterns of COSX.">` +
             `<link rel="icon" href="/favicon.svg" type="image/svg+xml">` +
-            `<style>${TRANSITION_STYLE}${PLACEHOLDER_STYLE}${LEGAL_STYLE}</style>` +
+            `<style>${TRANSITION_STYLE}${PLACEHOLDER_STYLE}</style>` +
             SPECULATION_RULES,
           { html: true },
         );
-      },
-    })
-    .on("body", {
-      element(el) {
-        el.append(legalHTML(), { html: true });
       },
     })
     .transform(res);
