@@ -1,6 +1,6 @@
 # Git Workflow Rules
 
-> Synced with `cosxai/product-mesh` and `cosxai/product-meta`
+> Synced with `cosxai/product-mesh` and `cosxai/product-meta-legacy`
 > `.claude/rules/git-workflow.md` — keep coherent across the three
 > repos.
 

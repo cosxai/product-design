@@ -52,7 +52,7 @@ Detailed guidelines in `.claude/rules/`:
 
 Cross-repo coherence: these rules mirror
 `cosxai/product-mesh/.claude/rules/` and
-`cosxai/product-meta/.claude/rules/`. Changes that aren't TS-vs-Go
+`cosxai/product-meta-legacy/.claude/rules/`. Changes that aren't TS-vs-Go
 specific should land in all three.
 
 ## Repository structure
