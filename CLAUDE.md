@@ -76,7 +76,8 @@ product-design/
 │       │   └── ...               (more presets)
 │       └── package.json
 ├── apps/
-│   └── docs/                  showcase site
+│   ├── docs/                  0.x showcase (ui.cosx.co, Worker ui-docs)
+│   └── design/                COSX Design System 3.0 site (design.cosx.co, Worker design)
 └── .claude/rules/             the rules above
 ```
 

@@ -1,0 +1,24 @@
+{
+  // design.cosx.co — the COSX Design System site (apps/design).
+  // Pages are the Claude Design export in public/ (scripts/sync.mjs);
+  // src/index.ts maps clean URLs and adds title / icon / copyright.
+  "name": "design",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // Every request goes through the Worker first (clean URLs, old
+    // file URLs, /terms). html_handling "none": the page runtime fetches
+    // "Site Header.dc.html" etc. by file name; the default handling
+    // would redirect those .html URLs and break the page.
+    "run_worker_first": true,
+    "html_handling": "none",
+    "not_found_handling": "none"
+  },
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "design.cosx.co", "custom_domain": true }
+  ]
+}

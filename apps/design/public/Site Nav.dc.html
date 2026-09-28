@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/styles.css">
+  <script src="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/_ds_bundle.js"></script>
+  <script src="../assets/ds-patches.js"></script>
+</helmet>
+<nav style="position: sticky; top: 64px; width: 248px; height: calc(100vh - 64px); box-sizing: border-box; padding: 20px 16px 48px 20px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; border-right: 1px solid var(--rule-soft); background: var(--bg-page); color: var(--text-primary); font-family: var(--font-sans-cjk);">
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+    <div style="font-size: 12px; font-weight: 500; color: var(--text-secondary); padding: 18px 10px 6px;">{{ g.label }}</div>
+    <sc-for list="{{ g.items }}" as="i" hint-placeholder-count="4"><a href="{{ i.href }}" title="{{ i.title }}" style="display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 10px; border-radius: 8px; font-size: 13.5px; text-decoration: none; background: {{ i.bg }}; color: {{ i.fg }}; font-weight: {{ i.w }};">{{ i.label }}<span style="margin-left: auto; font-size: 11px; font-weight: 500; color: {{ i.tagFg }}; display: {{ i.tagD }};">{{ i.tag }}</span></a></sc-for>
+  </sc-for>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:248,&quot;height&quot;:900},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;zh&quot;,&quot;en&quot;],&quot;default&quot;:&quot;zh&quot;,&quot;tsType&quot;:&quot;'zh' | 'en'&quot;},&quot;current&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;colour&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const zh = (this.props.lang ?? 'zh') === 'zh', cur = this.props.current ?? '';
+    const S = zh ? '即将推出' : 'Soon', D = zh ? '草稿' : 'Draft', M = 'MetaRoom';
+    const spec = '../ui-spec/MetaRoom Components.dc.html', pages = '../pages/';
+    const G = [
+      ['概览', 'Overview', [['home', '首页', 'Home', 'Home.dc.html']]],
+      ['基础', 'Foundations', [['colour', '颜色', 'Colour', 'Colour.dc.html'], ['type', '字体', 'Typography', 'Typography.dc.html'], ['space', '间距与形状', 'Spacing and shape', 'Spacing.dc.html'], ['motion', '动效', 'Motion', 'Motion.dc.html']]],
+      ['品牌', 'Brand', [['logo', '标志', 'Logo', 'Logo.dc.html'], ['yellow', '黄色', 'The yellow', 'Yellow.dc.html'], ['marker', '标记', 'The marker', 'Marker.dc.html'], ['voice', '语气', 'Voice', 'Voice.dc.html']]],
+      ['组件', 'Components', [['button', '按钮', 'Button', 'Button.dc.html'], ['input', '输入框', 'Input', 'Input.dc.html'], ['select', '下拉选择', 'Select', 'Select.dc.html'], ['badge', '状态徽章', 'Badge', 'Badge.dc.html'], ['dialog', '对话框', 'Dialog', 'Dialog.dc.html'], ['checkbox', '勾选与开关', 'Checkbox and switch', '', S], ['tabs', '标签页', 'Tabs', '', S], ['toast', '提示', 'Toast', '', S], ['table', '表格', 'Table', '', S]]],
+      ['产品模式', 'Patterns', [['nav', '导航', 'Navigation', 'Pattern Navigation.dc.html'], ['actionbar', '操作栏', 'Action bar', 'Pattern Action Bar.dc.html'], ['agent', 'Agent 对话', 'Agent conversation', 'Pattern Agent.dc.html'], ['status', '状态', 'Status', 'Pattern Status.dc.html']]],
+      ['页面模板', 'Templates', [['auth', '登录与注册', 'Sign in', 'Template Sign In.dc.html'], ['settings', '设置', 'Settings', 'Template Settings.dc.html'], ['list', '列表与文档库', 'Lists', 'Template List.dc.html'], ['viewer', '查看器', 'Viewer', 'Template Viewer.dc.html']]],
+      ['更多', 'More', [['writing', '内容写作', 'Writing', '', S], ['downloads', '资源下载', 'Downloads', '', S], ['changelog', '更新日志', 'Changelog', 'Home.dc.html#changelog']]]
+    ];
+    return {
+      groups: G.map(([z, e, items]) => ({ label: zh ? z : e, items: items.map(([k, iz, ie, href, tag]) => {
+        const on = k === cur;
+        return { label: zh ? iz : ie, href: href || '#', title: href ? '' : S, tag: tag || '', tagD: tag ? 'inline' : 'none', tagFg: on ? 'rgba(17,17,17,.7)' : 'var(--text-secondary)', bg: on ? 'var(--brand-field, var(--yellow))' : 'transparent', fg: on ? 'var(--ink)' : href ? 'var(--text-primary)' : 'var(--text-secondary)', w: on ? 500 : 400 };
+      }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
