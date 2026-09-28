@@ -1,8 +1,10 @@
 [
   "Badge",
   "Button",
+  "Checkbox",
   "Colour",
   "Dialog",
+  "Downloads",
   "Home",
   "Input",
   "Logo",
@@ -14,11 +16,16 @@
   "Pattern Status",
   "Select",
   "Spacing",
+  "Table",
+  "Tabs",
   "Template List",
   "Template Settings",
   "Template Sign In",
   "Template Viewer",
+  "Toast",
   "Typography",
+  "Upload",
   "Voice",
+  "Writing",
   "Yellow"
 ]

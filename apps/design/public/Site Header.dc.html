@@ -26,7 +26,7 @@
 class Component extends DCLogic {
   renderVals() {
     const zh = (this.props.lang ?? 'zh') === 'zh', dark = this.props.theme === 'dark', sec = this.props.section ?? '';
-    const defs = [['foundations', '基础', 'Foundations', '/colour'], ['brand', '品牌', 'Brand', '/logo'], ['components', '组件', 'Components', '/button'], ['patterns', '产品模式', 'Patterns', '/pattern-navigation'], ['templates', '页面模板', 'Templates', '/template-sign-in'], ['resources', '资源', 'Resources', '']];
+    const defs = [['foundations', '基础', 'Foundations', '/colour'], ['brand', '品牌', 'Brand', '/logo'], ['components', '组件', 'Components', '/button'], ['patterns', '产品模式', 'Patterns', '/pattern-navigation'], ['templates', '页面模板', 'Templates', '/template-sign-in'], ['resources', '资源', 'Resources', '/downloads']];
     return {
       items: defs.map(([k, z, e, href]) => ({ label: zh ? z : e, href: href || '#', title: href ? '' : (zh ? '即将推出' : 'Coming soon'), bg: k === sec ? 'var(--brand-field, var(--yellow))' : 'transparent', fg: k === sec ? 'var(--ink)' : href ? 'var(--text-primary)' : 'var(--text-secondary)' })),
       langLabel: zh ? 'EN' : '中文', langTitle: zh ? 'Switch to English' : '切换到中文',

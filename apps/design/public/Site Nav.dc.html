@@ -29,10 +29,10 @@ class Component extends DCLogic {
       ['概览', 'Overview', [['home', '首页', 'Home', '/']]],
       ['基础', 'Foundations', [['colour', '颜色', 'Colour', '/colour'], ['type', '字体', 'Typography', '/typography'], ['space', '间距与形状', 'Spacing and shape', '/spacing'], ['motion', '动效', 'Motion', '/motion']]],
       ['品牌', 'Brand', [['logo', '标志', 'Logo', '/logo'], ['yellow', '黄色', 'The yellow', '/yellow'], ['marker', '标记', 'The marker', '/marker'], ['voice', '语气', 'Voice', '/voice']]],
-      ['组件', 'Components', [['button', '按钮', 'Button', '/button'], ['input', '输入框', 'Input', '/input'], ['select', '下拉选择', 'Select', '/select'], ['badge', '状态徽章', 'Badge', '/badge'], ['dialog', '对话框', 'Dialog', '/dialog'], ['checkbox', '勾选与开关', 'Checkbox and switch', '', S], ['tabs', '标签页', 'Tabs', '', S], ['toast', '提示', 'Toast', '', S], ['table', '表格', 'Table', '', S]]],
+      ['组件', 'Components', [['button', '按钮', 'Button', '/button'], ['input', '输入框', 'Input', '/input'], ['select', '下拉选择', 'Select', '/select'], ['badge', '状态徽章', 'Badge', '/badge'], ['dialog', '对话框', 'Dialog', '/dialog'], ['upload', '上传', 'Upload', '/upload'], ['checkbox', '勾选与开关', 'Checkbox and switch', '/checkbox'], ['tabs', '标签页', 'Tabs', '/tabs'], ['toast', '提示', 'Toast', '/toast'], ['table', '表格', 'Table', '/table']]],
       ['产品模式', 'Patterns', [['nav', '导航', 'Navigation', '/pattern-navigation'], ['actionbar', '操作栏', 'Action bar', '/pattern-action-bar'], ['agent', 'Agent 对话', 'Agent conversation', '/pattern-agent'], ['status', '状态', 'Status', '/pattern-status']]],
       ['页面模板', 'Templates', [['auth', '登录与注册', 'Sign in', '/template-sign-in'], ['settings', '设置', 'Settings', '/template-settings'], ['list', '列表与文档库', 'Lists', '/template-list'], ['viewer', '查看器', 'Viewer', '/template-viewer']]],
-      ['更多', 'More', [['writing', '内容写作', 'Writing', '', S], ['downloads', '资源下载', 'Downloads', '', S], ['changelog', '更新日志', 'Changelog', '/#changelog']]]
+      ['更多', 'More', [['writing', '内容写作', 'Writing', '/writing'], ['downloads', '资源下载', 'Downloads', '/downloads'], ['changelog', '更新日志', 'Changelog', '/#changelog']]]
     ];
     return {
       groups: G.map(([z, e, items]) => ({ label: zh ? z : e, items: items.map(([k, iz, ie, href, tag]) => {
