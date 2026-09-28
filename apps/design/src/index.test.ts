@@ -30,3 +30,11 @@ test("page paths", () => {
   assert.equal(pathOf("Home"), "/");
   assert.equal(pathOf("Template Sign In"), "/template-sign-in");
 });
+
+import { cacheControlFor } from "./index.ts";
+
+test("cache policy", () => {
+  assert.match(cacheControlFor("/vendor/react-18.3.1-react.production.min.js"), /immutable/);
+  assert.match(cacheControlFor("/button"), /max-age=600/);
+  assert.match(cacheControlFor("/_ds/x/_ds_bundle.js"), /stale-while-revalidate/);
+});

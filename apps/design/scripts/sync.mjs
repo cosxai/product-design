@@ -62,8 +62,14 @@ const supportPath = join(out, "support.js");
 let support = readFileSync(supportPath, "utf8");
 const cdn = [...support.matchAll(/var (\w+)_URL = "(https:\/\/unpkg\.com\/[^"]+)";\s*var \1_SRI = "(sha384-[^"]+)";/g)];
 if (cdn.length === 0) throw new Error("support.js: no unpkg URLs found — the runtime changed, review sync.mjs");
+const preload = [];
 for (const [, name, url, sri] of cdn) {
-  const file = url.split("/").pop();
+  // Versioned file name (react@18.3.1…) so the long cache below is safe.
+  const parts = new URL(url).pathname.split("/").filter(Boolean);
+  // react-18.3.1 · babel-standalone-7.29.0 — no "@": the asset server
+  // redirects it to %40, an extra round trip on every page.
+  const pkg = (parts[0].startsWith("@") ? `${parts[0].slice(1)}-${parts[1]}` : parts[0]).replace("@", "-");
+  const file = `${pkg}-${parts.at(-1)}`; // react-18.3.1-react.production.min.js
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
   const body = Buffer.from(await res.arrayBuffer());
@@ -71,9 +77,34 @@ for (const [, name, url, sri] of cdn) {
   if (got !== sri) throw new Error(`${name}: ${url} does not match the SRI hash in support.js`);
   writeFileSync(join(vendor, file), body);
   support = support.replace(url, `/vendor/${file}`);
+  // React is needed by every page; Babel only for JSX imports (lazy).
+  if (name !== "BABEL") preload.push({ href: `/vendor/${file}`, integrity: sri });
   console.log(`vendored ${name} → /vendor/${file}`);
 }
 writeFileSync(supportPath, support);
+
+// Default language: English. The site keeps the choice per visitor in
+// localStorage (key cosx-site-lang); only the fallback changes here.
+let langDefaults = 0;
+for (const f of readdirSync(out).filter((f) => f.endsWith(".dc.html"))) {
+  const p = join(out, f);
+  const html = readFileSync(p, "utf8");
+  const next = html.replaceAll("pref('cosx-site-lang', 'zh')", "pref('cosx-site-lang', 'en')");
+  if (next !== html) {
+    writeFileSync(p, next);
+    langDefaults++;
+  }
+}
+console.log(`default language → en in ${langDefaults} files`);
+
+// Files every page needs, preloaded from <head> by the Worker so they
+// download in parallel instead of one after another.
+const partials = [...PARTIALS].map((n) => `/${encodeURIComponent(n)}.dc.html`);
+const ds = readdirSync(join(out, "_ds"))[0];
+writeFileSync(
+  join(app, "src", "preload.json"),
+  JSON.stringify({ scripts: preload, fetches: partials, bundle: `/_ds/${ds}/_ds_bundle.js` }, null, 2) + "\n",
+);
 
 pages.sort();
 writeFileSync(join(app, "src", "pages.json"), JSON.stringify(pages, null, 2) + "\n");

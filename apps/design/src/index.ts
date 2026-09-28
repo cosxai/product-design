@@ -13,6 +13,7 @@
 //   - /terms, the terms of use.
 
 import pages from "./pages.json" with { type: "json" };
+import preload from "./preload.json" with { type: "json" };
 
 type Env = { ASSETS: Fetcher };
 
@@ -47,6 +48,34 @@ export function pageOfFile(pathname: string): string | undefined {
   return bySlug.get(slugOf(m[1]));
 }
 
+// The runtime draws a grey box where a partial (Site Header, Site Nav)
+// will go until its file arrives — the flash on every page change. The
+// box keeps its size (no layout jump) but is no longer painted.
+const PLACEHOLDER_STYLE = `.sc-placeholder{background:transparent!important;border-color:transparent!important;box-shadow:none!important}`;
+
+// Everything a page needs, requested from <head> in parallel instead of
+// one after another as the runtime discovers it.
+const PRELOAD_HTML =
+  preload.scripts
+    .map((s) => `<link rel="preload" as="script" href="${s.href}" integrity="${s.integrity}" crossorigin="anonymous">`)
+    .join("") +
+  `<link rel="preload" as="script" href="${preload.bundle}">` +
+  preload.fetches.map((f) => `<link rel="preload" as="fetch" href="${f}" crossorigin="anonymous">`).join("");
+
+/** Cache policy by path: vendored libraries are versioned by name and
+ * never change; everything else may change on the next sync. */
+export function cacheControlFor(pathname: string): string {
+  if (pathname.startsWith("/vendor/")) return "public, max-age=31536000, immutable";
+  return "public, max-age=600, stale-while-revalidate=86400";
+}
+
+function withCache(res: Response, pathname: string): Response {
+  if (!res.ok) return res;
+  const out = new Response(res.body, res);
+  out.headers.set("Cache-Control", cacheControlFor(pathname));
+  return out;
+}
+
 const LEGAL_STYLE = `
 .cosx-legal{font-family:var(--font-sans-cjk,system-ui,sans-serif);font-size:12px;line-height:1.6;color:var(--grey,#696969);
   max-width:1280px;margin:0 auto;padding:24px 24px 40px;display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between}
@@ -68,11 +97,13 @@ function decorate(res: Response, page: string): Response {
   return new HTMLRewriter()
     .on("head", {
       element(el) {
+        // Preloads go first so they start before support.js runs.
+        el.prepend(PRELOAD_HTML, { html: true });
         el.append(
           `<title>${title}</title>` +
             `<meta name="description" content="Brand, foundations, components and product patterns of COSX.">` +
             `<link rel="icon" href="/favicon.svg" type="image/svg+xml">` +
-            `<style>${LEGAL_STYLE}</style>`,
+            `<style>${PLACEHOLDER_STYLE}${LEGAL_STYLE}</style>`,
           { html: true },
         );
       },
@@ -98,15 +129,15 @@ export default {
       return Response.redirect(new URL("/", url).toString(), 301);
     }
     if (url.pathname === "/terms" || url.pathname === "/terms/") {
-      return env.ASSETS.fetch(new Request(new URL("/terms.html", url), request));
+      return withCache(await env.ASSETS.fetch(new Request(new URL("/terms.html", url), request)), url.pathname);
     }
 
     const page = pageAt(url.pathname);
     if (page) {
       const file = new URL(`/${encodeURIComponent(page)}.dc.html`, url);
       const res = await env.ASSETS.fetch(new Request(file, request));
-      return res.ok ? decorate(res, page) : res;
+      return res.ok ? withCache(decorate(res, page), url.pathname) : res;
     }
-    return env.ASSETS.fetch(request);
+    return withCache(await env.ASSETS.fetch(request), url.pathname);
   },
 } satisfies ExportedHandler<Env>;

@@ -1,0 +1,17 @@
+{
+  "scripts": [
+    {
+      "href": "/vendor/react-18.3.1-react.production.min.js",
+      "integrity": "sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z"
+    },
+    {
+      "href": "/vendor/react-dom-18.3.1-react-dom.production.min.js",
+      "integrity": "sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1"
+    }
+  ],
+  "fetches": [
+    "/Site%20Header.dc.html",
+    "/Site%20Nav.dc.html"
+  ],
+  "bundle": "/_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/_ds_bundle.js"
+}

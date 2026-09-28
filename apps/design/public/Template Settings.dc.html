@@ -38,10 +38,10 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   dict = {"zh":{},"en":{}};
-  state = Object.assign({ lang: this.pref('cosx-site-lang', 'zh'), theme: this.pref('cosx-site-theme', 'light') }, { g: true, a: false, e: true, t: true });
+  state = Object.assign({ lang: this.pref('cosx-site-lang', 'en'), theme: this.pref('cosx-site-theme', 'light') }, { g: true, a: false, e: true, t: true });
   pref(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } }
   save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  componentDidMount() { this._sync = () => this.setState({ lang: this.pref('cosx-site-lang', 'zh'), theme: this.pref('cosx-site-theme', 'light') }); window.addEventListener('storage', this._sync); }
+  componentDidMount() { this._sync = () => this.setState({ lang: this.pref('cosx-site-lang', 'en'), theme: this.pref('cosx-site-theme', 'light') }); window.addEventListener('storage', this._sync); }
   componentWillUnmount() { window.removeEventListener('storage', this._sync); clearTimeout(this._t); }
   pv(g) { var P = { paper: ['#FEFDFB','#F5F2EC','#ECE9E3','#111111','#696969','rgba(17,17,17,.10)','rgba(17,17,17,.06)','#F7F6F4'], yellow: ['#FFE3A0','#FFF1D6','#F7D98F','#111111','rgba(17,17,17,.7)','rgba(17,17,17,.14)','rgba(17,17,17,.08)','#F7D98F'], ink: ['#111111','#1B1B1B','#232221','#F5F2EC','#9E9E9E','rgba(245,242,236,.18)','rgba(245,242,236,.09)','#1F1E1D'] }[g] || []; return { bgPage: P[0], bgSunk: P[1], bgWell: P[2], tp: P[3], ts: P[4], rule: P[5], ruleSoft: P[6], hover: P[7] }; }
   seg(key, opts) { var set = {}, on = {}, self = this; opts.forEach(function (o) { set[key + '_' + o] = function () { self.setState({ [key]: o }); }; var a = self.state[key] === o; on[key + '_' + o] = { bg: a ? 'var(--brand-field, var(--yellow))' : 'transparent', fg: a ? 'var(--ink)' : 'var(--text-primary)' }; }); return { set: set, on: on }; }
