@@ -1,3 +1,19 @@
+## 1.0.0-alpha.0 (2026-09-29)
+
+**A new system — breaking for every 0.x consumer.** 0.x continues on the
+`ui-0.x` branch (dist-tag `v0`); stay on `^0.25` until you move.
+
+- COSX Design System 3.0 foundations: the 3.0 token files unchanged
+  (`styles.css`), Geist + Noto Sans SC self-hosted (Fontsource, OFL-1.1),
+  ink mode via `data-mode="ink"` / `.ink-mode`.
+- Tailwind v4 theme (`theme.css`): 3.0 colours, radii, type scale,
+  tracking and easings as utilities; Tailwind's own palette, shadows and
+  easings removed.
+- `cn()` — clsx + tailwind-merge taught the kit's size names.
+- Removed: every 0.x component, the `--ck-*` variables and the design
+  presets (editorial, neobrutalism, riso, sketch, terminal, ambient,
+  bento, pwa). Components return in the next alphas on Radix.
+
 ## 0.25.0 (2026-09-08)
 
 - **fix(primitives)**: `Chip` no longer steals focus on mousedown — the

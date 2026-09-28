@@ -1,0 +1,17 @@
+/* @cosxai/ui — the COSX Design System 3.0 foundations.
+ *
+ * tokens/ are the design system's own files, copied unchanged from the
+ * "COSX Design System 3.0" project. Edit them there and copy again; the
+ * kit's additions live in fonts.css and theme.css.
+ *
+ * Ink (dark) mode: set data-mode="ink" on <html>, or put .ink-mode on a
+ * subtree (colors.css).
+ */
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/typography-cjk.css";
+@import "./tokens/spacing.css";
+@import "./tokens/elevation.css";
+@import "./tokens/motion.css";
+@import "./tokens/compat.css";
+@import "./fonts.css";

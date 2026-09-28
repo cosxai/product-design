@@ -1,0 +1,42 @@
+/* COSX 3.0 — motion. "Paper settling." Two registers:
+   state   quick and flat — colour, border, opacity on hover/focus/toggle. 120–320ms.
+   entry   one choreographed settle when a surface appears — blocks rise a few px, the marker
+           draws, figures count, the pill glides. Each element ≤ 640ms; a whole sequence ≤ 1.4s
+           with a 70ms stagger. Ease-out only: things arrive and stop, they never bounce. */
+:root {
+  --motion-colour:  120ms; /* @kind other */
+  --motion-fade:    180ms; /* @kind other */
+  --motion-max:     320ms; /* @kind other */
+  --motion-reveal:  640ms; /* @kind other */  /* entry: rise, draw, glide */
+  --motion-count:  1400ms; /* @kind other */  /* figures counting up */
+  --motion-stagger:  70ms; /* @kind other */
+  --easing:         cubic-bezier(.2,0,.2,1); /* @kind other */
+  --easing-out:     cubic-bezier(.16,1,.3,1); /* @kind other */
+  --rise-distance:  10px;
+  /* v2 aliases */
+  --dur-fast: var(--motion-colour); /* @kind other */
+  --dur-base: var(--motion-fade); /* @kind other */
+  --dur-slow: var(--motion-max); /* @kind other */
+  --ease-standard: var(--easing); /* @kind other */
+  --ease-out: var(--easing-out); /* @kind other */
+  --ease-in: cubic-bezier(.4,0,1,1); /* @kind other */
+  --press-inset: none;
+}
+/* Entry vocabulary */
+@keyframes cosx-rise   { from { opacity: 0; transform: translateY(var(--rise-distance)); } to { opacity: 1; transform: none; } }
+@keyframes cosx-draw   { from { background-size: 0% 100%; } to { background-size: 100% 100%; } }
+@keyframes cosx-settle { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+@keyframes cosx-grow   { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes cosx-wipe   { from { clip-path: inset(0 100% 0 0 round 8px); } to { clip-path: inset(0 0 0 0 round 8px); } }
+.rise        { animation: cosx-rise var(--motion-reveal) var(--easing-out) both; }
+.marker.draw { background-repeat: no-repeat; animation: cosx-draw var(--motion-reveal) var(--easing-out) .35s both; }
+.settle      { animation: cosx-settle var(--motion-reveal) var(--easing-out) both; }          /* chart blocks, tiles — staggered */
+.grow        { transform-origin: bottom; animation: cosx-grow var(--motion-reveal) var(--easing-out) both; } /* columns */
+.wipe        { animation: cosx-wipe var(--motion-reveal) var(--easing-out) both; }         /* yellow field or strip revealing left→right */
+/* Stagger helper: set --i on each child */
+.rise, .settle, .grow, .wipe { animation-delay: calc(var(--i, 0) * var(--motion-stagger) + var(--delay, 0ms)); }
+/* Glide: the selected pill / active indicator moves, it does not blink */
+.glide { transition: transform var(--motion-reveal) var(--easing-out), width var(--motion-reveal) var(--easing-out), left var(--motion-reveal) var(--easing-out); }
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion-colour: 0ms; /* @kind other */ --motion-fade: 0ms; /* @kind other */ --motion-max: 0ms; /* @kind other */ --motion-reveal: 0ms; /* @kind other */ --motion-count: 0ms; /* @kind other */ --motion-stagger: 0ms; /* @kind other */ }
+}

@@ -33,10 +33,12 @@ product-design / publish-ui.yml.
 ## Project Overview
 
 - pnpm monorepo: `packages/ui` (the kit) + `apps/docs` (showcase)
-- React 19 peer dep; Tailwind v4 tokens via `--ck-*` CSS variables
-- Ships source TS (no build step) — consumers' bundlers handle TS
-- shadcn-style distribution: consumers may import individual
-  components OR copy source files directly
+- **@cosxai/ui 1.x** (main): the COSX Design System 3.0 — tokens in
+  `packages/ui/src/tokens/` (copied unchanged from the Claude Design
+  project), Tailwind v4 theme (`theme.css`), components on Radix. Plan:
+  `docs/workdocs/2026-09-29_feature-ui-1.0/`. The design is design.cosx.co.
+- **0.x** (`--ck-*` kit + presets): branch `ui-0.x`, dist-tag `v0`.
+- React 19 peer dep; ships source TS (no build step)
 
 ## Rules & Standards
 

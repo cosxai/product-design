@@ -1,0 +1,11 @@
+@cosxai/ui
+© 2026 COSINE X LTD. All rights reserved. Proprietary — see package.json
+("UNLICENSED"): no licence is granted to use, copy or modify this package.
+
+The COSX Design System 3.0 tokens in src/tokens/ are COSX's own.
+
+Fonts are dependencies, not part of this package, each under its own licence:
+  Geist (Vercel) — SIL Open Font License 1.1, via @fontsource-variable/geist
+  Noto Sans SC (Google) — SIL Open Font License 1.1, via @fontsource-variable/noto-sans-sc
+
+Code adapted from third-party projects will be listed here with its licence.

@@ -1,5 +1,14 @@
 # Code Style Rules (TypeScript / React)
 
+> **1.x (main) supersedes the 0.x parts below** — `ck-` classes and
+> `--ck-*` variables are 0.x only (branch `ui-0.x`). In 1.x: style with
+> Tailwind utilities from `packages/ui/src/theme.css` (`bg-page`,
+> `text-fg`, `rounded-md`, `text-ui` …) merged with `cn()`; raw values
+> only through 3.0 variables (`var(--bg-page)`); never Tailwind's default
+> palette, shadows or easings (removed from the theme). Interactive
+> primitives build on Radix. Each component is checked against its
+> design.cosx.co page.
+
 product-design ships the `@cosxai/ui` design system, consumed by
 product-meta + future product-* SPAs. Code style mirrors meta's
 rules with a few design-system-specific additions.

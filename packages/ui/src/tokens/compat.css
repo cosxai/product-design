@@ -1,0 +1,36 @@
+/* COSX 3.0 — older token names mapped onto current values. Do not use in new work. */
+:root {
+  --stone: var(--grey);
+  --brass: var(--grey);
+  --white: var(--paper);
+  --brass-30: var(--rule);
+  --brass-20: var(--rule);
+  --brass-12: var(--rule-soft);
+  --brass-07: var(--rule-soft);
+  --ink-08: rgba(17,17,17,.08);
+  --ink-04: rgba(17,17,17,.04);
+  --marigold: var(--yellow);
+  --marigold-hover: var(--yellow-deep);
+  --marigold-press: var(--yellow-7);
+  --marigold-tint: var(--yellow-12);
+  --ink-hover: #2A2825;
+  --ink-press: #000000;
+  --status-ok: var(--status-complete);
+  --status-warn: var(--status-attention);
+  --status-info: var(--status-progress);
+  --status-ok-tint: var(--status-complete-wash);
+  --status-error-tint: var(--status-error-wash);
+  --surface-card: var(--paper);
+  --hairline: var(--rule);
+  --hairline-soft: var(--rule-soft);
+  --grid-line: var(--rule-soft);
+  --grid-line-inv: var(--rule-soft-inverse);
+  --accent: var(--yellow);
+  --inv-text-strong: var(--paper);
+  --inv-structure: var(--grey-inverse);
+  --inv-hairline: var(--rule-inverse);
+  /* amber-era names from the 3.0 draft */
+  --amber-12: var(--yellow-12); --amber-20: var(--yellow-20); --amber-32: var(--yellow-32); --amber-50: var(--yellow-50);
+  --amber-critical: var(--yellow-7); --amber-high: var(--yellow-6); --amber-medium: var(--yellow-5); --amber-low: var(--yellow-3); --amber-clear: var(--yellow-1);
+  --series-1: var(--yellow-1); --series-2: var(--yellow-2); --series-3: var(--yellow-3); --series-4: var(--yellow-4); --series-5: var(--yellow-5); --series-6: var(--yellow-6);
+}

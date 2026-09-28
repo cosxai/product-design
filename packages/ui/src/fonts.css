@@ -1,0 +1,20 @@
+/* @cosxai/ui — self-hosted fonts.
+ *
+ * The 3.0 tokens load Geist and Noto Sans SC from Google Fonts
+ * (tokens/fonts.css in the design system, not shipped here). The kit
+ * serves them from the consumer's own bundle instead: Fontsource
+ * variable builds, OFL-1.1, split by unicode range so a page downloads
+ * only the glyphs it shows.
+ *
+ * Fontsource names the families "… Variable"; the stacks below put those
+ * first and keep the design system's own names after them. Loaded after
+ * the tokens (styles.css), so these stacks are the ones in effect.
+ */
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/noto-sans-sc";
+
+:root {
+  --font-sans: "Geist Variable", "Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-cjk: "Noto Sans SC Variable", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-sans-cjk: "Geist Variable", "Geist", "Noto Sans SC Variable", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+}

@@ -1,25 +1,8 @@
-// Entry point — re-exports everything consumers need.
-// Components, hooks, theme, and helpers are organised under
-// /primitives, /layout, /actionbar, /command, /dialogs, /hooks,
-// /theme, /pwa, /lib. As the kit grows, each phase adds exports
-// here. Consumers pull individual modules (`import { Button }
-// from "@cosxai/ui"`) or copy source files directly per the
-// shadcn-style distribution model.
-
-export * from "./primitives";
-export * from "./lib/cn";
-export * from "./lib/time-utils";
-export * from "./theme";
-export * from "./hooks";
-export * from "./layout";
-export * from "./dialogs";
-export * from "./actionbar";
-export * from "./command";
-export * from "./pwa";
-export * from "./editorial";
-export * from "./neobrutalism";
-export * from "./ambient";
-export * from "./terminal";
-export * from "./bento";
-export * from "./riso";
-export * from "./sketch";
+/**
+ * @cosxai/ui 1.x — the COSX Design System 3.0 in React.
+ *
+ * Foundations: import "@cosxai/ui/styles.css" (tokens + fonts) and, in a
+ * Tailwind v4 app, "@cosxai/ui/theme.css". Components arrive in the 1.0
+ * alphas (docs/workdocs/2026-09-29_feature-ui-1.0).
+ */
+export { cn } from './lib/cn';

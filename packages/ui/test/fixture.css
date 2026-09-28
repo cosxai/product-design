@@ -1,0 +1,6 @@
+/* Build check: the kit's foundations through a real Tailwind v4 build
+   (pnpm check:css). */
+@import "tailwindcss";
+@import "../src/theme.css";
+@import "../src/styles.css";
+@source inline("bg-page text-fg bg-yellow text-fg-secondary border-rule rounded-md rounded-pill text-ui text-body font-sans font-sans-cjk font-medium ease-out tracking-display bg-error-wash text-attention bg-blue-500 shadow-lg");
