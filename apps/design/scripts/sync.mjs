@@ -51,6 +51,11 @@ cpSync(join(src, "_ds"), join(out, "_ds"), {
   filter: (p) => !p.endsWith("_adherence.oxlintrc.json"),
 });
 cpSync(join(src, "assets"), join(out, "assets"), { recursive: true });
+// The site links into the MetaRoom spec and page prototypes (../ui-spec/…,
+// ../pages/…); they are served as they are, under their folder names.
+for (const dir of ["ui-spec", "pages", "metaroom-auth"]) {
+  if (existsSync(join(src, dir))) cpSync(join(src, dir), join(out, dir), { recursive: true });
+}
 
 // Our own additions (favicon, terms page).
 cpSync(join(app, "static"), out, { recursive: true });
@@ -96,6 +101,29 @@ for (const f of readdirSync(out).filter((f) => f.endsWith(".dc.html"))) {
   }
 }
 console.log(`default language → en in ${langDefaults} files`);
+
+// Links point at clean URLs, so a click is one request, not a 301 plus
+// one — and the browser can prerender the target (see src/index.ts).
+// The site writes its links as literal file names ('Button.dc.html',
+// href="Home.dc.html"); partials are imported by name, never linked.
+const cleanPath = (p) => (p === "Home" ? "/" : `/${p.trim().toLowerCase().replace(/\s+/g, "-")}`);
+let linkFiles = 0;
+for (const f of readdirSync(out).filter((f) => f.endsWith(".dc.html"))) {
+  const p = join(out, f);
+  let html = readFileSync(p, "utf8");
+  const before = html;
+  for (const page of pages) {
+    for (const q of ["'", '"']) {
+      html = html.replaceAll(`${q}${page}.dc.html${q}`, `${q}${cleanPath(page)}${q}`);
+      html = html.replaceAll(`${q}${page}.dc.html#`, `${q}${cleanPath(page)}#`);
+    }
+  }
+  if (html !== before) {
+    writeFileSync(p, html);
+    linkFiles++;
+  }
+}
+console.log(`links → clean URLs in ${linkFiles} files`);
 
 // Files every page needs, preloaded from <head> by the Worker so they
 // download in parallel instead of one after another.

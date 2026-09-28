@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/styles.css">
+  <script src="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/_ds_bundle.js"></script>
+  <script src="../assets/ds-patches.js"></script>
+</helmet>
+<div style="display: grid; grid-template-columns: repeat(5, 1fr); padding: 6px 8px 26px; border-top: 1px solid var(--rule); background: var(--bg-page); color: var(--text-primary);">
+  <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 48px; position: relative;">
+      <span style="width: 48px; height: 28px; border-radius: 999px; display: grid; place-items: center; background: {{ t.bg }}; color: {{ t.fg }};"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="{{ t.icon }}" size="{{ 18 }}" hint-size="18px,18px"></x-import></span>
+      <span style="font-size: 11px; font-weight: 500;">{{ t.label }}</span>
+      <span style="position: absolute; top: 0; left: 50%; margin-left: 8px; font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 999px; background: var(--brand-mark); color: var(--ink); display: {{ t.countDisplay }};">{{ t.count }}</span>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 390, &quot;height&quot;: 80}, &quot;active&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;agent&quot;, &quot;tasks&quot;, &quot;docs&quot;, &quot;clients&quot;, &quot;more&quot;], &quot;default&quot;: &quot;agent&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;lang&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;en&quot;, &quot;zh&quot;], &quot;default&quot;: &quot;en&quot;, &quot;tsType&quot;: &quot;'en' | 'zh'&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const zh = this.props.lang === 'zh';
+    const active = this.props.active ?? 'agent';
+    const defs = zh
+      ? [['agent', 'message-circle', '对话', ''], ['tasks', 'square-check', '任务', '3'], ['docs', 'file-text', '文档', ''], ['clients', 'users', '客户', ''], ['more', 'menu', '更多', '']]
+      : [['agent', 'message-circle', 'Agent', ''], ['tasks', 'square-check', 'Tasks', '3'], ['docs', 'file-text', 'Docs', ''], ['clients', 'users', 'Clients', ''], ['more', 'menu', 'More', '']];
+    return {
+      tabs: defs.map(([k, icon, label, count]) => ({ icon, label, count, countDisplay: count ? 'inline-block' : 'none', bg: k === active ? 'var(--brand-field)' : 'transparent', fg: k === active ? 'var(--ink)' : 'var(--text-primary)' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

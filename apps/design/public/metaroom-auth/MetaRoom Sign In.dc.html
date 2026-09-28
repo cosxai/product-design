@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/fonts.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/fonts-cjk.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/colors.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/typography.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/typography-cjk.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/spacing.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/elevation.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/motion.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/tokens/compat.css">
+  <link rel="stylesheet" href="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/styles.css">
+  <script src="../_ds/cosx-design-system-3-0-460d0b48-000f-4361-83ff-f80b93c83c2c/_ds_bundle.js"></script>
+  <script src="../assets/ds-patches.js"></script>
+  <style>
+    html, body { margin: 0; background: #F5F2EC; -webkit-font-smoothing: antialiased; }
+    a { color: var(--text-primary); text-underline-offset: 3px; }
+    a:hover { color: var(--text-secondary); }
+    @keyframes mr-spin { to { transform: rotate(360deg); } }
+  </style>
+</helmet>
+<div class="{{ modeClass }}" style="min-height: 100vh; display: flex; flex-direction: column; background: var(--bg-sunk); color: var(--text-primary); font-family: var(--font-sans-cjk); font-size: 14px;">
+
+  <header style="min-height: 56px; flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 24px; box-sizing: border-box; background: var(--bg-page); border-bottom: 1px solid var(--rule);">
+    <span style="font-size: 14px; font-weight: 500; white-space: nowrap;">MetaRoom 登录与注册 · v2 原型</span>
+    <div style="flex: 1;"></div>
+    <span style="font-size: 12px; color: var(--text-secondary); white-space: nowrap;">试试这些邮箱</span>
+    <sc-for list="{{ samples }}" as="s" hint-placeholder-count="4">
+      <button type="button" onClick="{{ s.use }}" title="{{ s.note }}" style="height: 30px; padding: 0 10px; border: none; border-radius: 8px; background: var(--bg-sunk); color: var(--text-primary); font-family: var(--font-sans); font-size: 12px; font-weight: 500; white-space: nowrap; cursor: pointer;">{{ s.email }}</button>
+    </sc-for>
+    <button type="button" onClick="{{ toggleNotes }}" style="height: 30px; padding: 0 10px; border: 1px solid var(--rule); border-radius: 8px; background: transparent; color: var(--text-primary); font-family: var(--font-sans-cjk); font-size: 12px; font-weight: 500; white-space: nowrap; cursor: pointer;">{{ notesLabel }}</button>
+    <button type="button" onClick="{{ restart }}" style="height: 30px; padding: 0 10px; border: 1px solid var(--rule); border-radius: 8px; background: transparent; color: var(--text-primary); font-family: var(--font-sans-cjk); font-size: 12px; font-weight: 500; white-space: nowrap; cursor: pointer;">重新开始</button>
+  </header>
+
+  <div style="flex: 1; display: flex; min-height: 0;">
+    <nav style="width: 220px; flex: none; padding: 20px 14px; box-sizing: border-box; border-right: 1px solid var(--rule); background: var(--bg-page); display: flex; flex-direction: column; gap: 2px; overflow-y: auto;">
+      <sc-for list="{{ map }}" as="g" hint-placeholder-count="4">
+        <span style="font-size: 12px; font-weight: 500; color: var(--text-secondary); padding: 14px 10px 6px;">{{ g.label }}</span>
+        <sc-for list="{{ g.items }}" as="i" hint-placeholder-count="3">
+          <button type="button" onClick="{{ i.go }}" style="display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 0 10px; border: none; border-radius: 8px; background: {{ i.bg }}; color: {{ i.fg }}; font-family: var(--font-sans-cjk); font-size: 13px; font-weight: {{ i.w }}; text-align: left; cursor: pointer;"><span style="font-size: 11px; font-variant-numeric: tabular-nums; color: {{ i.nFg }}; width: 18px;">{{ i.n }}</span>{{ i.label }}</button>
+        </sc-for>
+      </sc-for>
+    </nav>
+
+    <main lang="en-GB" ref="{{ mainRef }}" style="flex: 1; min-width: 0; display: flex; background: var(--bg-page); overflow: hidden;">
+    <div style="flex: 1 1 520px; min-width: 340px; display: flex; flex-direction: column; padding: 32px {{ formPad }} 28px; box-sizing: border-box; overflow-y: auto;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 32px; height: 32px; border-radius: 7px; background: {{ brandTile }}; display: grid; place-items: center; font-size: 13px; font-weight: 600; color: #111;"><img src="../assets/logo-icon.svg" alt="" style="width: 78%; height: 78%; display: {{ logoD }};"><span style="display: {{ initialD }};">H</span></span>
+          <span style="font-size: 15px; font-weight: 500;">{{ brandName }}</span>
+        </div>
+        <div role="radiogroup" aria-label="Theme" onMouseEnter="{{ themeEnter }}" onMouseLeave="{{ themeLeave }}" onFocus="{{ themeEnter }}" onBlur="{{ themeBlur }}" style="display: inline-flex; flex: none; gap: {{ themeGap }}; padding: 3px; transition: gap 180ms cubic-bezier(.2,0,.2,1); border-radius: 10px; background: var(--bg-sunk);"><sc-for list="{{ themeOpts }}" as="o" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ o.on }}" aria-label="{{ o.label }}" title="{{ o.label }}" onClick="{{ o.pick }}" style="width: {{ o.w }}; opacity: {{ o.op }}; padding: 0; overflow: hidden; height: 28px; border: none; border-radius: 8px; display: grid; place-items: center; background: {{ o.bg }}; color: {{ o.fg }}; cursor: pointer; transition: width 180ms cubic-bezier(.2,0,.2,1), opacity 180ms cubic-bezier(.2,0,.2,1);" tabindex="{{ o.tab }}"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="{{ o.icon }}" size="{{ 15 }}" hint-size="15px,15px"></x-import></button></sc-for></div>
+      </div>
+      <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 0;">
+      <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px;">
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+
+          <sc-if value="{{ is.signin }}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">{{ signinTitle }}</span><span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary);">{{ signinSub }}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 10px;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="secondary" size="lg" ground="{{ ground }}" onClick="{{ go.done }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px"><img src="../assets/social-google.svg" alt="" style="width: 18px; height: 18px; display: block; object-fit: contain;">Continue with Google</x-import><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="secondary" size="lg" ground="{{ ground }}" onClick="{{ go.done }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px"><img src="../assets/social-microsoft.svg" alt="" style="width: 18px; height: 18px; display: block; object-fit: contain;">Sign in with Microsoft</x-import><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="secondary" size="lg" ground="{{ ground }}" onClick="{{ go.done }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px"><img src="../assets/social-apple.svg" alt="" style="width: 18px; height: 18px; display: {{ appleD }}; object-fit: contain;"><img src="../assets/social-apple-white.svg" alt="" style="width: 18px; height: 18px; display: {{ appleWD }}; object-fit: contain;">Continue with Apple</x-import></div>
+              <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-secondary);"><span style="flex: 1; height: 1px; background: var(--rule);"></span>or<span style="flex: 1; height: 1px; background: var(--rule);"></span></div>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Input" label="Work email" type="email" autocomplete="username webauthn" placeholder="name@company.com" value="{{ email }}" onChange="{{ setEmail }}" onKeyDown="{{ enterEmail }}" invalid="{{ emailBad }}" hint="{{ emailHint }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ submitEmail }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Continue with email</x-import>
+              <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 500;"><button type="button" onClick="{{ go.passkey }}" style="display: inline-flex; align-items: center; gap: 6px; border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; cursor: pointer;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="fingerprint" size="{{ 15 }}" hint-size="15px,15px"></x-import>Sign in with a passkey</button><button type="button" onClick="{{ ssoHint }}" style="display: inline-flex; align-items: center; gap: 6px; border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; cursor: pointer;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="building-2" size="{{ 15 }}" hint-size="15px,15px"></x-import>Single sign-on</button></div>
+              <div style="height: 1px; background: var(--rule-soft);"></div>
+              <span style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">New to MetaRoom? Enter your email above and we'll set up your account.</span>
+              <span style="font-size: 12px; line-height: 1.6; color: var(--text-secondary);">By continuing you agree to the Terms of Service and Privacy Policy.</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.sso }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Harbour Ventures uses single sign-on</span>
+              <button type="button" onClick="{{ go.signin }}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border: none; border-radius: 999px; background: var(--bg-sunk); color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; cursor: pointer;">{{ emailShown }}<span style="font-size: 12px; font-weight: 600; text-decoration: underline;">Change</span></button>
+              <span style="font-size: 14px; line-height: 1.6; color: var(--text-secondary);">Your company signs you in through Okta. You'll come straight back to MetaRoom afterwards.</span>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ ssoGo }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">{{ ssoLabel }}</x-import>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.passkey }}">
+            <div style="display: flex; flex-direction: column; gap: 16px; align-items: stretch;">
+              <span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Use your passkey</span>
+              <button type="button" onClick="{{ go.signin }}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border: none; border-radius: 999px; background: var(--bg-sunk); color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; cursor: pointer;">{{ emailShown }}<span style="font-size: 12px; font-weight: 600; text-decoration: underline;">Change</span></button>
+              <div style="display: grid; place-items: center; padding: 20px 0;"><span style="width: 72px; height: 72px; border-radius: 20px; background: var(--bg-sunk); display: grid; place-items: center;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="fingerprint" size="{{ 34 }}" hint-size="34px,34px"></x-import></span></div>
+              <span style="font-size: 14px; line-height: 1.6; color: var(--text-secondary); text-align: center;">Confirm with Touch ID, Face ID, Windows Hello or your security key.</span>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ afterPrimary }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">{{ passkeyBtn }}</x-import>
+              <div style="display: flex; justify-content: center; gap: 16px; font-size: 13px;"><button type="button" onClick="{{ go.password }}" style="border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-decoration: underline; cursor: pointer;">Use password</button><button type="button" onClick="{{ go.emailcode }}" style="border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-decoration: underline; cursor: pointer;">Email me a code</button></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.password }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Enter your password</span>
+              <button type="button" onClick="{{ go.signin }}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border: none; border-radius: 999px; background: var(--bg-sunk); color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; cursor: pointer;">{{ emailShown }}<span style="font-size: 12px; font-weight: 600; text-decoration: underline;">Change</span></button>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Input" label="Password" type="password" autocomplete="current-password" default-value="correct-horse-battery" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ go.mfa }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Sign in</x-import>
+              <div style="display: flex; justify-content: space-between; font-size: 13px;"><button type="button" onClick="{{ go.emailcode }}" style="border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-decoration: underline; cursor: pointer;">Email me a code instead</button><span style="color: var(--text-secondary);">Forgot password?</span></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.mfa }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Confirm it's you</span><span style="font-size: 14px; line-height: 1.55; color: var(--text-secondary);">COSX Advisory requires two-step verification.</span></div>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ go.chooser }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Use passkey</x-import>
+              <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-secondary);"><span style="flex: 1; height: 1px; background: var(--rule);"></span>or enter the code from your authenticator app<span style="flex: 1; height: 1px; background: var(--rule);"></span></div>
+              <div style="display: flex; gap: 8px;"><sc-for list="{{ cellsMfa }}" as="c" hint-placeholder-count="6"><span style="flex: 1; height: 50px; border-radius: 8px; background: {{ c.bg }}; box-shadow: {{ c.ring }}; display: grid; place-items: center; font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums;">{{ c.d }}</span></sc-for></div>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Checkbox" checked="{{ trust }}" onChange="{{ setTrust }}" label="Trust this device for 30 days" hint-size="100%,24px"></x-import>
+              <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="font-weight: 500; text-decoration: underline;">Use a backup code</span><button type="button" onClick="{{ go.chooser }}" style="border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 600; cursor: pointer;">Verify</button></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.emailcode }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Check your email</span><span style="font-size: 14px; line-height: 1.55; color: var(--text-secondary);">We sent a 6-digit code to <span style="color: var(--text-primary); font-weight: 500;">{{ emailShown }}</span>. It expires in 10 minutes.</span></div>
+              <div style="display: flex; gap: 8px;"><sc-for list="{{ cellsEmail }}" as="c" hint-placeholder-count="6"><span style="flex: 1; height: 50px; border-radius: 8px; background: {{ c.bg }}; box-shadow: {{ c.ring }}; display: grid; place-items: center; font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums;">{{ c.d }}</span></sc-for></div>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ afterCode }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Continue</x-import>
+              <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary);"><span>Resend in 48 s</span><button type="button" onClick="{{ go.signin }}" style="border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-decoration: underline; cursor: pointer;">Wrong email?</button></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.profile }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Create your account</span><span style="font-size: 14px; line-height: 1.55; color: var(--text-secondary);"><span style="color: var(--text-primary); font-weight: 500;">{{ emailShown }}</span> is verified. One more step.</span></div>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Input" label="Your name" default-value="Jordan Lee" autocomplete="name" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Checkbox" checked="{{ true }}" label="I agree to the Terms and Privacy notice" hint-size="100%,24px"></x-import>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ go.workspace }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Create account</x-import>
+              <span style="font-size: 12px; line-height: 1.6; color: var(--text-secondary);">No password needed. You'll sign in with a passkey or an email code.</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.workspace }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Join or create a workspace</span><span style="font-size: 14px; line-height: 1.55; color: var(--text-secondary);">A workspace is where your team's projects and documents live.</span></div>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span style="font-size: 12px; font-weight: 500; color: var(--text-secondary);">Invitations for {{ emailShown }}</span>
+                <sc-if value="{{ halOpen }}" hint-placeholder-val="{{ true }}"><div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--rule);"><span style="width: 36px; height: 36px; border-radius: 8px; background: #D6E4DA; color: #111; display: grid; place-items: center; font-size: 13px; font-weight: 600; flex: none;">H</span><div style="flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35;"><span style="font-size: 14px; font-weight: 500;">Halden Capital</span><span style="font-size: 12px; color: var(--text-secondary);">Invited by Li Wei · 2 days ago</span></div><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="ghost" size="sm" ground="{{ ground }}" onClick="{{ declineHal }}" hint-size="70px,32px">Decline</x-import><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="sm" ground="{{ ground }}" onClick="{{ go.enrol }}" hint-size="60px,32px">Join</x-import></div></sc-if><sc-if value="{{ halDeclined }}"><div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: var(--bg-sunk); font-size: 13px;"><span style="flex: 1; color: var(--text-secondary);">Invitation from Halden Capital declined.</span><button type="button" onClick="{{ undoHal }}" style="border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 600; text-decoration: underline; cursor: pointer;">Undo</button></div></sc-if>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-secondary);"><span style="flex: 1; height: 1px; background: var(--rule);"></span>or start your own<span style="flex: 1; height: 1px; background: var(--rule);"></span></div>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Input" label="Company or team name" value="{{ wsName }}" onChange="{{ setWs }}" hint="{{ wsHint }}" hint-size="100%,84px"></x-import>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="secondary" size="lg" ground="{{ ground }}" onClick="{{ go.enrol }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Create workspace</x-import>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.enrol }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: grid; place-items: center; padding: 8px 0;"><span style="width: 64px; height: 64px; border-radius: 18px; background: #FFE3A0; color: #111; display: grid; place-items: center;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="key-round" size="{{ 28 }}" hint-size="28px,28px"></x-import></span></div>
+              <div style="display: flex; flex-direction: column; gap: 6px; text-align: center;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Sign in faster next time</span><span style="font-size: 14px; line-height: 1.55; color: var(--text-secondary);">Save a passkey on this device. It also counts as your second step, so you won't need a code.</span></div>
+              <x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ go.done }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Create a passkey</x-import>
+              <button type="button" onClick="{{ go.done }}" style="align-self: center; border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-decoration: underline; cursor: pointer;">Not now</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.chooser }}">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Choose a workspace</span><span style="font-size: 14px; color: var(--text-secondary);">Signed in as {{ emailShown }}</span></div>
+              <sc-for list="{{ workspaces }}" as="w" hint-placeholder-count="3">
+                <button type="button" onClick="{{ w.open }}" style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: none; border-radius: 12px; background: var(--bg-page); box-shadow: inset 0 0 0 1px var(--rule); color: var(--text-primary); font-family: var(--font-sans); text-align: left; cursor: pointer;" style-hover="background: var(--hover);"><span style="width: 36px; height: 36px; border-radius: 8px; background: {{ w.tile }}; color: #111; display: grid; place-items: center; font-size: 13px; font-weight: 600; flex: none;">{{ w.ini }}</span><div style="flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35;"><span style="font-size: 14px; font-weight: 500;">{{ w.name }}</span><span style="font-size: 12px; color: var(--text-secondary);">{{ w.meta }}</span></div><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="chevron-right" size="{{ 16 }}" hint-size="16px,16px"></x-import></button>
+              </sc-for>
+              <sc-if value="{{ velaOpen }}" hint-placeholder-val="{{ true }}"><div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: #FFF1D6; color: #111;"><span style="width: 36px; height: 36px; border-radius: 8px; background: #E6DDF0; display: grid; place-items: center; font-size: 13px; font-weight: 600; flex: none;">V</span><div style="flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35;"><span style="font-size: 14px; font-weight: 500;">Vela Family Office</span><span style="font-size: 12px; color: rgba(17,17,17,.7);">Invitation · Customer</span></div><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="ghost" size="sm" ground="yellow" onClick="{{ declineVela }}" hint-size="70px,32px">Decline</x-import><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="sm" ground="yellow" onClick="{{ go.done }}" hint-size="70px,32px">Accept</x-import></div></sc-if><sc-if value="{{ velaDeclined }}"><div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: var(--bg-sunk); font-size: 13px;"><span style="flex: 1; color: var(--text-secondary);">Invitation from Vela Family Office declined. They won't be notified.</span><button type="button" onClick="{{ undoVela }}" style="border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 600; text-decoration: underline; cursor: pointer;">Undo</button></div></sc-if>
+              <div style="display: flex; justify-content: space-between; font-size: 13px; padding-top: 4px;"><button type="button" onClick="{{ go.workspace }}" style="border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-decoration: underline; cursor: pointer;">Create a workspace</button><button type="button" onClick="{{ restart }}" style="border: none; background: none; padding: 0; color: var(--text-secondary); font-family: var(--font-sans); font-size: 13px; cursor: pointer;">Sign out</button></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ is.desktop }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;"><span style="width: 56px; height: 56px; border-radius: 14px; background: var(--bg-sunk); color: var(--text-primary); display: grid; place-items: center;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="monitor" size="{{ 26 }}" hint-size="26px,26px"></x-import></span><div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Sign in to MetaRoom</span><span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary);">Your browser opens to finish signing in, then brings you back here.</span></div><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ go.desktopWait }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Continue in browser</x-import><span style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">Same account as the web app. Passkeys and single sign-on work the same way.</span></div>
+          </sc-if>
+          <sc-if value="{{ is.desktopWait }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;"><span style="width: 26px; height: 26px; border-radius: 999px; border: 2px solid var(--text-primary); border-right-color: transparent; box-sizing: border-box; animation: mr-spin .8s linear infinite;"></span><div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Finish signing in in your browser</span><span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary);">We opened a new tab. Come back here once you see “You’re signed in”.</span></div><div style="display: flex; gap: 8px;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="secondary" size="lg" ground="{{ ground }}" onClick="{{ go.cbOk }}" hint-size="170px,48px">Open browser again</x-import><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="ghost" size="lg" ground="{{ ground }}" onClick="{{ go.desktop }}" hint-size="90px,48px">Cancel</x-import></div><span style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">Waiting up to 10 minutes. You can also paste the sign-in link from your browser.</span></div>
+          </sc-if>
+          <sc-if value="{{ is.cbOk }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;"><span style="width: 56px; height: 56px; border-radius: 14px; background: #FFE3A0; color: #111; display: grid; place-items: center;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="check" size="{{ 26 }}" hint-size="26px,26px"></x-import></span><div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">You’re signed in</span><span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary);">Returning you to the MetaRoom app. You can close this tab.</span></div><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ go.chooser }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Open MetaRoom</x-import><button type="button" onClick="{{ go.cbManual }}" style="align-self: flex-start; border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-decoration: underline; cursor: pointer;">Didn’t open? Try again</button></div>
+          </sc-if>
+          <sc-if value="{{ is.cbManual }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;"><span style="width: 56px; height: 56px; border-radius: 14px; background: var(--bg-sunk); color: var(--text-primary); display: grid; place-items: center;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="app-window" size="{{ 26 }}" hint-size="26px,26px"></x-import></span><div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Open the MetaRoom app</span><span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary);">Your browser asked before opening the app. Choose Open MetaRoom in the prompt, or use the button below.</span></div><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ go.chooser }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Open MetaRoom</x-import><div style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 12px; background: var(--bg-sunk);"><span style="font-size: 13px; font-weight: 500;">Don’t have the app on this computer?</span><span style="font-size: 13px; color: var(--text-secondary);">Download it, or keep working in the browser.</span><div style="display: flex; gap: 16px; padding-top: 4px;"><button type="button" onClick="{{ go.cbManual }}" style="align-self: flex-start; border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-decoration: underline; cursor: pointer;">Download for macOS</button><button type="button" onClick="{{ go.chooser }}" style="align-self: flex-start; border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-decoration: underline; cursor: pointer;">Continue in browser</button></div></div></div>
+          </sc-if>
+          <sc-if value="{{ is.cbFail }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;"><span style="width: 56px; height: 56px; border-radius: 14px; background: var(--status-error-wash); color: var(--status-error-text); display: grid; place-items: center;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="x" size="{{ 26 }}" hint-size="26px,26px"></x-import></span><div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Sign-in didn’t finish</span><span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary);">The request expired after 10 minutes, so nothing was changed.</span></div><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ go.desktop }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Try again in the app</x-import><span style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">Still stuck? Email help@cosx.co with reference 7F2K-91.</span></div>
+          </sc-if>
+          <sc-if value="{{ is.mcp }}">
+            <div style="display: flex; flex-direction: column; gap: 18px;">
+              <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 44px; height: 44px; border-radius: 10px; background: var(--bg-sunk); display: grid; place-items: center;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="bot" size="{{ 22 }}" hint-size="22px,22px"></x-import></span><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="arrow-right" size="{{ 16 }}" hint-size="16px,16px"></x-import><span style="width: 44px; height: 44px; border-radius: 10px; background: #FFE3A0; display: grid; place-items: center;"><img src="../assets/logo-icon.svg" alt="" style="width: 78%; height: 78%;"></span></div>
+              <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Claude wants to use MetaRoom</span><span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary);">Signed in as sam@cosx.co · <span style="text-decoration: underline;">Not you?</span></span></div>
+              <div style="display: flex; flex-direction: column; gap: 8px;"><div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 12px; font-weight: 500; color: var(--text-secondary);">Workspaces Claude can use</span><button type="button" onClick="{{ mcpAll }}" style="border: none; background: none; padding: 0; color: var(--text-primary); font-family: var(--font-sans); font-size: 12px; font-weight: 500; text-decoration: underline; cursor: pointer;">{{ mcpAllLabel }}</button></div><div role="group" aria-label="Workspaces" style="display: flex; flex-direction: column; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--rule); overflow: hidden;"><sc-for list="{{ mcpRows }}" as="w" hint-placeholder-count="3"><label style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 14px; border-top: {{ w.sep }}; background: {{ w.bg }}; cursor: pointer;"><span style="width: 32px; height: 32px; border-radius: 7px; background: {{ w.tile }}; color: #111; display: grid; place-items: center; font-size: 12px; font-weight: 600; flex: none;">{{ w.ini }}</span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35;"><span style="font-size: 14px; font-weight: 500;">{{ w.name }}</span><span style="font-size: 12px; color: var(--text-secondary);">{{ w.role }}</span></span><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Checkbox" checked="{{ w.on }}" onChange="{{ w.toggle }}" aria-label="{{ w.name }}" hint-size="18px,18px"></x-import></label></sc-for></div><span style="font-size: 12px; color: {{ mcpHintFg }};">{{ mcpHint }}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 10px;"><span style="font-size: 12px; font-weight: 500; color: var(--text-secondary);">In each selected workspace, Claude will be able to</span><sc-for list="{{ mcpCan }}" as="p" hint-placeholder-count="3"><div style="display: flex; gap: 10px; font-size: 14px; line-height: 1.5;"><span style="flex: none; display: inline-flex; padding-top: 2px;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="{{ p.icon }}" size="{{ 16 }}" hint-size="16px,16px"></x-import></span>{{ p.t }}</div></sc-for></div>
+              <div style="padding: 12px 14px; border-radius: 12px; background: var(--bg-sunk); font-size: 13px; line-height: 1.6; color: var(--text-secondary);">It can’t delete or share files, send messages for you, or see workspaces you didn’t select.</div>
+              <div style="display: flex; gap: 8px;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="secondary" size="lg" ground="{{ ground }}" onClick="{{ go.signin }}" style="flex: 1;" dc-props="{{ full }}" hint-size="120px,48px">Deny</x-import><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" size="lg" ground="{{ ground }}" onClick="{{ mcpAllow }}" disabled="{{ mcpNone }}" style="flex: 1;" dc-props="{{ full }}" hint-size="120px,48px">{{ mcpAllowLabel }}</x-import></div>
+              <span style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">Remove access any time in Settings → Connected apps.</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ is.mcpOk }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;"><span style="width: 56px; height: 56px; border-radius: 14px; background: #FFE3A0; color: #111; display: grid; place-items: center;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Icon" name="check" size="{{ 26 }}" hint-size="26px,26px"></x-import></span><div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 30px; font-weight: 500; letter-spacing: -.015em; line-height: 1.2;">Claude is connected to {{ mcpName }}</span><span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary);">{{ mcpList }}. Go back to Claude to continue; you can close this tab.</span></div><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Button" variant="secondary" size="lg" ground="{{ ground }}" onClick="{{ go.mcp }}" style="width: 100%;" dc-props="{{ full }}" hint-size="100%,48px">Close tab</x-import><span style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">Connected apps can be removed in Settings → Connected apps.</span></div>
+          </sc-if>
+          <sc-if value="{{ is.done }}">
+            <div style="display: flex; flex-direction: column; gap: 14px; align-items: center; padding: 24px 0; text-align: center;">
+              <span style="width: 22px; height: 22px; border-radius: 999px; border: 2px solid var(--text-primary); border-right-color: transparent; box-sizing: border-box; animation: mr-spin .8s linear infinite;"></span>
+              <span style="font-size: 20px; font-weight: 500;">Opening {{ target }}</span>
+              <span style="font-size: 13px; color: var(--text-secondary);">{{ targetUrl }}</span>
+            </div>
+          </sc-if>
+        </div>
+
+        <span style="font-size: 12px; line-height: 1.6; color: var(--text-secondary);">{{ footNote }}</span>
+      </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; font-size: 12px; color: var(--text-secondary);"><span>Privacy · Terms · Status</span><div style="width: 180px;"><x-import component-from-global-scope="COSXDesignSystem30_460d0b.Select" options="{{ langOpts }}" value="{{ langVal }}" onChange="{{ setLang }}" aria-label="Language" hint-size="180px,36px"></x-import></div></div>
+    </div>
+    <div style="flex: 0 1 560px; min-width: 300px; padding: 24px; box-sizing: border-box; display: {{ panelD }};">
+      <div style="--panel-mark: {{ panel.mark }}; flex: 1; border-radius: 24px; background: {{ panel.bg }}; color: #111; padding: {{ panelPad }}; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; overflow: hidden;">
+        <div style="display: flex; align-items: center; gap: 12px;"><img src="../assets/logo-wordmark.svg" alt="COSX" style="height: 22px; display: {{ panel.cosxD }};"><span style="display: {{ panel.custD }}; align-items: center; gap: 10px;"><span style="width: 32px; height: 32px; border-radius: 7px; background: #111; color: #D6E4DA; display: grid; place-items: center; font-size: 14px; font-weight: 600;">H</span><span style="font-size: 17px; font-weight: 600; letter-spacing: .06em;">HALDEN</span></span></div>
+        <div style="display: {{ panel.stepsD }}; flex-direction: column; gap: 4px;">
+          <sc-for list="{{ panel.steps }}" as="p" hint-placeholder-count="4"><div style="display: flex; align-items: center; gap: 14px; min-height: 48px; border-bottom: 1px solid rgba(17,17,17,.1);"><span style="width: 26px; height: 26px; border-radius: 999px; display: grid; place-items: center; font-size: 12px; font-weight: 600; background: {{ p.bg }}; color: {{ p.fg }}; box-shadow: {{ p.ring }}; flex: none;">{{ p.n }}</span><span style="font-size: 16px; font-weight: {{ p.w }}; color: {{ p.tfg }};">{{ p.label }}</span></div></sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <span style="font-size: {{ panelFs }}; font-weight: 500; line-height: 1.22; letter-spacing: -.02em; text-wrap: pretty;">{{ panel.a }}<span style="background: linear-gradient(transparent 40%, var(--panel-mark) 40%, var(--panel-mark) 94%, transparent 94%); -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .08em; margin: 0 -.08em;">{{ panel.b }}</span></span>
+          <span style="font-size: 15px; line-height: 1.6; color: rgba(17,17,17,.7); max-width: 30em;">{{ panel.sub }}</span>
+        </div>
+      </div>
+    </div>
+    </main>
+
+    <aside lang="zh-CN" style="display: {{ notesD }}; width: 300px; flex: none; padding: 28px 24px; box-sizing: border-box; border-left: 1px solid var(--rule); background: var(--bg-page); flex-direction: column; gap: 16px; overflow-y: auto;">
+      <span style="font-size: 12px; font-weight: 500; color: var(--text-secondary);">{{ note.step }}</span>
+      <span style="font-size: 18px; font-weight: 500; line-height: 1.4;">{{ note.title }}</span>
+      <sc-for list="{{ note.points }}" as="p" hint-placeholder-count="3">
+        <div style="display: flex; gap: 10px; font-size: 13px; line-height: 1.65;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #FFD166; margin-top: 8px; flex: none;"></span><span>{{ p.t }}</span></div>
+      </sc-for>
+      <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 16px; border-top: 1px solid var(--rule-soft);">
+        <span style="font-size: 12px; font-weight: 500; color: var(--text-secondary);">和旧流程相比</span>
+        <span style="font-size: 13px; line-height: 1.65; color: var(--text-secondary);">{{ note.vs }}</span>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;auto&quot;, &quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;auto&quot;, &quot;tsType&quot;: &quot;'light' | 'dark'&quot;}}">
+class Component extends DCLogic {
+  state = { screen: 'signin', email: '', kind: '', trust: true, wsName: 'Acme', bad: false, notes: false, mainW: 1200 };
+  mainRef = React.createRef();
+  componentDidMount() { this._mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)'); if (this._mq) { this._mqh = e => this.setState({ sysDark: e.matches }); this.setState({ sysDark: this._mq.matches }); this._mq.addEventListener('change', this._mqh); } window.cosxSelectAutoFlip && window.cosxSelectAutoFlip(); const el = this.mainRef.current; if (el && window.ResizeObserver) { this._ro = new ResizeObserver(es => { const w = Math.round(es[0].contentRect.width); if (Math.abs(w - this.state.mainW) > 4) this.setState({ mainW: w }); }); this._ro.observe(el); } }
+  componentWillUnmount() { this._ro && this._ro.disconnect(); this._mq && this._mq.removeEventListener('change', this._mqh); }
+  route(email) {
+    const e = (email || '').trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) return this.setState({ bad: true });
+    const kind = /@harbour\.vc$/.test(e) ? 'sso' : /^li\.wei@/.test(e) ? 'passkey' : /^sam@/.test(e) ? 'password' : 'new';
+    this.setState({ email: e, kind, bad: false, screen: kind === 'new' ? 'emailcode' : kind });
+  }
+  renderVals() {
+    const s = this.state, pref = s.theme ?? this.props.theme ?? 'auto', dark = pref === 'auto' ? !!s.sysDark : pref === 'dark';
+    const go = {};
+    ['signin', 'branded', 'sso', 'passkey', 'password', 'mfa', 'emailcode', 'profile', 'workspace', 'enrol', 'chooser', 'done', 'desktop', 'desktopWait', 'cbOk', 'cbManual', 'cbFail', 'mcp', 'mcpOk'].forEach(k => { go[k] = () => this.setState({ screen: k, bad: false }); });
+    const scr = s.screen === 'branded' ? 'signin' : s.screen;
+    const is = {}; ['signin', 'sso', 'passkey', 'password', 'mfa', 'emailcode', 'profile', 'workspace', 'enrol', 'chooser', 'done', 'desktop', 'desktopWait', 'cbOk', 'cbManual', 'cbFail', 'mcp', 'mcpOk'].forEach(k => { is[k] = scr === k; });
+    const branded = s.screen === 'branded';
+    const cells = (digits, cur) => Array.from({ length: 6 }, (_, i) => ({ d: digits[i] || '', bg: i === cur ? 'var(--bg-page)' : 'var(--bg-sunk)', ring: i === cur ? 'inset 0 0 0 1.5px var(--text-primary)' : 'none' }));
+    const email = s.email || (s.kind === 'password' ? 'sam@cosx.co' : 'jordan@acme.com');
+    const slug = (s.wsName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'your-team';
+    const targets = { sso: ['Harbour Ventures', 'harbour.meta.cosx.dev'], passkey: ['COSX Advisory', 'cosx.meta.cosx.dev'], branded: ['Halden Capital', 'portal.halden.co'], new: [s.wsName || 'your workspace', slug + '.meta.cosx.dev'] };
+    const tg = targets[branded ? 'branded' : s.kind] || targets.passkey;
+    const G = [
+      ['入口', [['signin', '登录：只问邮箱'], ['branded', '从客户域名进入']]],
+      ['已有账号', [['sso', '公司单点登录'], ['passkey', '通行密钥'], ['password', '密码'], ['mfa', '二次验证']]],
+      ['新用户', [['emailcode', '验证邮箱'], ['profile', '创建账号'], ['workspace', '加入或创建工作区'], ['enrol', '保存通行密钥']]],
+      ['进入', [['chooser', '选择工作区'], ['done', '进入工作区']]],
+      ['桌面端', [['desktop', '桌面端登录'], ['desktopWait', '等待浏览器'], ['cbOk', '回调成功 · 自动返回'], ['cbManual', '回调成功 · 手动打开'], ['cbFail', '回调失败']]],
+      ['MCP 授权', [['mcp', '授权并选择工作区（多选）'], ['mcpOk', '授权成功']]]
+    ];
+    let n = 0;
+    const map = G.map(([label, items]) => ({ label, items: items.map(([k, l]) => { n++; const on = s.screen === k; return { label: l, n: String(n).padStart(2, '0'), go: go[k], bg: on ? '#FFE3A0' : 'transparent', fg: on ? '#111' : 'var(--text-primary)', nFg: on ? 'rgba(17,17,17,.7)' : 'var(--text-secondary)', w: on ? 500 : 400 }; }) }));
+    const N = {
+      signin: ['01 · 入口', '一个入口，只问邮箱', ['不再让用户先输入工作区地址。输入邮箱后，系统按邮箱判断下一步：公司单点登录、通行密钥、密码，或者新用户注册。', '邮箱框开启通行密钥自动填充（autocomplete="webauthn"），有通行密钥的用户点一下输入框就能登录。', '注册没有单独入口：新邮箱会自动进入注册流程，所以页面上不需要“创建账号”链接。'], '旧流程第一步就要求输入 workspace slug，用户不知道这是什么，也不知道该去哪注册。'],
+      branded: ['02 · 入口', '从客户域名进入时带着品牌', ['从 portal.halden.co 这类客户域名或邀请链接进入时，卡片顶部显示工作区品牌，标题写“登录 Halden Capital”。', '工作区已经确定，登录后直接进入，跳过选择工作区。', '页面上不出现 MetaRoom 或 COSX。'], '旧流程要先发现未登录，再带着工作区信息跳转 SSO，再跳回来。'],
+      sso: ['03 · 已有账号', '公司域名走单点登录', ['邮箱域名配置了 SSO（这里是 harbour.vc → Okta）时，直接说明原因并给一个按钮跳转。', '邮箱显示在标签里，可以改。', 'SSO 回来后直接进入对应工作区；这类账号不显示密码和其他方式。'], '旧流程由用户自己判断要不要点 SSO。'],
+      passkey: ['04 · 已有账号', '有通行密钥就先用通行密钥', ['账号有通行密钥时默认用它，并同时满足二次验证，不再要验证码。', '备用方式放在下面：密码、邮箱验证码。', '只有一个工作区的用户，验证后直接进入。'], '旧流程通行密钥是“更快登录”里的一个选项，和密码并排，用户不知道选哪个。'],
+      password: ['05 · 已有账号', '密码是备用方式', ['只显示密码一个字段，邮箱已经确定。', '忘记密码时可以直接用邮箱验证码登录，不必先重置。'], '旧流程邮箱和密码同屏，还要先选工作区。'],
+      mfa: ['06 · 已有账号', '二次验证：通行密钥优先', ['工作区要求两步验证时出现。首选通行密钥，其次是验证器应用的 6 位码，最后是备用码。', '“信任此设备 30 天”默认勾选，减少重复验证。', '已用通行密钥登录的用户不会看到这一步。'], '旧流程没有把二次验证和登录方式统一考虑。'],
+      emailcode: ['07 · 新用户', '先验证邮箱，再创建账号', ['新邮箱先收一个 6 位验证码，确认邮箱属于本人。', '粘贴 6 位数字会自动分格并提交；48 秒后可以重发。', '已有账号的用户选“邮箱验证码”时也走这一屏。'], '旧流程新用户要先“创建工作区”，填 slug、显示名、国家，才能建账号。'],
+      profile: ['08 · 新用户', '创建账号只填姓名', ['邮箱已验证，只需要姓名和同意条款。', '不设密码：之后用通行密钥或邮箱验证码登录。需要密码的人可以在个人设置里添加。'], '旧流程账号和工作区一起创建，字段多，而且用技术词（tenant、foundation）。'],
+      workspace: ['09 · 新用户', '先看邀请，再决定是否新建', ['如果这个邮箱有待接受的邀请，放在最上面，一键加入。大多数新用户是被邀请来的。', '新建工作区只问公司或团队名称，地址自动生成，写在输入框下面，需要时可以改。', '国家 / 地区这类选填项挪到工作区设置里。'], '旧流程把 slug 放在第一位，并写着 Provisions a new tenant on the foundation。'],
+      enrol: ['10 · 新用户', '顺手保存通行密钥', ['首次登录后提示保存通行密钥，写明好处：下次不用密码，也不用验证码。', '可以跳过；之后在个人设置的安全里随时添加。'], '旧流程没有引导用户设置通行密钥。'],
+      chooser: ['11 · 进入', '只有一个工作区时跳过这一步', ['有多个工作区时才出现。每一行写明角色和最近使用时间，点整行就进入，不需要再点 Continue。', '待接受的邀请用浅黄底单独列出，可以直接接受。', '创建工作区和退出放在底部，作为次要动作。'], '旧流程要先选中卡片再点 Continue，并且显示 slug 地址而不是角色。'],
+      done: ['12 · 进入', '进入工作区', ['进入工作区地址，显示工作区名称。', '之后刷新或在新标签页打开都会直接进入，不再经过选择页。'], '—']
+    };
+    Object.assign(N, {
+      desktop: ['13 · 桌面端', '桌面端只负责打开浏览器', ['登录在系统浏览器里完成，和网页端是同一套流程：邮箱优先、通行密钥、单点登录、二次验证都一样。', '按钮写明会发生什么：“在浏览器中继续”。', '只有一个工作区时，回来后直接进入；多个时显示和网页端相同的选择页，并写明角色。'], '旧版只有一个 Sign In 按钮，多个工作区时列出一排纯文字按钮，看不出角色和品牌。'],
+      desktopWait: ['14 · 桌面端', '等待时告诉用户去哪里', ['说明浏览器已经打开新标签页，以及看到什么提示后回来。', '提供“再次打开浏览器”和“取消”；10 分钟后超时。', '浏览器无法跳回时，可以粘贴登录链接完成。'], '旧版只把按钮文字换成 Waiting for browser…。'],
+      cbOk: ['15 · 桌面端', '回调页：成功后自动返回', ['浏览器页面显示“已登录”，并自动通过深链接打开 app。', '自动跳转失败时，保留一个“打开 MetaRoom”按钮。', '同一模板用于各数据源的 OAuth 回调，只换标题和图标。'], '旧版文案是 You’re all set，要用户自己关窗口回 app。'],
+      cbManual: ['16 · 桌面端', '浏览器拦截或没装 app', ['浏览器询问是否打开 app 时，说明应该点哪个选项。', '没装 app 时给下载链接，也可以直接在浏览器里继续。'], '旧版没有这个状态。'],
+      cbFail: ['17 · 桌面端', '失败要说原因和下一步', ['写明为什么失败（这里是 10 分钟超时），以及没有任何改动。', '主按钮回到 app 重试；附上参考编号，方便联系支持。'], '旧版只有红字 Authorization failed。'],
+      mcp: ['18 · MCP 授权', '授权时选一个工作区作为范围', ['写明是哪个应用在申请，以及当前登录的是哪个账号。', '工作区是多选列表：默认勾选当前工作区，可以全选；一个都没选时“允许”不可用并提示原因。按钮写明授权数量。', '拒绝和允许并排，允许是主按钮。'], '仓库里没找到这个页面，这是按常见的 OAuth 同意页结构设计的。'],
+      mcpOk: ['19 · MCP 授权', '授权成功', ['写明连接到了哪个工作区，并告诉用户回到原应用继续。', '说明之后在哪里撤销授权。'], '—']
+    });
+    const nt = N[s.screen];
+    const newOrder = ['emailcode', 'profile', 'workspace', 'enrol'];
+    const inNew = newOrder.includes(s.screen) && (s.kind === 'new' || !s.kind || s.screen !== 'emailcode');
+    const curI = newOrder.indexOf(s.screen);
+    const steps = [['Verify your email'], ['Create your account'], ['Join or create a workspace'], ['Save a passkey']].map(([label], i) => ({ n: i < curI ? '✓' : String(i + 1), label, bg: i < curI ? '#111' : i === curI ? '#FFD166' : 'transparent', fg: i < curI ? '#F5F2EC' : '#111', ring: i > curI ? 'inset 0 0 0 1.5px rgba(17,17,17,.25)' : 'none', w: i === curI ? 500 : 400, tfg: i > curI ? 'rgba(17,17,17,.55)' : '#111' }));
+    const P = {
+      signin: ['MetaRoom', 'Documents, tasks and conversations with your clients, ', 'in one private workspace.', 'One sign-in for every workspace you belong to.'],
+      branded: ['Halden Capital · investor portal', 'Documents and updates from Halden Capital, ', 'shared only with you.', 'Your access is set by Halden Capital. Questions go to Li Wei.'],
+      sso: ['Single sign-on', 'Harbour Ventures checks who you are. ', 'MetaRoom never sees your password.', 'After Okta signs you in, you come straight back here.'],
+      secure: ['Security', 'A passkey is your password ', 'and your second step.', 'It stays on your device and can\u2019t be phished or reused.'],
+      fresh: ['Getting started', 'Four short steps, ', 'no password to remember.', 'Most people join through an invitation and are in within a minute.'],
+      enter: ['Your workspaces', 'Every workspace you belong to, ', 'under one sign-in.', 'Customers, colleagues and your own space, each with its own access.']
+    };
+    Object.assign(P, { desk: ['Desktop', 'Sign in once in your browser, ', 'stay signed in on this computer.', 'Passkeys and single sign-on work the same as on the web.'], cb: ['Browser', 'This tab has done its job. ', 'The app takes it from here.', 'Nothing else is needed in the browser.'], cbFail: ['Browser', 'Nothing was changed. ', 'Start again from the app.', 'Sign-in requests expire after 10 minutes for your security.'], mcpP: ['Connected apps', 'You choose which workspace ', 'an app can reach.', 'One workspace per connection. Remove access at any time.'] });
+    const pk = ['desktop', 'desktopWait'].includes(s.screen) ? 'desk' : s.screen === 'cbFail' ? 'cbFail' : ['cbOk', 'cbManual'].includes(s.screen) ? 'cb' : ['mcp', 'mcpOk'].includes(s.screen) ? 'mcpP' : s.screen === 'branded' ? 'branded' : s.screen === 'signin' ? 'signin' : s.screen === 'sso' ? 'sso' : ['passkey', 'password', 'mfa'].includes(s.screen) ? 'secure' : newOrder.includes(s.screen) ? 'fresh' : 'enter';
+    const pp = P[pk];
+    const panel = { mark: pk === 'branded' ? '#8FBF9F' : '#FFD166', cosxD: pk === 'branded' ? 'none' : 'block', custD: pk === 'branded' ? 'flex' : 'none', ey: pp[0], a: pp[1], b: pp[2], sub: pp[3], bg: pk === 'branded' ? '#D6E4DA' : '#FFE3A0', steps, stepsD: pk === 'fresh' && inNew ? 'flex' : 'none' };
+    return {
+      themeOpts: [['auto', 'monitor', 'Theme: match system'], ['light', 'sun', 'Theme: light'], ['dark', 'moon', 'Theme: dark']].map(([k, icon, label]) => ({ icon, label, on: pref === k, pick: () => this.setState({ theme: k, themeOpen: false }), w: s.themeOpen || pref === k ? '30px' : '0px', op: s.themeOpen || pref === k ? 1 : 0, tab: s.themeOpen || pref === k ? 0 : -1, bg: pref === k ? 'var(--bg-page)' : 'transparent', fg: pref === k ? 'var(--text-primary)' : 'var(--text-secondary)' })),
+      langOpts: [['en-GB', 'English (UK)'], ['en-US', 'English (US)'], ['zh-CN', '简体中文'], ['zh-TW', '繁體中文'], ['ja', '日本語'], ['de', 'Deutsch'], ['fr', 'Français'], ['es', 'Español']].map(([value, label]) => ({ value, label })), langVal: s.uiLang || 'en-GB', setLang: v => this.setState({ uiLang: v }),
+      velaOpen: !s.velaNo, velaDeclined: !!s.velaNo, declineVela: () => this.setState({ velaNo: true }), undoVela: () => this.setState({ velaNo: false }),
+      halOpen: !s.halNo, halDeclined: !!s.halNo, declineHal: () => this.setState({ halNo: true }), undoHal: () => this.setState({ halNo: false }),
+      themeEnter: () => this.setState({ themeOpen: true }), themeLeave: () => this.setState({ themeOpen: false }), themeBlur: e => { if (!e.currentTarget.contains(e.relatedTarget)) this.setState({ themeOpen: false }); }, themeGap: s.themeOpen ? '2px' : '0px',
+      ...(() => { const W = [['cosx', 'C', 'COSX Advisory', 'Admin', '#FFE3A0'], ['halden', 'H', 'Halden Capital', 'Customer', '#D6E4DA'], ['personal', 'S', 'Sam Ortiz', 'Personal', 'var(--bg-well)']]; const sel = s.mcpSel || ['cosx']; const toggle = id => this.setState(st => { const c = (st.mcpSel || ['cosx']).slice(); const i = c.indexOf(id); if (i >= 0) c.splice(i, 1); else c.push(id); return { mcpSel: c }; }); const names = W.filter(w => sel.includes(w[0])).map(w => w[2]); const n = sel.length; return { mcpRows: W.map(([id, ini, name, role, tile], i) => ({ ini, name, role, tile, on: sel.includes(id), toggle: () => toggle(id), bg: sel.includes(id) ? 'var(--bg-sunk)' : 'transparent', sep: i ? '1px solid var(--rule-soft)' : 'none' })), mcpAll: () => this.setState({ mcpSel: n === W.length ? [] : W.map(w => w[0]) }), mcpAllLabel: n === W.length ? 'Clear all' : 'Select all', mcpNone: n === 0, mcpHint: n === 0 ? 'Choose at least one workspace.' : n + ' of ' + W.length + ' selected', mcpHintFg: n === 0 ? 'var(--status-error-text)' : 'var(--text-secondary)', mcpAllowLabel: n > 1 ? 'Allow for ' + n + ' workspaces' : 'Allow', mcpAllow: () => { if (n) this.setState({ screen: 'mcpOk' }); }, mcpName: n === 1 ? names[0] : n + ' workspaces', mcpList: names.join(', ') }; })(), mcpCan: [['file-text', 'Read documents and folders you can see'], ['search', 'Search across the workspace'], ['square-check', 'Create tasks and draft replies for you to review']].map(([icon, t]) => ({ icon, t })),
+      panel, mainRef: this.mainRef, panelD: s.mainW >= 680 ? 'flex' : 'none', formPad: s.mainW >= 900 ? '48px' : '24px', panelPad: s.mainW >= 1000 ? '56px' : '36px', panelFs: s.mainW >= 1000 ? '36px' : '26px', appleD: dark ? 'none' : 'block', appleWD: dark ? 'block' : 'none', ssoHint: () => this.setState({ bad: false, ssoNote: true }),
+      notesD: s.notes === false ? 'none' : 'flex', notesLabel: s.notes === false ? '显示说明' : '隐藏说明', toggleNotes: () => this.setState(st => ({ notes: st.notes === false })),
+      topRight: is.signin ? (branded ? 'portal.halden.co' : 'meta.cosx.dev') : 'Need help? help@cosx.co',
+      modeClass: dark ? 'ink-mode' : '', ground: dark ? 'ink' : 'paper',
+      full: { style: { width: '100%' } },
+      samples: [['li.wei@halden.co', '有通行密钥'], ['sam@cosx.co', '密码 + 二次验证 + 多个工作区'], ['anna@harbour.vc', '公司单点登录'], ['jordan@acme.com', '新用户']].map(([e, note]) => ({ email: e, note, use: () => this.route(e) })),
+      restart: () => this.setState({ screen: 'signin', email: '', kind: '', bad: false }),
+      map, go, is,
+      email: s.email, setEmail: ev => this.setState({ email: ev && ev.target ? ev.target.value : ev, bad: false }),
+      enterEmail: ev => { if (ev && ev.key === 'Enter') this.route(this.state.email); },
+      submitEmail: () => this.route(this.state.email),
+      emailBad: s.bad, emailHint: s.bad ? 'Enter a full email address, like name@company.com.' : s.ssoNote ? 'Enter your work email and we\u2019ll send you to your company\u2019s sign-in.' : undefined,
+      emailShown: email,
+      signinTitle: branded ? 'Sign in to Halden Capital' : 'Sign in to MetaRoom',
+      signinSub: branded ? 'Use the email your invitation was sent to.' : 'Use your work email or an account you already have.',
+      brandTile: branded ? '#D6E4DA' : '#FFE3A0', logoD: branded ? 'none' : 'block', initialD: branded ? 'inline' : 'none', brandName: branded ? 'Halden Capital' : 'MetaRoom',
+      ssoLabel: 'Continue with Okta', ssoGo: go.done,
+      passkeyBtn: 'Use passkey', afterPrimary: () => this.setState({ screen: s.kind === 'password' ? 'chooser' : 'done' }),
+      afterCode: () => this.setState({ screen: s.kind === 'new' || !s.kind ? 'profile' : 'chooser' }),
+      cellsMfa: cells('7304', 4), cellsEmail: cells('482', 3),
+      trust: s.trust, setTrust: v => this.setState({ trust: typeof v === 'boolean' ? v : !this.state.trust }),
+      wsName: s.wsName, setWs: ev => this.setState({ wsName: ev && ev.target ? ev.target.value : ev }),
+      wsHint: 'Address: ' + slug + '.meta.cosx.dev · you can change this later',
+      workspaces: [['C', 'COSX Advisory', 'Admin · last used today', '#FFE3A0', ['COSX Advisory', 'cosx.meta.cosx.dev']], ['H', 'Halden Capital', 'Customer · last used 3 days ago', '#D6E4DA', ['Halden Capital', 'portal.halden.co']], ['S', 'Sam Ortiz', 'Personal', 'var(--bg-well)', ['Sam Ortiz', 'sam.meta.cosx.dev']]].map(([ini, name, meta, tile, t]) => ({ ini, name, meta, tile, open: () => this.setState({ screen: 'done', pick: t }) })),
+      target: (s.screen === 'done' && s.pick) ? s.pick[0] : tg[0], targetUrl: (s.screen === 'done' && s.pick) ? s.pick[1] : tg[1],
+      footNote: is.signin || ['cbOk', 'cbManual', 'cbFail', 'mcpOk'].includes(s.screen) ? '' : is.chooser ? '' : 'Having trouble? Ask your workspace admin or email help@cosx.co.',
+      note: { step: nt[0], title: nt[1], points: nt[2].map(t => ({ t })), vs: nt[3] }
+    };
+  }
+}
+</script>
+</body>
+</html>

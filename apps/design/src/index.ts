@@ -76,6 +76,18 @@ function withCache(res: Response, pathname: string): Response {
   return out;
 }
 
+// Chrome / Edge prerender a same-site page once the pointer rests on its
+// link (or it is pressed): the target renders — runtime and all — in the
+// background, so the click swaps in a finished page. Other browsers
+// ignore the rules and navigate as before.
+const SPECULATION_RULES = `<script type="speculationrules">${JSON.stringify({
+  prerender: [{ where: { and: [{ href_matches: "/*" }, { not: { href_matches: "/*.*" } }] }, eagerness: "moderate" }],
+})}</script>`;
+
+// Cross-document view transition: the old page fades into the new one
+// instead of blanking (Chrome, Edge, Safari 18.2+).
+const TRANSITION_STYLE = `@view-transition{navigation:auto}`;
+
 const LEGAL_STYLE = `
 .cosx-legal{font-family:var(--font-sans-cjk,system-ui,sans-serif);font-size:12px;line-height:1.6;color:var(--grey,#696969);
   max-width:1280px;margin:0 auto;padding:24px 24px 40px;display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between}
@@ -103,7 +115,8 @@ function decorate(res: Response, page: string): Response {
           `<title>${title}</title>` +
             `<meta name="description" content="Brand, foundations, components and product patterns of COSX.">` +
             `<link rel="icon" href="/favicon.svg" type="image/svg+xml">` +
-            `<style>${PLACEHOLDER_STYLE}${LEGAL_STYLE}</style>`,
+            `<style>${TRANSITION_STYLE}${PLACEHOLDER_STYLE}${LEGAL_STYLE}</style>` +
+            SPECULATION_RULES,
           { html: true },
         );
       },

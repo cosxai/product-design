@@ -26,13 +26,13 @@ class Component extends DCLogic {
     const S = zh ? '即将推出' : 'Soon', D = zh ? '草稿' : 'Draft', M = 'MetaRoom';
     const spec = '../ui-spec/MetaRoom Components.dc.html', pages = '../pages/';
     const G = [
-      ['概览', 'Overview', [['home', '首页', 'Home', 'Home.dc.html']]],
-      ['基础', 'Foundations', [['colour', '颜色', 'Colour', 'Colour.dc.html'], ['type', '字体', 'Typography', 'Typography.dc.html'], ['space', '间距与形状', 'Spacing and shape', 'Spacing.dc.html'], ['motion', '动效', 'Motion', 'Motion.dc.html']]],
-      ['品牌', 'Brand', [['logo', '标志', 'Logo', 'Logo.dc.html'], ['yellow', '黄色', 'The yellow', 'Yellow.dc.html'], ['marker', '标记', 'The marker', 'Marker.dc.html'], ['voice', '语气', 'Voice', 'Voice.dc.html']]],
-      ['组件', 'Components', [['button', '按钮', 'Button', 'Button.dc.html'], ['input', '输入框', 'Input', 'Input.dc.html'], ['select', '下拉选择', 'Select', 'Select.dc.html'], ['badge', '状态徽章', 'Badge', 'Badge.dc.html'], ['dialog', '对话框', 'Dialog', 'Dialog.dc.html'], ['checkbox', '勾选与开关', 'Checkbox and switch', '', S], ['tabs', '标签页', 'Tabs', '', S], ['toast', '提示', 'Toast', '', S], ['table', '表格', 'Table', '', S]]],
-      ['产品模式', 'Patterns', [['nav', '导航', 'Navigation', 'Pattern Navigation.dc.html'], ['actionbar', '操作栏', 'Action bar', 'Pattern Action Bar.dc.html'], ['agent', 'Agent 对话', 'Agent conversation', 'Pattern Agent.dc.html'], ['status', '状态', 'Status', 'Pattern Status.dc.html']]],
-      ['页面模板', 'Templates', [['auth', '登录与注册', 'Sign in', 'Template Sign In.dc.html'], ['settings', '设置', 'Settings', 'Template Settings.dc.html'], ['list', '列表与文档库', 'Lists', 'Template List.dc.html'], ['viewer', '查看器', 'Viewer', 'Template Viewer.dc.html']]],
-      ['更多', 'More', [['writing', '内容写作', 'Writing', '', S], ['downloads', '资源下载', 'Downloads', '', S], ['changelog', '更新日志', 'Changelog', 'Home.dc.html#changelog']]]
+      ['概览', 'Overview', [['home', '首页', 'Home', '/']]],
+      ['基础', 'Foundations', [['colour', '颜色', 'Colour', '/colour'], ['type', '字体', 'Typography', '/typography'], ['space', '间距与形状', 'Spacing and shape', '/spacing'], ['motion', '动效', 'Motion', '/motion']]],
+      ['品牌', 'Brand', [['logo', '标志', 'Logo', '/logo'], ['yellow', '黄色', 'The yellow', '/yellow'], ['marker', '标记', 'The marker', '/marker'], ['voice', '语气', 'Voice', '/voice']]],
+      ['组件', 'Components', [['button', '按钮', 'Button', '/button'], ['input', '输入框', 'Input', '/input'], ['select', '下拉选择', 'Select', '/select'], ['badge', '状态徽章', 'Badge', '/badge'], ['dialog', '对话框', 'Dialog', '/dialog'], ['checkbox', '勾选与开关', 'Checkbox and switch', '', S], ['tabs', '标签页', 'Tabs', '', S], ['toast', '提示', 'Toast', '', S], ['table', '表格', 'Table', '', S]]],
+      ['产品模式', 'Patterns', [['nav', '导航', 'Navigation', '/pattern-navigation'], ['actionbar', '操作栏', 'Action bar', '/pattern-action-bar'], ['agent', 'Agent 对话', 'Agent conversation', '/pattern-agent'], ['status', '状态', 'Status', '/pattern-status']]],
+      ['页面模板', 'Templates', [['auth', '登录与注册', 'Sign in', '/template-sign-in'], ['settings', '设置', 'Settings', '/template-settings'], ['list', '列表与文档库', 'Lists', '/template-list'], ['viewer', '查看器', 'Viewer', '/template-viewer']]],
+      ['更多', 'More', [['writing', '内容写作', 'Writing', '', S], ['downloads', '资源下载', 'Downloads', '', S], ['changelog', '更新日志', 'Changelog', '/#changelog']]]
     ];
     return {
       groups: G.map(([z, e, items]) => ({ label: zh ? z : e, items: items.map(([k, iz, ie, href, tag]) => {
