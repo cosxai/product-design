@@ -88,6 +88,23 @@ for (const [, name, url, sri] of cdn) {
 }
 writeFileSync(supportPath, support);
 
+// The company's name is COSINE X LTD; the export still says "COSINE X
+// LIMITED" in places (page footers, voice examples). Corrected here until
+// the Claude Design source is.
+let nameFixes = 0;
+const fixName = (dir) => {
+  for (const f of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, f.name);
+    if (f.isDirectory()) { if (f.name !== "vendor") fixName(p); continue; }
+    if (!/\.(html|js|md|css)$/.test(f.name)) continue;
+    const text = readFileSync(p, "utf8");
+    const next = text.replaceAll("COSINE X LIMITED", "COSINE X LTD");
+    if (next !== text) { writeFileSync(p, next); nameFixes++; }
+  }
+};
+fixName(out);
+console.log(`company name → COSINE X LTD in ${nameFixes} files`);
+
 // Default language: English. The site keeps the choice per visitor in
 // localStorage (key cosx-site-lang); only the fallback changes here.
 let langDefaults = 0;

@@ -99,7 +99,7 @@ const LEGAL_STYLE = `
 // epoch, so a module-level year would print 1970.
 function legalHTML(): string {
   return `<footer class="cosx-legal" role="contentinfo">
-<span>© ${new Date().getUTCFullYear()} COSINE X LIMITED. All rights reserved. 保留所有权利。</span>
+<span>© ${new Date().getUTCFullYear()} COSINE X LTD. All rights reserved. 保留所有权利。</span>
 <span><a href="/terms">Terms of use · 使用条款</a></span>
 </footer>`;
 }

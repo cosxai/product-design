@@ -2186,7 +2186,7 @@ function SiteFooter() {
     style: {
       height: 16
     }
-  }), /*#__PURE__*/React.createElement("span", null, "COSINE X LIMITED \xB7 London \xB7 Singapore"), /*#__PURE__*/React.createElement("span", {
+  }), /*#__PURE__*/React.createElement("span", null, "COSINE X LTD \xB7 London \xB7 Singapore"), /*#__PURE__*/React.createElement("span", {
     style: {
       display: 'flex',
       gap: 20
