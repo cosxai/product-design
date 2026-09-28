@@ -75,6 +75,25 @@ jobs:
         # min-supported version until upstream stabilises.
         run: npm install -g npm@11.5.0
 
+      # Which npm dist-tag this version goes out under:
+      #   1.0.0-alpha.1 (any prerelease) → next  — never reaches `latest`
+      #   0.x                            → v0    — maintenance line (branch
+      #                                             ui-0.x); ^0.x ranges still
+      #                                             get it, `latest` is not moved
+      #   everything else (1.x)          → latest
+      - name: Pick the dist-tag
+        id: dist
+        working-directory: packages/ui
+        run: |
+          v=$(node -p "require('./package.json').version")
+          case "$v" in
+            *-*) tag=next ;;
+            0.*) tag=v0 ;;
+            *)   tag=latest ;;
+          esac
+          echo "version $v → dist-tag $tag"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
       - name: Publish (Trusted Publishing — OIDC, no token)
         working-directory: packages/ui
         # --provenance signs the published tarball with a sigstore
@@ -82,4 +101,4 @@ jobs:
         # SHA. Downstream consumers can verify on sigstore.dev that
         # the artifact really came from a known build of known
         # source. Requires the source repo to be PUBLIC on GitHub.
-        run: npm publish --access public --provenance
+        run: npm publish --access public --provenance --tag ${{ steps.dist.outputs.tag }}
