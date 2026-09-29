@@ -69,9 +69,13 @@ export function AuthPanel({ eyebrow, lead, mark, sub, logo }: AuthPanelProps) {
       {logo ?? <Logo height={22} tone="ink" />}
       <div className="flex flex-col gap-4">
         <span className="text-[13px] font-medium text-[rgba(17,17,17,.7)]">{eyebrow}</span>
-        <p className="m-0 text-[34px] leading-[1.22] font-medium tracking-[-.02em] text-pretty">
+        {/* Chinese sets at 1.35, untracked, its band starting lower (design: Patterns · Sign-in).
+            Important: typography-cjk.css sets every :lang(zh) line-height outside the layers. */}
+        <p className="m-0 text-[34px] leading-[1.22] font-medium tracking-[-.02em] text-pretty [&:lang(zh)]:leading-[1.35]! [&:lang(zh)]:tracking-normal!">
           {lead}
-          <span className="box-decoration-clone bg-[linear-gradient(transparent_45%,var(--brand-mark)_45%,var(--brand-mark)_95%,transparent_95%)]">{mark}</span>
+          <span className="mx-[-.08em] box-decoration-clone px-[.08em] bg-[linear-gradient(transparent_40%,var(--brand-mark)_40%,var(--brand-mark)_94%,transparent_94%)] [&:lang(zh)]:bg-[linear-gradient(transparent_50%,var(--brand-mark)_50%,var(--brand-mark)_94%,transparent_94%)]">
+            {mark}
+          </span>
         </p>
         {sub && <p className="m-0 text-[15px] leading-[1.6] text-[rgba(17,17,17,.7)]">{sub}</p>}
       </div>

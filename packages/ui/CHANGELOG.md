@@ -1,3 +1,13 @@
+## 1.0.0-alpha.7 (2026-09-30)
+
+Sign-in patterns checked against design.cosx.co Patterns · Sign-in:
+
+- AuthPanel: the highlight band runs 40–94% with a hair of overhang each
+  side; Chinese sets at 1.35, untracked, band from 50% (typography-cjk's
+  :lang(zh) line-height is unlayered, so this one is important).
+- WorkspaceRow: 14px name at 1.35, the outline an inset rule on the page
+  colour (no border box).
+
 ## 1.0.0-alpha.6 (2026-09-29)
 
 Sign-in patterns (Metaroom sign-in, design.cosx.co), moved here from the

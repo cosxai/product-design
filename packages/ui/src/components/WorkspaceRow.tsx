@@ -48,14 +48,14 @@ export const WorkspaceRow = forwardRef<HTMLButtonElement, WorkspaceRowProps>(fun
       type="button"
       aria-busy={busy || undefined}
       className={cn(
-        'flex w-full cursor-pointer items-center gap-3 rounded-[12px] border border-rule bg-transparent px-3.5 py-3 text-left text-fg outline-none transition-colors duration-[120ms] hover:bg-hover focus-visible:shadow-(--focus-ring) disabled:cursor-default',
+        'flex w-full cursor-pointer items-center gap-3 rounded-[12px] border-0 bg-page px-3.5 py-3 text-left text-fg shadow-[inset_0_0_0_1px_var(--rule)] outline-none transition-colors duration-[120ms] hover:bg-hover focus-visible:shadow-(--focus-ring) disabled:cursor-default',
         className,
       )}
       {...rest}
     >
       <WorkspaceMark name={name} logoUrl={logoUrl} />
-      <span className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate text-[15px] font-medium">{name}</span>
+      <span className="flex min-w-0 flex-1 flex-col leading-[1.35]">
+        <span className="truncate text-[14px] font-medium">{name}</span>
         {detail && <span className="truncate text-[12px] text-fg-secondary">{detail}</span>}
       </span>
       {busy ? <Spinner size={16} /> : <ChevronRight size={16} aria-hidden className="text-fg-secondary" />}
