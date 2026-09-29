@@ -1,0 +1,8 @@
+{
+  // The source ships as TypeScript and compiles under the consuming app's
+  // settings: check it also builds without DOM.Iterable or Node types.
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "lib": ["ES2022", "DOM"], "types": [], "noEmit": true },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+}

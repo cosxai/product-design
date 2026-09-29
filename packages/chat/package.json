@@ -1,7 +1,7 @@
 {
   "name": "@cosxai/chat",
-  "version": "1.0.0-alpha.0",
-  "description": "Agent conversation components for the COSX Design System 3.0 — messages, steps, citations, result and confirmation cards, composer, markdown",
+  "version": "1.0.0-alpha.1",
+  "description": "Agent conversation components for the COSX Design System 3.0 \u2014 messages, steps, citations, result and confirmation cards, composer, markdown",
   "license": "UNLICENSED",
   "type": "module",
   "main": "./src/index.ts",
@@ -31,7 +31,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.consumer.json",
     "test": "vitest run",
     "playground": "vite --config playground/vite.config.ts"
   },

@@ -1,3 +1,8 @@
+## 1.0.0-alpha.5 (2026-09-29)
+
+- Builds under the consuming app's TypeScript settings without
+  DOM.Iterable (ActionBar no longer spreads a NodeList); `typecheck` checks it.
+
 ## 1.0.0-alpha.4 (2026-09-29)
 
 - ToastCard: one toast drawn in place (documentation specimens, previews).

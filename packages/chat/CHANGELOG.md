@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.0-alpha.1 (2026-09-29)
+
+- Builds without DOM.Iterable (Citation Tab order); needs @cosxai/ui
+  1.0.0-alpha.5.
+
 ## 1.0.0-alpha.0 (2026-09-29)
 
 First release: the Agent conversation of the COSX Design System 3.0

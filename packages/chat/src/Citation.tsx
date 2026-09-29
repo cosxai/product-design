@@ -71,7 +71,7 @@ const TABBABLE = 'a[href], button:not([disabled]), input:not([disabled]), select
 /** The next element in document Tab order after `from`, skipping citation cards. */
 function tabbableAfter(from: HTMLElement | null): HTMLElement | null {
   if (!from) return null;
-  for (const el of document.querySelectorAll<HTMLElement>(TABBABLE)) {
+  for (const el of Array.from(document.querySelectorAll<HTMLElement>(TABBABLE))) {
     if (el.closest('[data-citation-card]')) continue;
     if (from.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) return el;
   }

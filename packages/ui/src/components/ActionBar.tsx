@@ -454,7 +454,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
 
   const onToolbarKey = (e: ReactKeyboardEvent<HTMLDivElement>) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Home' && e.key !== 'End') return;
-    const buttons = [...(bar.current?.querySelectorAll<HTMLButtonElement>('button:not([disabled])') ?? [])];
+    const buttons = Array.from(bar.current?.querySelectorAll<HTMLButtonElement>('button:not([disabled])') ?? []);
     const i = buttons.indexOf(document.activeElement as HTMLButtonElement);
     if (i < 0) return;
     e.preventDefault();

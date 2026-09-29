@@ -1,6 +1,6 @@
 {
   "name": "@cosxai/ui",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "description": "COSX Design System 3.0 \u2014 tokens, Tailwind v4 theme and React components",
   "license": "UNLICENSED",
   "type": "module",
@@ -31,7 +31,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.consumer.json",
     "test": "vitest run",
     "check:css": "tailwindcss -i test/fixture.css -o test/out.css",
     "playground": "vite --config playground/vite.config.ts"
