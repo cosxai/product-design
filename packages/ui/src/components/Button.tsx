@@ -1,7 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
 import { Check } from 'lucide-react';
-import { useLayoutEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
 import { Spinner } from './Spinner';
@@ -76,7 +76,7 @@ export type ButtonProps = Omit<ComponentProps<'button'>, 'disabled'> & {
   shortcut?: string | undefined;
   /** A count at the end (Comments 12). Hidden at zero, 99+ above 99. */
   count?: number | undefined;
-  /** Async state: busy locks the width and shows a spinner; done confirms in place. See useButtonAction. */
+  /** Async state: busy shows a spinner, done confirms in place; the width never changes. See useButtonAction. */
   state?: ButtonState | undefined;
   /** Label shown while state="done". @default the children */
   doneLabel?: ReactNode;
@@ -119,15 +119,6 @@ export function Button({
   ref,
   ...rest
 }: ButtonProps) {
-  const inner = useRef<HTMLButtonElement | null>(null);
-  const [lockedWidth, setLockedWidth] = useState<number | null>(null);
-
-  // Lock the idle width so busy / done never resize the button.
-  useLayoutEffect(() => {
-    if (state === 'idle') setLockedWidth(null);
-    else if (lockedWidth === null && inner.current) setLockedWidth(inner.current.getBoundingClientRect().width);
-  }, [state, lockedWidth]);
-
   const classes = cn(button({ variant, size, ground: ground ?? 'auto' }), className);
   if (asChild) {
     return (
@@ -138,21 +129,18 @@ export function Button({
   }
 
   const busy = state === 'busy';
+  // Busy and done keep the idle content in place (hidden) and draw on top of
+  // it, so the button never resizes — also when it first renders busy.
+  const overlaid = state !== 'idle';
   const blocked = Boolean(disabledReason) && disabled;
   const shownCount = count === undefined ? null : formatCount(count);
-  const setRefs = (el: HTMLButtonElement | null) => {
-    inner.current = el;
-    if (typeof ref === 'function') ref(el);
-    else if (ref) ref.current = el;
-  };
-
   return (
     <button
       type="button"
       {...rest}
-      ref={setRefs}
+      ref={ref}
       className={classes}
-      style={lockedWidth ? { ...style, width: lockedWidth } : style}
+      style={style}
       disabled={disabled && !disabledReason ? true : undefined}
       // Busy is not disabled (spec: "busy and disabled are different states"):
       // it keeps its look; aria-busy says so and repeat clicks are ignored below.
@@ -167,27 +155,32 @@ export function Button({
         onClick?.(e);
       }}
     >
-      {busy ? (
-        <Spinner />
-      ) : state === 'done' ? (
-        <>
-          <Check size={14} strokeWidth={2} aria-hidden />
-          {doneLabel ?? children}
-        </>
-      ) : (
-        <>
-          {iconLeft}
-          {children}
-          {iconRight}
-          {shownCount && <span className="font-medium tabular-nums opacity-70">{shownCount}</span>}
-          {shortcut && (
-            <kbd className="ml-0.5 font-sans text-[12px] font-medium opacity-60" aria-hidden>
-              {shortcut}
-            </kbd>
+      <span className={cn('contents', overlaid && 'invisible')} aria-hidden={overlaid || undefined} data-button-content="">
+        {iconLeft}
+        {children}
+        {iconRight}
+        {shownCount && <span className="font-medium tabular-nums opacity-70">{shownCount}</span>}
+        {shortcut && (
+          <kbd className="ml-0.5 font-sans text-[12px] font-medium opacity-60" aria-hidden>
+            {shortcut}
+          </kbd>
+        )}
+      </span>
+      {overlaid && (
+        <span className="absolute inset-0 flex items-center justify-center gap-2" data-button-overlay="">
+          {busy ? (
+            <>
+              <Spinner />
+              <span className="sr-only">{children}</span>
+            </>
+          ) : (
+            <>
+              <Check size={14} strokeWidth={2} aria-hidden />
+              {doneLabel ?? children}
+            </>
           )}
-        </>
+        </span>
       )}
-      {busy && <span className="sr-only">{children}</span>}
     </button>
   );
 }

@@ -1,2 +1,42 @@
 /* @cosxai/chat — styles the Markdown renderer cannot express as utilities
    (KaTeX, Shiki). Import once: @import "@cosxai/chat/markdown.css". */
+@import "katex/dist/katex.min.css";
+
+/* Code. 3.0 retires Geist Mono (--font-mono resolves to the sans), but code
+   needs fixed-width columns: code alone uses the platform's monospace. */
+/* Descendants too: :lang(zh) sets the CJK family on every element. */
+.cx-md .cx-md-pre,
+.cx-md .cx-md-pre *,
+.cx-md .cx-md-shiki pre,
+.cx-md .cx-md-shiki pre *,
+.cx-md .cx-md-inline-code {
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-variant-ligatures: none;
+}
+.cx-md .cx-md-pre,
+.cx-md .cx-md-shiki pre {
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: pre;
+  tab-size: 2;
+}
+.cx-md .cx-md-inline-code { overflow-wrap: anywhere; }
+
+/* Shiki: every token carries a paper colour and an ink colour
+   (defaultColor: false). Paper shows the light one; ink mode the dark one. */
+.cx-md .cx-md-shiki span { color: var(--shiki-light); }
+:where([data-mode="ink"], .ink-mode) .cx-md .cx-md-shiki span { color: var(--shiki-dark); }
+
+/* KaTeX: inherit the ink; long display maths scroll inside their block. */
+.cx-md .katex { font-size: 1.05em; color: inherit; }
+.cx-md .katex-display {
+  margin: 12px 0;
+  padding: 2px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.cx-md .katex-display:first-child { margin-top: 0; }
+.cx-md .katex-display:last-child { margin-bottom: 0; }

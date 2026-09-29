@@ -54,6 +54,12 @@ describe('Button', () => {
     const b = screen.getByRole('button', { name: 'Publish' });
     expect(b).toHaveAttribute('aria-busy', 'true');
     expect(b).not.toHaveAttribute('aria-disabled'); // busy keeps its look
+    // The label stays in place (hidden) under the spinner, so a button that
+    // mounts busy is as wide as the idle one.
+    expect(b.querySelector('[data-button-content]')).toHaveClass('invisible');
+    expect(b.querySelector('[data-button-content]')).toHaveTextContent('Publish');
+    expect(b.querySelector('[data-button-overlay]')).not.toBeNull();
+    expect(b.style.width).toBe('');
     await userEvent.click(b);
     expect(onClick).not.toHaveBeenCalled();
   });
@@ -64,7 +70,7 @@ describe('Button', () => {
         Publish
       </Button>,
     );
-    expect(screen.getByRole('button')).toHaveTextContent('Published');
+    expect(screen.getByRole('button', { name: 'Published' })).toBeInTheDocument();
   });
 
   it('count: hidden at zero, 99+ above 99', () => {

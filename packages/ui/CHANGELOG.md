@@ -1,3 +1,9 @@
+## 1.0.0-alpha.3 (2026-09-29)
+
+- Button: busy and done draw over the idle content, kept in place and
+  hidden, so the width never changes — also when the button first
+  renders busy (it used to shrink to the spinner). No width measuring.
+
 ## 1.0.0-alpha.2 (2026-09-29)
 
 MetaRoom product patterns (spec P0), checked light / ink × en / zh.

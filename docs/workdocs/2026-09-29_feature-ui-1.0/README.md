@@ -52,8 +52,12 @@ Deferred from stage 2: marquee drag-select, drag-and-drop moves (tree/cards), tr
 Action bar, upload, file card + list row, folder tree, list toolbar,
 breadcrumb, status badges, page states, side panel, command palette.
 
-### Stage 3 — `@cosxai/chat`
-Craft's conversation components restyled to "Agent conversation".
+### Stage 3 — `@cosxai/chat` — done, 1.0.0-alpha.0 (with @cosxai/ui 1.0.0-alpha.3)
+Craft's conversation components restyled to "Agent conversation" (design.cosx.co/pattern-agent, MetaRoom spec §14). Two forked sub-agents, integrated and re-checked:
+- A: Markdown (GFM, maths, code with lazy highlighting + copy, safe components, link resolver), `[[n]]` citations → Citation chip + source card, ScopeLine / SourcesList — 16 tests. Six files adapted from Craft Agents (Apache-2.0; headers + NOTICE).
+- B: Conversation, User / Agent / Staff messages (writing, stopped, failed), AgentSteps, result cards (documents, people, task, draft), ConfirmationCard + HandOver, Composer (attachments, scope, commands, "as a task"), AgentDrawer — 23 tests.
+- Integration: the citation card renders in a portal with fixed placement (it was clipped inside the drawer); Tab order kept as if it sat after the chip. Button busy/done now overlay the hidden idle content (a button mounted busy no longer shrinks to the spinner).
+- First publish of `@cosxai/chat` is by hand (npm needs the package to exist before a trusted publisher can be added); then add publish-chat.yml as trusted publisher; later releases tag `chat-v*`.
 
 ### Stage 4 — design.cosx.co on Astro
 Static pages, view transitions, interactive examples as islands on the
