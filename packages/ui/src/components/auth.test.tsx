@@ -44,6 +44,13 @@ describe('ThemeSwitch', () => {
     expect(screen.getByTestId('mode')).toHaveTextContent('system');
   });
 
+  it('can start opened, every option reachable', () => {
+    render(<ThemeSwitch value="light" onChange={() => {}} defaultOpen />);
+    for (const name of ['Theme: match system', 'Theme: light', 'Theme: dark']) {
+      expect(screen.getByRole('radio', { name })).toHaveAttribute('tabindex', '0');
+    }
+  });
+
   it('is accessible', async () => {
     const { container } = render(<ThemeSwitch value="system" onChange={() => {}} />);
     expect(await a11y(container)).toHaveNoViolations();

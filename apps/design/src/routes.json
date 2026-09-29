@@ -156,6 +156,12 @@
     "file": "/Pattern Status.dc.html"
   },
   {
+    "name": "Pattern Sign In",
+    "path": "/pattern-sign-in",
+    "site": true,
+    "file": "/Pattern Sign In.dc.html"
+  },
+  {
     "name": "Select",
     "path": "/select",
     "site": true,

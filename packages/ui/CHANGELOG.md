@@ -1,3 +1,10 @@
+## 1.0.0-alpha.8 (2026-09-30)
+
+- ThemeSwitch: `defaultOpen` starts it opened (documentation specimens).
+- WorkspaceMark: a logo that failed before React hydrated (a server-rendered
+  page) now falls back to the initial too — onError had already fired.
+- design.cosx.co: Patterns · Sign-in, every specimen the real component.
+
 ## 1.0.0-alpha.7 (2026-09-30)
 
 Sign-in patterns checked against design.cosx.co Patterns · Sign-in:

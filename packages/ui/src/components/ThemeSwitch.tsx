@@ -21,6 +21,8 @@ export type ThemeSwitchProps = Omit<ComponentProps<'div'>, 'onChange' | 'childre
   /** Unset: the ThemeProvider's setter. */
   onChange?: ((mode: ThemeMode) => void) | undefined;
   labels?: ThemeSwitchLabels | undefined;
+  /** Start opened (documentation specimens); it folds once the pointer leaves. */
+  defaultOpen?: boolean | undefined;
 };
 
 /** A click on an option only picks it once the switch has been open this long. */
@@ -33,11 +35,11 @@ const PICK_AFTER_MS = 800;
  * so the first tap on touch (which opens it) steps instead of landing on
  * whatever slid under the finger.
  */
-export function ThemeSwitch({ value, onChange, labels, className, ...rest }: ThemeSwitchProps) {
+export function ThemeSwitch({ value, onChange, labels, defaultOpen = false, className, ...rest }: ThemeSwitchProps) {
   const theme = useTheme();
   const mode = value ?? theme.mode;
   const setMode = onChange ?? theme.setMode;
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const openedAt = useRef(0);
   const show = () => {
     if (open) return;

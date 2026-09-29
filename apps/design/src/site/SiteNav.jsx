@@ -78,6 +78,7 @@ class Logic extends DCLogic {
           ['actionbar', '操作栏', 'Action bar', '/pattern-action-bar'],
           ['agent', 'Agent 对话', 'Agent conversation', '/pattern-agent'],
           ['status', '状态', 'Status', '/pattern-status'],
+          ['signin', '登录', 'Sign-in', '/pattern-sign-in'],
         ],
       ],
       [

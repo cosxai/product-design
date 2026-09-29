@@ -1,5 +1,5 @@
 import { ChevronRight } from 'lucide-react';
-import { forwardRef, useState, type ComponentProps, type ReactNode } from 'react';
+import { forwardRef, useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
 import { Spinner } from './Spinner';
@@ -15,8 +15,15 @@ export type WorkspaceMarkProps = {
 /** WorkspaceMark — a workspace's logo, or its initial on the brand yellow. */
 export function WorkspaceMark({ name, logoUrl, size = 36 }: WorkspaceMarkProps) {
   const [failed, setFailed] = useState(false);
+  const img = useRef<HTMLImageElement>(null);
+  // A server-rendered page can fail the image before React is listening:
+  // onError never fires, so look once it is.
+  useEffect(() => {
+    const el = img.current;
+    if (el?.complete && el.naturalWidth === 0) setFailed(true);
+  }, [logoUrl]);
   if (logoUrl && !failed) {
-    return <img src={logoUrl} alt="" aria-hidden style={{ width: size, height: size }} className="shrink-0 rounded-[8px] object-cover" onError={() => setFailed(true)} />;
+    return <img ref={img} src={logoUrl} alt="" aria-hidden style={{ width: size, height: size }} className="shrink-0 rounded-[8px] object-cover" onError={() => setFailed(true)} />;
   }
   return (
     <span aria-hidden style={{ width: size, height: size }} className="grid shrink-0 place-items-center rounded-[8px] bg-brand-field text-[13px] font-semibold text-ink">

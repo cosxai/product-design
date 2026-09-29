@@ -46,7 +46,7 @@ const NAMES = {
   '/brand-injection': 'Brand injection', '/checkbox': 'Checkbox and switch', '/data-display': 'Data display', '/overlays': 'Overlays and menus',
   '/avatars': 'Avatars and members', '/share-dialog': 'Share dialog', '/kanban': 'Board', '/editing': 'Editing and signing', '/form-extensions': 'Form extensions',
   '/bilingual': 'Chinese and English', '/pattern-navigation': 'Navigation', '/pattern-action-bar': 'Action bar', '/pattern-agent': 'Agent conversation',
-  '/pattern-status': 'Status', '/template-sign-in': 'Sign in', '/template-settings': 'Settings', '/template-list': 'Lists', '/template-viewer': 'Viewer',
+  '/pattern-status': 'Status', '/pattern-sign-in': 'Sign-in', '/template-sign-in': 'Sign in', '/template-settings': 'Settings', '/template-list': 'Lists', '/template-viewer': 'Viewer',
   '/spacing': 'Spacing and shape', '/yellow': 'The yellow', '/marker': 'The marker',
   '/pages/metaroom-auth': 'Metaroom sign-in', '/pages/metaroom-customer-portal': 'Metaroom customer portal', '/pages/metaroom-ops-workbench': 'Metaroom Ops workbench',
   '/ui-spec/metaroom-components': 'Metaroom components', '/ui-spec/metaroom-navigation': 'Metaroom navigation', '/metaroom-auth/metaroom-sign-in': 'Metaroom sign-in prototype',

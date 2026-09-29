@@ -182,6 +182,13 @@
     "partial": false
   },
   {
+    "name": "Pattern Sign In",
+    "component": "PatternSignIn",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
     "name": "Select",
     "component": "Select",
     "dir": "",

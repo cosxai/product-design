@@ -89,6 +89,8 @@ keeps the words, languages and flows): AuthLayout (step + yellow panel,
 panel drops under 900px by container query), AuthPanel, AuthStepHead,
 AuthIconTile, ThemeSwitch (folded system · light · dark), WorkspaceRow and
 WorkspaceMark. Every string is a prop with an English default.
+alpha.7 matched them to the Claude Design page Patterns · Sign-in; alpha.8 put
+that page on design.cosx.co (/pattern-sign-in) drawn with the real components.
 
 ## Notes
 - 3.0 variable names overlap Tailwind namespaces (`--radius-md`,

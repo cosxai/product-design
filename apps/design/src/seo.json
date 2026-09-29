@@ -233,6 +233,15 @@
     "description": "Shape says how urgent; the wording says what. Product UI has yellow, ink and one red. A fill needs a person, an outline is under way, a dot is a known…",
     "index": true
   },
+  "/pattern-sign-in": {
+    "slug": "pattern-sign-in",
+    "title": "Sign-in",
+    "ogTitle": "Sign-in",
+    "section": "Patterns",
+    "ogLine": "One sign-in, every product",
+    "description": "One sign-in, every product: the step on the left, why it matters on the right. AuthLayout, AuthPanel, AuthStepHead, ThemeSwitch and WorkspaceRow in @cosxai/ui.",
+    "index": true
+  },
   "/select": {
     "slug": "select",
     "title": "Select",
