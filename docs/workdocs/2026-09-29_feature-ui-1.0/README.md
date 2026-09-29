@@ -66,8 +66,12 @@ Replace craft's `packages/ui` primitives; desktop dmg + web checked.
 
 ## Stage 1 progress
 - [x] Batch A (core): Logo, Icon, IconButton, MetaLabel, Marker, Figure, Button (+ useButtonAction), Badge, Tag, Card, Spinner, ThemeProvider — 28 tests (behaviour + axe); playground `pnpm --filter @cosxai/ui playground`, checked light/ink × en/zh
-- [ ] Batch B (forms): Field, Input, Textarea, Select, Checkbox, Radio, Switch
-- [ ] Batch C: Tabs, Dialog, Toast, Tooltip, Table
+- [x] Batch B (forms): Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch — 21 tests
+- [x] Batch C: Tabs, Dialog, Toast (+ toast()/Toaster), Tooltip, Table — 16 tests
+- [x] 1.0.0-alpha.1: all 22 primitives + ThemeProvider, 65 tests
+
+### Deferred from stage 1 to stage 2
+Async search select (single + multi "To" field), verification-code cells, @mention input, copy field, search field (debounce, / and ⌘K), segmented control, choice cards, date + fuzzy date; Dialog split 1120 and wizard 800; type-to-confirm / step-up / prompt dialogs; side panel (360/480/640, one slot with the Agent drawer); table "More" column and row actions; toast placement around the action bar; tooltip fade (no animation utilities yet).
 
 ## For design review (spec vs source vs site)
 - Control heights: Button page says 32/40/48; the 3.0 source measures ≈32/38/44; the MetaRoom spec says 32 compact · 38 default · 44 mobile. **Built 32/38/44.**
@@ -75,3 +79,13 @@ Replace craft's `packages/ui` primitives; desktop dmg + web checked.
 - Complete status: 3.0 source grey dot; MetaRoom spec ink dot. **Built ink dot** (owner decision).
 - Ink mode: 3.0 colours switch on data-mode="ink" and .ink-mode, but its marker rules only on .ink-mode. **Kit adds the data-mode rule (src/modes.css).**
 - Brand injection (--brand-field / --brand-mark) is in the MetaRoom spec but not in the 3.0 tokens. **Kit defines them (src/brand.css), default the COSX yellow.**
+- Checkbox radius: 3.0 source 8px on a 16px box (looks round on the site); 3.0 readme ladder "4px checkboxes". **Built 4px.**
+- Control text: 3.0 source 13px; MetaRoom product scale body/rows 14. **Built 13px** (source).
+- Select menu radius: Select.jsx comment 12px, code 16px. **Built 16px.**
+- Disabled field label: unspecified. **Built dimmed with the control.**
+- Dialog corners: Dialog.jsx comment "no radius"; code, site and spec 16px. **Built 16px.**
+- Dialog widths: site 400 / 520 / 640; MetaRoom §09 S 400 · M 560 · L 800 · Split 1120. **Built 400/520/640 (site).**
+- Toast / Tooltip on an ink page: 3.0 defines only the ink versions. **Kit: toast ink-raised + hairline; tooltip inverts to linen.**
+- Table washes on ink: 3.0 washes are light tints, unreadable under linen text. **Kit: accent 15% / error 20% on ink.**
+- Table meta columns: source mono 11px, but 3.0 retired mono. **Kit: 12px grey tabular.**
+- Pills tabs: source mono index, active on the yellow. **Kit: 12px index, active on --brand-field.**

@@ -1,3 +1,23 @@
+## 1.0.0-alpha.1 (2026-09-29)
+
+All 22 COSX Design System 3.0 primitives, checked against their
+design.cosx.co pages in light / ink × English / Chinese.
+
+- Core: Button (six types, grounds, 32/38/44, shortcut and count,
+  disabled-with-reason, busy/done in place + `useButtonAction`),
+  IconButton, Badge (shape carries urgency; compact dot keeps the
+  wording), Tag, Card, Figure, Marker, MetaLabel, Logo, Icon (Lucide),
+  Spinner, ThemeProvider (system / light / ink).
+- Forms: Field (label, hint, error, prefix/suffix, read-only), Input,
+  Textarea, Select (portal, auto placement, keyboard, groups, disabled
+  rows, meta, filter above 8), Checkbox (indeterminate), RadioGroup, Switch.
+- Tabs (underline, pills), Dialog, Toast (`toast()` + `<Toaster>`),
+  Tooltip, Table (sortable, washes for attention/overdue, cards on phones).
+- `--brand-field` / `--brand-mark` for workspace brands; the 3.0 ink
+  marker rule for `data-mode="ink"`; an `ink:` Tailwind variant.
+- 65 tests (behaviour + axe). Spec/source differences and what was
+  built: docs/workdocs/2026-09-29_feature-ui-1.0.
+
 ## 1.0.0-alpha.0 (2026-09-29)
 
 **A new system — breaking for every 0.x consumer.** 0.x continues on the
