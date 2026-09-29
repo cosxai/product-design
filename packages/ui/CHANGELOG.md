@@ -1,6 +1,10 @@
-## Unreleased
+## 1.0.0-alpha.4 (2026-09-29)
 
 - ToastCard: one toast drawn in place (documentation specimens, previews).
+- theme.css is now theme-reset.css + theme-base.css. An app moving to the
+  kit screen by screen imports `@cosxai/ui/theme-base.css`: the kit's
+  utilities are added and Tailwind's own palette and sizes keep working.
+  New apps keep importing theme.css (unchanged result).
 
 ## 1.0.0-alpha.3 (2026-09-29)
 

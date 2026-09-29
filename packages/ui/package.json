@@ -1,7 +1,7 @@
 {
   "name": "@cosxai/ui",
-  "version": "1.0.0-alpha.3",
-  "description": "COSX Design System 3.0 — tokens, Tailwind v4 theme and React components",
+  "version": "1.0.0-alpha.4",
+  "description": "COSX Design System 3.0 \u2014 tokens, Tailwind v4 theme and React components",
   "license": "UNLICENSED",
   "type": "module",
   "main": "./src/index.ts",
@@ -10,7 +10,8 @@
     ".": "./src/index.ts",
     "./styles.css": "./src/styles.css",
     "./theme.css": "./src/theme.css",
-    "./tokens/*": "./src/tokens/*"
+    "./tokens/*": "./src/tokens/*",
+    "./theme-base.css": "./src/theme-base.css"
   },
   "files": [
     "src",

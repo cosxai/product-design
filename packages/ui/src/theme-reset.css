@@ -1,0 +1,14 @@
+/* @cosxai/ui — clears Tailwind's defaults so only the design system's
+ * values exist (part of theme.css; see theme-base.css for incremental use). */
+@theme {
+  --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --font-*: initial;
+  --ease-*: initial;
+  --text-*: initial;
+  --font-weight-*: initial;
+  --tracking-*: initial;
+}

@@ -23,7 +23,7 @@ const tokens = new Map<string, string>();
 for (const f of order) for (const [k, v] of rootVars(read(f))) tokens.set(k, v);
 
 const theme = new Map<string, string>();
-for (const d of read('theme.css').matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) {
+for (const d of read('theme-base.css').matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) {
   if (d[2]!.trim() !== 'initial') theme.set(d[1]!, d[2]!.trim());
 }
 
