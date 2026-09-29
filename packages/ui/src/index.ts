@@ -71,3 +71,8 @@ export { UploadFolderRow, UploadList, UploadRow, useBeforeUnloadWhile, type Uplo
 export { useSelection, type Selection, type SelectionOptions } from './components/useSelection';
 export { InfiniteLoader, VirtualList, type InfiniteLoaderProps, type VirtualListProps } from './components/VirtualList';
 export { WindowDrop, useWindowDrop, type WindowDropProps } from './components/WindowDrop';
+
+// Stage 3 — sign-in (Metaroom sign-in, design.cosx.co)
+export { AuthIconTile, AuthLayout, AuthPanel, AuthStepHead, type AuthIconTileProps, type AuthLayoutProps, type AuthPanelProps, type AuthStepHeadProps } from './components/AuthLayout';
+export { ThemeSwitch, type ThemeSwitchLabels, type ThemeSwitchProps } from './components/ThemeSwitch';
+export { WorkspaceMark, WorkspaceRow, type WorkspaceMarkProps, type WorkspaceRowProps } from './components/WorkspaceRow';

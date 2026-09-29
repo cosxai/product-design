@@ -82,6 +82,14 @@ Progress (2026-09-29):
 ### Stage 5 — product-meta adopts 1.0
 Replace craft's `packages/ui` primitives; desktop dmg + web checked.
 
+### Sign-in patterns — 1.0.0-alpha.6
+
+The Metaroom sign-in look, shared by the COSX desktop app and web (product-meta
+keeps the words, languages and flows): AuthLayout (step + yellow panel,
+panel drops under 900px by container query), AuthPanel, AuthStepHead,
+AuthIconTile, ThemeSwitch (folded system · light · dark), WorkspaceRow and
+WorkspaceMark. Every string is a prop with an English default.
+
 ## Notes
 - 3.0 variable names overlap Tailwind namespaces (`--radius-md`,
   `--ease-out`, `--font-sans`) and one prefix means different things

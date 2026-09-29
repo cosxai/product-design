@@ -1,3 +1,19 @@
+## 1.0.0-alpha.6 (2026-09-29)
+
+Sign-in patterns (Metaroom sign-in, design.cosx.co), moved here from the
+COSX app so every product signs in with the same pages:
+
+- AuthLayout: the step under the product lockup, header end (theme switch),
+  help line, footer, and the yellow panel — dropped under 900px (container
+  query, so a narrow window or pane works too). AuthPanel for the panel's
+  text, AuthStepHead and AuthIconTile for a step.
+- ThemeSwitch: match system · light · dark, folded to the current choice;
+  hover or focus opens it, a quick click steps, a settled click picks.
+  Follows the ThemeProvider unless given value / onChange.
+- WorkspaceRow and WorkspaceMark: a workspace in a chooser (logo or
+  initial, name, detail, busy).
+- Every string is a prop with an English default.
+
 ## 1.0.0-alpha.5 (2026-09-29)
 
 - Builds under the consuming app's TypeScript settings without
