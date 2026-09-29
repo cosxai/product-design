@@ -107,10 +107,10 @@ class Logic extends DCLogic {
           location.href = '/button';
         },
         spec: () => {
-          location.href = '../ui-spec/MetaRoom Components.dc.html';
+          location.href = '../ui-spec/Metaroom Components.dc.html';
         },
         portal: () => {
-          location.href = '../pages/MetaRoom Customer Portal.dc.html';
+          location.href = '../pages/Metaroom Customer Portal.dc.html';
         },
       },
     };
@@ -225,11 +225,11 @@ export default function Home(props) {
                     </h1>{' '}
                     <p style={{ margin: '0', fontSize: '18px', lineHeight: '1.7', color: 'rgba(17,17,17,.7)', maxWidth: '34em' }}>
                       <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                        暖白纸面、墨色文字、一种黄色。这里收录基础规范、组件、产品模式和页面模板，以及它们在 MetaRoom 中的用法。
+                        暖白纸面、墨色文字、一种黄色。这里收录基础规范、组件、产品模式和页面模板，以及它们在 Metaroom 中的用法。
                       </span>
                       <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
                         Warm white paper, ink type and one yellow. Foundations, components, product patterns and page templates, and how
-                        MetaRoom uses them.
+                        Metaroom uses them.
                       </span>
                     </p>{' '}
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
@@ -581,10 +581,10 @@ export default function Home(props) {
                       </span>
                       <span style={{ fontSize: '14px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
                         <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                          导航、操作栏、Agent 对话和状态，来自 MetaRoom 的规范草稿。
+                          导航、操作栏、Agent 对话和状态，来自 Metaroom 的规范草稿。
                         </span>
                         <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                          Navigation, the action bar, Agent conversation and status, from the MetaRoom spec draft.
+                          Navigation, the action bar, Agent conversation and status, from the Metaroom spec draft.
                         </span>
                       </span>
                     </a>
@@ -747,8 +747,8 @@ export default function Home(props) {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', maxWidth: '760px' }}>
                     {' '}
                     <span style={{ fontSize: '14px', fontWeight: '500', color: '#9E9E9E' }}>
-                      <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>产品案例 · MetaRoom</span>
-                      <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Case study · MetaRoom</span>
+                      <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>产品案例 · Metaroom</span>
+                      <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Case study · Metaroom</span>
                     </span>{' '}
                     <h2
                       style={{
@@ -811,9 +811,9 @@ export default function Home(props) {
                       </span>
                       <span style={{ width: '40px', height: '4px', borderRadius: '2px', background: '#FFD166' }} />
                       <span style={{ fontSize: '13px', color: '#9E9E9E' }}>
-                        <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom 规范章节</span>
+                        <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom 规范章节</span>
                         <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                          Sections in the MetaRoom spec
+                          Sections in the Metaroom spec
                         </span>
                       </span>
                     </div>
@@ -1049,8 +1049,8 @@ export default function Home(props) {
                       </span>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <span style={{ fontSize: '15px', fontWeight: '500' }}>
-                          <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom 组件规范 v1 草案</span>
-                          <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom spec v1 draft</span>
+                          <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom 组件规范 v1 草案</span>
+                          <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom spec v1 draft</span>
                         </span>
                         <span style={{ fontSize: '14px', lineHeight: '1.65', color: 'var(--text-secondary)' }}>
                           <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>

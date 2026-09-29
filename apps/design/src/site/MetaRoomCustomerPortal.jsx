@@ -1,4 +1,4 @@
-// MetaRoomCustomerPortal — converted once from the Claude Design export (pages/MetaRoom Customer Portal.dc.html); edit freely.
+// MetaroomCustomerPortal — converted once from the Claude Design export (pages/Metaroom Customer Portal.dc.html); edit freely.
 import { Fragment } from 'react';
 
 import { DCLogic, css, cx, hostStyle, list, show, useLogic } from '../dc/runtime';
@@ -535,7 +535,7 @@ class Logic extends DCLogic {
       rowWash: dark ? '#26231A' : 'var(--yellow-12)',
       brandField: halden ? '#D6E4DA' : 'var(--yellow)',
       brandMark: halden ? '#8FBF9F' : 'var(--yellow-accent)',
-      brandName: halden ? 'Halden Capital' : 'MetaRoom',
+      brandName: halden ? 'Halden Capital' : 'Metaroom',
       brandInitial: halden ? 'H' : 'M',
       logoDisplay: halden ? 'none' : 'block',
       initialDisplay: halden ? 'inline' : 'none',
@@ -889,11 +889,11 @@ class Logic extends DCLogic {
 export const pageCss =
   'html, body { margin: 0; background: var(--sunk-2); -webkit-font-smoothing: antialiased; }\n    a { color: var(--text-primary); text-underline-offset: 3px; }\n    a:hover { color: var(--text-secondary); }';
 
-export default function MetaRoomCustomerPortal(props) {
+export default function MetaroomCustomerPortal(props) {
   const v = useLogic(Logic, props);
   return (
     <>
-      <style href="MetaRoomCustomerPortal" precedence="page">
+      <style href="MetaroomCustomerPortal" precedence="page">
         {pageCss}
       </style>
       <div

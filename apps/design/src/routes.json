@@ -252,39 +252,39 @@
     "file": "/Yellow.dc.html"
   },
   {
-    "name": "MetaRoom Auth",
+    "name": "Metaroom Auth",
     "path": "/pages/metaroom-auth",
     "site": false,
-    "file": "/pages/MetaRoom Auth.dc.html"
+    "file": "/pages/Metaroom Auth.dc.html"
   },
   {
-    "name": "MetaRoom Customer Portal",
+    "name": "Metaroom Customer Portal",
     "path": "/pages/metaroom-customer-portal",
     "site": false,
-    "file": "/pages/MetaRoom Customer Portal.dc.html"
+    "file": "/pages/Metaroom Customer Portal.dc.html"
   },
   {
-    "name": "MetaRoom Ops Workbench",
+    "name": "Metaroom Ops Workbench",
     "path": "/pages/metaroom-ops-workbench",
     "site": false,
-    "file": "/pages/MetaRoom Ops Workbench.dc.html"
+    "file": "/pages/Metaroom Ops Workbench.dc.html"
   },
   {
-    "name": "MetaRoom Components",
+    "name": "Metaroom Components",
     "path": "/ui-spec/metaroom-components",
     "site": false,
-    "file": "/ui-spec/MetaRoom Components.dc.html"
+    "file": "/ui-spec/Metaroom Components.dc.html"
   },
   {
-    "name": "MetaRoom Navigation",
+    "name": "Metaroom Navigation",
     "path": "/ui-spec/metaroom-navigation",
     "site": false,
-    "file": "/ui-spec/MetaRoom Navigation.dc.html"
+    "file": "/ui-spec/Metaroom Navigation.dc.html"
   },
   {
-    "name": "MetaRoom Sign In",
+    "name": "Metaroom Sign In",
     "path": "/metaroom-auth/metaroom-sign-in",
     "site": false,
-    "file": "/metaroom-auth/MetaRoom Sign In.dc.html"
+    "file": "/metaroom-auth/Metaroom Sign In.dc.html"
   }
 ]

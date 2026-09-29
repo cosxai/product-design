@@ -296,7 +296,7 @@ describe('Skeletons and page states', () => {
         <PageState kind="empty" title="No documents yet" action={<Button>Upload files</Button>} />
         <PageState kind="error" title="Couldn’t load; your work is saved" action={<Button variant="secondary">Try again</Button>} />
         <PageNotice tone="update" action={<Button size="sm">Refresh</Button>}>
-          MetaRoom has been updated. Refresh to load this page.
+          Metaroom has been updated. Refresh to load this page.
         </PageNotice>
         <SkeletonList rows={2} />
       </div>,

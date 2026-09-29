@@ -131,7 +131,7 @@
     "ogTitle": "COSX Design System",
     "section": "Brand · Components · Patterns",
     "ogLine": "Warm white paper, ink type and one yellow.",
-    "description": "The COSX Design System: brand, foundations, components, product patterns and page templates for the COSX website and the MetaRoom AI workspace.",
+    "description": "The COSX Design System: brand, foundations, components, product patterns and page templates for the COSX website and the Metaroom AI workspace.",
     "index": true
   },
   "/input": {
@@ -221,7 +221,7 @@
     "ogTitle": "Navigation",
     "section": "Patterns",
     "ogLine": "An icon rail for modules, a context column for the current module",
-    "description": "An icon rail for modules, a context column for the current module. The MetaRoom customer portal and Ops workbench share this shell. Menus go two levels…",
+    "description": "An icon rail for modules, a context column for the current module. The Metaroom customer portal and Ops workbench share this shell. Menus go two levels…",
     "index": true
   },
   "/pattern-status": {
@@ -379,56 +379,56 @@
   },
   "/pages/metaroom-auth": {
     "slug": "pages-metaroom-auth",
-    "title": "MetaRoom sign-in",
-    "ogTitle": "MetaRoom sign-in",
-    "section": "MetaRoom",
+    "title": "Metaroom sign-in",
+    "ogTitle": "Metaroom sign-in",
+    "section": "Metaroom",
     "ogLine": "Email first, then whichever method the workspace allows",
     "description": "Email first, then whichever method the workspace allows. One flow for both products. The email decides what comes next: a code, a password, single sign-on…",
     "index": false
   },
   "/pages/metaroom-customer-portal": {
     "slug": "pages-metaroom-customer-portal",
-    "title": "MetaRoom customer portal",
-    "ogTitle": "MetaRoom customer portal",
-    "section": "MetaRoom",
+    "title": "Metaroom customer portal",
+    "ogTitle": "Metaroom customer portal",
+    "section": "Metaroom",
     "ogLine": "Conversation first, then tasks, documents, clients and content",
     "description": "Conversation first, then tasks, documents, clients and content. Each page at 1440 desktop and 390 phone. The customer sees five entries and no internal…",
     "index": false
   },
   "/pages/metaroom-ops-workbench": {
     "slug": "pages-metaroom-ops-workbench",
-    "title": "MetaRoom Ops workbench",
-    "ogTitle": "MetaRoom Ops workbench",
-    "section": "MetaRoom",
+    "title": "Metaroom Ops workbench",
+    "ogTitle": "Metaroom Ops workbench",
+    "section": "Metaroom",
     "ogLine": "One person serving many customers",
     "description": "One person serving many customers. A cross-customer inbox where customer tasks and conversations arrive, and the project review queue with its split…",
     "index": false
   },
   "/ui-spec/metaroom-components": {
     "slug": "ui-spec-metaroom-components",
-    "title": "MetaRoom components",
-    "ogTitle": "MetaRoom components",
-    "section": "MetaRoom",
-    "ogLine": "MetaRoom component specification for the customer portal and the Ops workbench, built on COSX Design System 3.0.",
-    "description": "MetaRoom component specification for the customer portal and the Ops workbench, built on COSX Design System 3.0.",
+    "title": "Metaroom components",
+    "ogTitle": "Metaroom components",
+    "section": "Metaroom",
+    "ogLine": "Metaroom component specification for the customer portal and the Ops workbench, built on COSX Design System 3.0.",
+    "description": "Metaroom component specification for the customer portal and the Ops workbench, built on COSX Design System 3.0.",
     "index": false
   },
   "/ui-spec/metaroom-navigation": {
     "slug": "ui-spec-metaroom-navigation",
-    "title": "MetaRoom navigation",
-    "ogTitle": "MetaRoom navigation",
-    "section": "MetaRoom",
-    "ogLine": "MetaRoom navigation specification: the icon rail, the context column and where each module’s menu lives.",
-    "description": "MetaRoom navigation specification: the icon rail, the context column and where each module’s menu lives.",
+    "title": "Metaroom navigation",
+    "ogTitle": "Metaroom navigation",
+    "section": "Metaroom",
+    "ogLine": "Metaroom navigation specification: the icon rail, the context column and where each module’s menu lives.",
+    "description": "Metaroom navigation specification: the icon rail, the context column and where each module’s menu lives.",
     "index": false
   },
   "/metaroom-auth/metaroom-sign-in": {
     "slug": "metaroom-auth-metaroom-sign-in",
-    "title": "MetaRoom sign-in prototype",
-    "ogTitle": "MetaRoom sign-in prototype",
-    "section": "MetaRoom",
+    "title": "Metaroom sign-in prototype",
+    "ogTitle": "Metaroom sign-in prototype",
+    "section": "Metaroom",
     "ogLine": "Nineteen screens: email first, passkeys, single sign-on, desktop and MCP authorisation.",
-    "description": "MetaRoom sign-in and sign-up prototype: email first, passkeys, single sign-on, desktop sign-in and MCP authorisation.",
+    "description": "Metaroom sign-in and sign-up prototype: email first, passkeys, single sign-on, desktop sign-in and MCP authorisation.",
     "index": false
   }
 }

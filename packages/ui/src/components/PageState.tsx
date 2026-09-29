@@ -62,7 +62,7 @@ export type PageNoticeProps = Omit<ComponentProps<'div'>, 'children'> & {
 
 /**
  * PageNotice — a full-width line above the content: "This document has
- * 1,240 pages. Only the first 500 were processed…", or "MetaRoom has been
+ * 1,240 pages. Only the first 500 were processed…", or "Metaroom has been
  * updated. Refresh to load this page."
  */
 export function PageNotice({ tone = 'info', children, action, className, ...rest }: PageNoticeProps) {

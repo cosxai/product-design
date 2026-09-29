@@ -109,10 +109,10 @@ class Logic extends DCLogic {
           location.href = '/button';
         },
         spec: () => {
-          location.href = '../ui-spec/MetaRoom Components.dc.html';
+          location.href = '../ui-spec/Metaroom Components.dc.html';
         },
         portal: () => {
-          location.href = '../pages/MetaRoom Customer Portal.dc.html';
+          location.href = '../pages/Metaroom Customer Portal.dc.html';
         },
       },
     };

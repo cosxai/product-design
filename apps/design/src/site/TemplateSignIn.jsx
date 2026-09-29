@@ -108,10 +108,10 @@ class Logic extends DCLogic {
           location.href = '/button';
         },
         spec: () => {
-          location.href = '../ui-spec/MetaRoom Components.dc.html';
+          location.href = '../ui-spec/Metaroom Components.dc.html';
         },
         portal: () => {
-          location.href = '../pages/MetaRoom Customer Portal.dc.html';
+          location.href = '../pages/Metaroom Customer Portal.dc.html';
         },
       },
     };
@@ -216,8 +216,8 @@ export default function TemplateSignIn(props) {
                   <span
                     style={{ fontSize: '12px', fontWeight: '500', padding: '4px 8px', borderRadius: '6px', background: 'var(--bg-sunk)' }}
                   >
-                    <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom</span>
-                    <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom</span>
+                    <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom</span>
+                    <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom</span>
                   </span>
                 </div>
               </div>
@@ -593,10 +593,10 @@ export default function TemplateSignIn(props) {
                   </span>
                   <span style={{ fontSize: '14px', lineHeight: '1.65', color: 'var(--text-secondary)' }}>
                     <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                      工作区品牌方块和名称。自有域名下不出现 MetaRoom 或 COSX。
+                      工作区品牌方块和名称。自有域名下不出现 Metaroom 或 COSX。
                     </span>
                     <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                      The workspace tile and name. No MetaRoom or COSX on a customer domain.
+                      The workspace tile and name. No Metaroom or COSX on a customer domain.
                     </span>
                   </span>
                 </div>
@@ -688,7 +688,7 @@ export default function TemplateSignIn(props) {
                 </div>
               </div>
               <a
-                href="../pages/MetaRoom Auth.dc.html"
+                href="../pages/Metaroom Auth.dc.html"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',

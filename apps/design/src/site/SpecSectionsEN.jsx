@@ -250,7 +250,7 @@ class Logic extends DCLogic {
       ground: dark ? 'ink' : 'paper',
       brandField: halden ? '#D6E4DA' : 'var(--yellow)',
       brandMark: halden ? '#8FBF9F' : 'var(--yellow-accent)',
-      brandName: halden ? 'Halden Capital' : 'MetaRoom',
+      brandName: halden ? 'Halden Capital' : 'Metaroom',
       brandInitial: halden ? 'H' : 'M',
       logoDisplay: halden ? 'none' : 'block',
       initialDisplay: halden ? 'inline' : 'none',
@@ -713,7 +713,7 @@ export default function SpecSectionsEN(props) {
               </div>{' '}
               <div style={{ fontSize: '13px', fontWeight: '500' }}>{show(v.brandName)}</div>{' '}
               <div style={{ fontSize: '12px', fontWeight: '500', color: 'var(--text-secondary)' }}>
-                · MetaRoom component system · v1 draft · 24 September 2026
+                · Metaroom component system · v1 draft · 24 September 2026
               </div>{' '}
             </div>{' '}
             <h1
@@ -4065,7 +4065,7 @@ export default function SpecSectionsEN(props) {
                     }}
                   >
                     <DS.Icon name="refresh-cw" size={16} />
-                    <span style={{ fontSize: '13px', flex: '1' }}>MetaRoom has been updated. Refresh to load this page.</span>
+                    <span style={{ fontSize: '13px', flex: '1' }}>Metaroom has been updated. Refresh to load this page.</span>
                     <DS.Button variant="ink" size="sm">
                       Refresh
                     </DS.Button>
@@ -7440,11 +7440,11 @@ export default function SpecSectionsEN(props) {
                     context column shows. Components:<code style={{ fontSize: '13px' }}>Portal Rail</code>、
                     <code style={{ fontSize: '13px' }}>Ops Rail</code>
                     {'. Page examples: '}
-                    <a href="../pages/MetaRoom Customer Portal.dc.html">the customer portal</a>
+                    <a href="../pages/Metaroom Customer Portal.dc.html">the customer portal</a>
                     {' and '}
-                    <a href="../pages/MetaRoom Ops Workbench.dc.html">the Ops workbench</a>
+                    <a href="../pages/Metaroom Ops Workbench.dc.html">the Ops workbench</a>
                     {'; options compared in '}
-                    <a href="MetaRoom Navigation.dc.html">Navigation</a>。
+                    <a href="Metaroom Navigation.dc.html">Navigation</a>。
                   </p>{' '}
                 </div>{' '}
                 <div

@@ -271,7 +271,7 @@ describe('Breadcrumb', () => {
   const items = [{ label: 'Harbour data room', href: '#' }, { label: 'Series A', href: '#' }, { label: 'Legal', href: '#' }, { label: 'Shareholder agreement v3', tag: 'PDF' }];
 
   it('folds the middle beyond four segments; the current page is not a link', async () => {
-    render(<Breadcrumb root={<span>MetaRoom</span>} items={items} />);
+    render(<Breadcrumb root={<span>Metaroom</span>} items={items} />);
     expect(screen.getByRole('link', { name: 'Legal' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Series A' })).toBeNull();
     const current = screen.getByText('Shareholder agreement v3').closest('li')!;

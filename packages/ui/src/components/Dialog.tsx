@@ -13,7 +13,7 @@ export const DialogTrigger = DialogPrimitive.Trigger;
 export const DialogClose = DialogPrimitive.Close;
 
 // sm/md/lg are the site's 400 / 520 / 640; xl (a wizard) and split (a
-// document beside its detail) are the MetaRoom spec's 800 and 1120.
+// document beside its detail) are the Metaroom spec's 800 and 1120.
 const WIDTH = {
   sm: 'sm:max-w-[400px]',
   md: 'sm:max-w-[520px]',

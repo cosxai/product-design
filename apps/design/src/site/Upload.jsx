@@ -170,10 +170,10 @@ class Logic extends DCLogic {
           location.href = '/button';
         },
         spec: () => {
-          location.href = '../ui-spec/MetaRoom Components.dc.html';
+          location.href = '../ui-spec/Metaroom Components.dc.html';
         },
         portal: () => {
-          location.href = '../pages/MetaRoom Customer Portal.dc.html';
+          location.href = '../pages/Metaroom Customer Portal.dc.html';
         },
       },
     };
@@ -1423,8 +1423,8 @@ export default function Upload(props) {
                 }}
               >
                 <h2 style={{ margin: '0', fontSize: '26px', fontWeight: '500', lineHeight: '1.3', letterSpacing: '-.01em' }}>
-                  <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom 中的完整规范</span>
-                  <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Full spec in MetaRoom</span>
+                  <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom 中的完整规范</span>
+                  <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Full spec in Metaroom</span>
                 </h2>
                 <p
                   style={{
@@ -1437,10 +1437,10 @@ export default function Upload(props) {
                   }}
                 >
                   <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                    以下内容来自 MetaRoom 组件规范：更多类型、状态矩阵和业务示例。
+                    以下内容来自 Metaroom 组件规范：更多类型、状态矩阵和业务示例。
                   </span>
                   <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                    From the MetaRoom component spec: more types, state matrices and product examples.
+                    From the Metaroom component spec: more types, state matrices and product examples.
                   </span>
                 </p>
               </div>
@@ -1486,7 +1486,7 @@ export default function Upload(props) {
                 }}
               >
                 <a
-                  href="../ui-spec/MetaRoom Components.dc.html#s05"
+                  href="../ui-spec/Metaroom Components.dc.html#s05"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -1502,8 +1502,8 @@ export default function Upload(props) {
                   className={'h60'}
                 >
                   <span style={{ fontSize: '15px', fontWeight: '500' }}>
-                    <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom 上传与进度</span>
-                    <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom upload and progress</span>
+                    <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom 上传与进度</span>
+                    <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom upload and progress</span>
                   </span>
                   <span style={{ fontSize: '13px', lineHeight: '1.55', color: 'var(--text-secondary)' }}>
                     <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>文件夹检查与批次进度。</span>

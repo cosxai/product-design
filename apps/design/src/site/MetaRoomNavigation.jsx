@@ -1,4 +1,4 @@
-// MetaRoomNavigation — converted once from the Claude Design export (ui-spec/MetaRoom Navigation.dc.html); edit freely.
+// MetaroomNavigation — converted once from the Claude Design export (ui-spec/Metaroom Navigation.dc.html); edit freely.
 import { Fragment } from 'react';
 
 import { DCLogic, css, cx, hostStyle, list, show, useLogic } from '../dc/runtime';
@@ -261,11 +261,11 @@ class Logic extends DCLogic {
 export const pageCss =
   'html, body { margin: 0; background: var(--sunk-2); -webkit-font-smoothing: antialiased; }\n    a { color: var(--ink); text-underline-offset: 3px; }\n    a:hover { color: var(--grey); }';
 
-export default function MetaRoomNavigation(props) {
+export default function MetaroomNavigation(props) {
   const v = useLogic(Logic, props);
   return (
     <>
-      <style href="MetaRoomNavigation" precedence="page">
+      <style href="MetaroomNavigation" precedence="page">
         {pageCss}
       </style>
       <section

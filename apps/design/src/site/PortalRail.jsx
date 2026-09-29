@@ -157,7 +157,7 @@ class Logic extends DCLogic {
       initial: halden ? 'H' : 'M',
       logoDisplay: halden ? 'none' : 'block',
       initialDisplay: halden ? 'inline' : 'none',
-      brandName: halden ? 'Halden Capital' : 'MetaRoom',
+      brandName: halden ? 'Halden Capital' : 'Metaroom',
       userName: p('Li Wei', '李维'),
       searchLabel: p('Search', '搜索'),
       title: ctx.title,

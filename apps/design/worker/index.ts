@@ -4,7 +4,7 @@
 // under /p/<route>/[zh|ink|zh-ink]; the visitor's choice lives in the
 // `cosx-site` cookie (set by the page when they switch), so /button stays
 // /button in every language and the first paint is already right.
-// Old export file URLs (/Button.dc.html, /ui-spec/MetaRoom Components.dc.html)
+// Old export file URLs (/Button.dc.html, /ui-spec/Metaroom Components.dc.html)
 // redirect to their clean path; /terms is the terms of use.
 
 import routes from "../src/routes.json" with { type: "json" };

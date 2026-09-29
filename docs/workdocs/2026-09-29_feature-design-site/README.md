@@ -6,7 +6,7 @@
 
 ## Overview
 Publish the Claude Design "COSX Design System 3.0" site (the `site/`
-folder of the "MetaRoom 设计系统重做" export) at design.cosx.co,
+folder of the "Metaroom 设计系统重做" export) at design.cosx.co,
 unchanged, as stage 1. Stage 2 (later): `@cosxai/ui` 1.0 rebuilt on the
 3.0 foundations (Tailwind + Radix), and the site's examples rendered
 with the real components.

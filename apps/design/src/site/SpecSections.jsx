@@ -250,7 +250,7 @@ class Logic extends DCLogic {
       ground: dark ? 'ink' : 'paper',
       brandField: halden ? '#D6E4DA' : 'var(--yellow)',
       brandMark: halden ? '#8FBF9F' : 'var(--yellow-accent)',
-      brandName: halden ? 'Halden Capital' : 'MetaRoom',
+      brandName: halden ? 'Halden Capital' : 'Metaroom',
       brandInitial: halden ? 'H' : 'M',
       logoDisplay: halden ? 'none' : 'block',
       initialDisplay: halden ? 'inline' : 'none',
@@ -689,7 +689,7 @@ export default function SpecSections(props) {
               </div>{' '}
               <div style={{ fontSize: '13px', fontWeight: '500' }}>{show(v.brandName)}</div>{' '}
               <div style={{ fontSize: '12px', fontWeight: '500', color: 'var(--text-secondary)' }}>
-                · MetaRoom 组件系统 · v1 草案 · 2026 年 9 月 24 日
+                · Metaroom 组件系统 · v1 草案 · 2026 年 9 月 24 日
               </div>{' '}
             </div>{' '}
             <h1
@@ -4017,7 +4017,7 @@ export default function SpecSections(props) {
                     }}
                   >
                     <DS.Icon name="refresh-cw" size={16} />
-                    <span style={{ fontSize: '13px', flex: '1' }}>MetaRoom has been updated. Refresh to load this page.</span>
+                    <span style={{ fontSize: '13px', flex: '1' }}>Metaroom has been updated. Refresh to load this page.</span>
                     <DS.Button variant="ink" size="sm">
                       Refresh
                     </DS.Button>
@@ -7352,11 +7352,11 @@ export default function SpecSections(props) {
                     客户门户和 Ops 工作台用同一个外壳，差别只在图标栏里有哪些模块，以及上下文栏里放什么。组件：
                     <code style={{ fontSize: '13px' }}>Portal Rail</code>、<code style={{ fontSize: '13px' }}>Ops Rail</code>
                     {'。页面示例见 '}
-                    <a href="../pages/MetaRoom Customer Portal.dc.html">客户门户</a>
+                    <a href="../pages/Metaroom Customer Portal.dc.html">客户门户</a>
                     {' 和 '}
-                    <a href="../pages/MetaRoom Ops Workbench.dc.html">Ops 工作台</a>
+                    <a href="../pages/Metaroom Ops Workbench.dc.html">Ops 工作台</a>
                     {'，方案对比见 '}
-                    <a href="MetaRoom Navigation.dc.html">Navigation</a>。
+                    <a href="Metaroom Navigation.dc.html">Navigation</a>。
                   </p>{' '}
                 </div>{' '}
                 <div

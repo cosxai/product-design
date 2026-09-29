@@ -322,22 +322,22 @@
     "partial": false
   },
   {
-    "name": "MetaRoom Auth",
-    "component": "MetaRoomAuth",
+    "name": "Metaroom Auth",
+    "component": "MetaroomAuth",
     "dir": "pages",
     "site": false,
     "partial": false
   },
   {
-    "name": "MetaRoom Customer Portal",
-    "component": "MetaRoomCustomerPortal",
+    "name": "Metaroom Customer Portal",
+    "component": "MetaroomCustomerPortal",
     "dir": "pages",
     "site": false,
     "partial": false
   },
   {
-    "name": "MetaRoom Ops Workbench",
-    "component": "MetaRoomOpsWorkbench",
+    "name": "Metaroom Ops Workbench",
+    "component": "MetaroomOpsWorkbench",
     "dir": "pages",
     "site": false,
     "partial": false
@@ -364,22 +364,22 @@
     "partial": true
   },
   {
-    "name": "MetaRoom Components",
-    "component": "MetaRoomComponents",
+    "name": "Metaroom Components",
+    "component": "MetaroomComponents",
     "dir": "ui-spec",
     "site": false,
     "partial": false
   },
   {
-    "name": "MetaRoom Navigation",
-    "component": "MetaRoomNavigation",
+    "name": "Metaroom Navigation",
+    "component": "MetaroomNavigation",
     "dir": "ui-spec",
     "site": false,
     "partial": false
   },
   {
-    "name": "MetaRoom Sign In",
-    "component": "MetaRoomSignIn",
+    "name": "Metaroom Sign In",
+    "component": "MetaroomSignIn",
     "dir": "metaroom-auth",
     "site": false,
     "partial": false

@@ -111,10 +111,10 @@ class Logic extends DCLogic {
           location.href = '/button';
         },
         spec: () => {
-          location.href = '../ui-spec/MetaRoom Components.dc.html';
+          location.href = '../ui-spec/Metaroom Components.dc.html';
         },
         portal: () => {
-          location.href = '../pages/MetaRoom Customer Portal.dc.html';
+          location.href = '../pages/Metaroom Customer Portal.dc.html';
         },
       },
     };
@@ -227,8 +227,8 @@ export default function TemplateViewer(props) {
                   <span
                     style={{ fontSize: '12px', fontWeight: '500', padding: '4px 8px', borderRadius: '6px', background: 'var(--bg-sunk)' }}
                   >
-                    <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom</span>
-                    <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom</span>
+                    <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom</span>
+                    <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom</span>
                   </span>
                 </div>
               </div>
@@ -856,7 +856,7 @@ export default function TemplateViewer(props) {
                 </div>
               </div>
               <a
-                href="../pages/MetaRoom Customer Portal.dc.html#viewer"
+                href="../pages/Metaroom Customer Portal.dc.html#viewer"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',

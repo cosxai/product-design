@@ -7,14 +7,14 @@ test("clean paths", () => {
   assert.equal(routeAt("/")?.name, "Home");
   assert.equal(routeAt("/Button/")?.name, "Button");
   assert.equal(routeAt("/pattern-action-bar")?.name, "Pattern Action Bar");
-  assert.equal(routeAt("/ui-spec/metaroom-components")?.name, "MetaRoom Components");
+  assert.equal(routeAt("/ui-spec/metaroom-components")?.name, "Metaroom Components");
   assert.equal(routeAt("/site-header"), undefined, "partials are not pages");
   assert.equal(routeAt("/home"), undefined, "Home lives at /");
 });
 
 test("old export file URLs", () => {
   assert.equal(routeOfFile("/Button.dc.html")?.path, "/button");
-  assert.equal(routeOfFile("/ui-spec/MetaRoom%20Components.dc.html")?.path, "/ui-spec/metaroom-components");
+  assert.equal(routeOfFile("/ui-spec/Metaroom%20Components.dc.html")?.path, "/ui-spec/metaroom-components");
   assert.equal(routeOfFile("/Site%20Header.dc.html"), undefined);
 });
 

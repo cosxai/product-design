@@ -109,10 +109,10 @@ class Logic extends DCLogic {
           location.href = '/button';
         },
         spec: () => {
-          location.href = '../ui-spec/MetaRoom Components.dc.html';
+          location.href = '../ui-spec/Metaroom Components.dc.html';
         },
         portal: () => {
-          location.href = '../pages/MetaRoom Customer Portal.dc.html';
+          location.href = '../pages/Metaroom Customer Portal.dc.html';
         },
       },
     };
@@ -185,16 +185,16 @@ export default function Avatars(props) {
                   }}
                 >
                   <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                    来自 MetaRoom 组件规范。界面示例为英文。
+                    来自 Metaroom 组件规范。界面示例为英文。
                   </span>
-                  <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>From the MetaRoom component spec.</span>
+                  <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>From the Metaroom component spec.</span>
                 </p>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   <span
                     style={{ fontSize: '12px', fontWeight: '500', padding: '4px 8px', borderRadius: '6px', background: 'var(--bg-sunk)' }}
                   >
-                    <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom</span>
-                    <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom</span>
+                    <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom</span>
+                    <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom</span>
                   </span>
                   <span
                     style={{ fontSize: '12px', fontWeight: '500', padding: '4px 8px', borderRadius: '6px', background: 'var(--bg-sunk)' }}

@@ -19,7 +19,7 @@
 
 ## 1.0.0-alpha.2 (2026-09-29)
 
-MetaRoom product patterns (spec P0), checked light / ink × en / zh.
+Metaroom product patterns (spec P0), checked light / ink × en / zh.
 
 - Surfaces: ActionBar (pages register actions; idle / selection / mode,
   Esc steps back; folds by group and past six; responsive, fold handle

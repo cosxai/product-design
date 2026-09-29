@@ -1,4 +1,4 @@
-// MetaRoomComponents — converted once from the Claude Design export (ui-spec/MetaRoom Components.dc.html); edit freely.
+// MetaroomComponents — converted once from the Claude Design export (ui-spec/Metaroom Components.dc.html); edit freely.
 import * as React from 'react';
 import { Fragment } from 'react';
 
@@ -206,7 +206,7 @@ class Logic extends DCLogic {
       ground: dark ? 'ink' : 'paper',
       brandField: halden ? '#D6E4DA' : 'var(--yellow)',
       brandMark: halden ? '#8FBF9F' : 'var(--yellow-accent)',
-      brandName: halden ? 'Halden Capital' : 'MetaRoom',
+      brandName: halden ? 'Halden Capital' : 'Metaroom',
       brandInitial: halden ? 'H' : 'M',
       logoDisplay: halden ? 'none' : 'block',
       initialDisplay: halden ? 'inline' : 'none',
@@ -601,11 +601,11 @@ class Logic extends DCLogic {
 export const pageCss =
   'html, body { margin: 0; background: var(--linen); -webkit-font-smoothing: antialiased; }\n    a { color: var(--text-primary); text-underline-offset: 3px; }\n    a:hover { color: var(--text-secondary); }\n    @keyframes mr-spin { to { transform: rotate(360deg); } }\n    @keyframes mr-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }\n    @keyframes mr-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }\n    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }\n.h190:hover{background: #C4261F !important}';
 
-export default function MetaRoomComponents(props) {
+export default function MetaroomComponents(props) {
   const v = useLogic(Logic, props);
   return (
     <>
-      <style href="MetaRoomComponents" precedence="page">
+      <style href="MetaroomComponents" precedence="page">
         {pageCss}
       </style>
       <div
@@ -645,7 +645,7 @@ export default function MetaRoomComponents(props) {
               </div>{' '}
               <div style={{ fontSize: '13px', fontWeight: '500' }}>{show(v.brandName)}</div>{' '}
               <div style={{ fontSize: '12px', fontWeight: '500', color: 'var(--text-secondary)' }}>
-                · MetaRoom 组件系统 · v1 草案 · 2026 年 9 月 24 日
+                · Metaroom 组件系统 · v1 草案 · 2026 年 9 月 24 日
               </div>{' '}
             </div>{' '}
             <h1
@@ -3917,7 +3917,7 @@ export default function MetaRoomComponents(props) {
                 }}
               >
                 <DS.Icon name="refresh-cw" size={16} />
-                <span style={{ fontSize: '13px', flex: '1' }}>MetaRoom has been updated. Refresh to load this page.</span>
+                <span style={{ fontSize: '13px', flex: '1' }}>Metaroom has been updated. Refresh to load this page.</span>
                 <DS.Button variant="ink" size="sm">
                   Refresh
                 </DS.Button>
@@ -7136,11 +7136,11 @@ export default function MetaRoomComponents(props) {
                 客户门户和 Ops 工作台用同一个外壳，差别只在图标栏里有哪些模块，以及上下文栏里放什么。组件：
                 <code style={{ fontSize: '13px' }}>Portal Rail</code>、<code style={{ fontSize: '13px' }}>Ops Rail</code>
                 {'。页面示例见 '}
-                <a href="../pages/MetaRoom Customer Portal.dc.html">客户门户</a>
+                <a href="../pages/Metaroom Customer Portal.dc.html">客户门户</a>
                 {' 和 '}
-                <a href="../pages/MetaRoom Ops Workbench.dc.html">Ops 工作台</a>
+                <a href="../pages/Metaroom Ops Workbench.dc.html">Ops 工作台</a>
                 {'，方案对比见 '}
-                <a href="MetaRoom Navigation.dc.html">Navigation</a>。
+                <a href="Metaroom Navigation.dc.html">Navigation</a>。
               </p>{' '}
             </div>{' '}
             <div

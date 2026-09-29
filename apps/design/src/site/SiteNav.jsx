@@ -10,8 +10,8 @@ class Logic extends DCLogic {
       cur = this.props.current ?? '';
     const S = zh ? '即将推出' : 'Soon',
       D = zh ? '草稿' : 'Draft',
-      M = 'MetaRoom';
-    const spec = '../ui-spec/MetaRoom Components.dc.html',
+      M = 'Metaroom';
+    const spec = '../ui-spec/Metaroom Components.dc.html',
       pages = '../pages/';
     const G = [
       ['概览', 'Overview', [['home', '首页', 'Home', '/']]],

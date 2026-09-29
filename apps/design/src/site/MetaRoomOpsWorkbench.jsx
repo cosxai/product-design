@@ -1,4 +1,4 @@
-// MetaRoomOpsWorkbench — converted once from the Claude Design export (pages/MetaRoom Ops Workbench.dc.html); edit freely.
+// MetaroomOpsWorkbench — converted once from the Claude Design export (pages/Metaroom Ops Workbench.dc.html); edit freely.
 import * as React from 'react';
 import { Fragment } from 'react';
 
@@ -544,11 +544,11 @@ class Logic extends DCLogic {
 export const pageCss =
   'html, body { margin: 0; background: var(--sunk-2); -webkit-font-smoothing: antialiased; }\n    a { color: var(--text-primary); text-underline-offset: 3px; }\n    a:hover { color: var(--text-secondary); }\n    @keyframes mr-spin { to { transform: rotate(360deg); } }\n    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }';
 
-export default function MetaRoomOpsWorkbench(props) {
+export default function MetaroomOpsWorkbench(props) {
   const v = useLogic(Logic, props);
   return (
     <>
-      <style href="MetaRoomOpsWorkbench" precedence="page">
+      <style href="MetaroomOpsWorkbench" precedence="page">
         {pageCss}
       </style>
       <div

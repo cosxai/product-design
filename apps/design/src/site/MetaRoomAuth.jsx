@@ -1,4 +1,4 @@
-// MetaRoomAuth — converted once from the Claude Design export (pages/MetaRoom Auth.dc.html); edit freely.
+// MetaroomAuth — converted once from the Claude Design export (pages/Metaroom Auth.dc.html); edit freely.
 import { Fragment } from 'react';
 
 import { DCLogic, css, cx, hostStyle, list, show, useLogic } from '../dc/runtime';
@@ -9,18 +9,18 @@ class Logic extends DCLogic {
   dict() {
     return {
       en: {
-        docEyebrow: 'Sign in and sign up · MetaRoom default and customer domain',
+        docEyebrow: 'Sign in and sign up · Metaroom default and customer domain',
         docTitle: 'Email first, then whichever method the workspace allows',
         docLede:
           'One flow for both products. The email decides what comes next: a code, a password, single sign-on or a social account. On a customer\u2019s own domain the pages carry only the customer\u2019s brand.',
-        s1: 'Sign in · MetaRoom',
+        s1: 'Sign in · Metaroom',
         s1n: 'Social accounts, email, passkey and single sign-on on one page.',
         s2: 'Accept an invitation · customer domain',
         s2n: 'portal.halden.co. The invitation fixes the email; only the methods Halden allows are shown.',
         s3: 'Steps and states',
         s3n: 'The same card on linen, used for every step after the first page.',
         s4: 'Phone',
-        signInTitle: 'Sign in to MetaRoom',
+        signInTitle: 'Sign in to Metaroom',
         signInSub: 'Use your work email or an account you already have.',
         signInShort: 'Sign in',
         google: 'Continue with Google',
@@ -32,7 +32,7 @@ class Logic extends DCLogic {
         contEmail: 'Continue with email',
         passkey: 'Sign in with a passkey',
         sso: 'Single sign-on',
-        newHere: 'New to MetaRoom?',
+        newHere: 'New to Metaroom?',
         create: 'Create an account',
         legal: 'By continuing you agree to the Terms of Service and Privacy Policy.',
         footer: 'Privacy · Terms · Status',
@@ -83,17 +83,17 @@ class Logic extends DCLogic {
         cExp: 'Invitation expired',
       },
       zh: {
-        docEyebrow: '登录与注册 · MetaRoom 默认与客户自有域名',
+        docEyebrow: '登录与注册 · Metaroom 默认与客户自有域名',
         docTitle: '先填邮箱，再用工作区允许的方式登录',
         docLede: '两个产品共用一套流程。邮箱决定下一步：验证码、密码、单点登录或社交账号。在客户自有域名下，页面只出现客户自己的品牌。',
-        s1: '登录 · MetaRoom',
+        s1: '登录 · Metaroom',
         s1n: '社交账号、邮箱、通行密钥、单点登录都在一页。',
         s2: '接受邀请 · 客户域名',
         s2n: 'portal.halden.co。邮箱由邀请确定，只显示 Halden 允许的登录方式。',
         s3: '后续步骤与状态',
         s3n: '第一页之后的每一步，都用亚麻底上的同一张卡片。',
         s4: '手机',
-        signInTitle: '登录 MetaRoom',
+        signInTitle: '登录 Metaroom',
         signInSub: '使用工作邮箱，或已有的账号。',
         signInShort: '登录',
         google: '使用 Google 继续',
@@ -219,8 +219,8 @@ class Logic extends DCLogic {
         [
           p('Brand', '品牌'),
           p(
-            'On a customer domain: the customer tile, name and field colour, and no MetaRoom text. Legal links go to the customer\u2019s terms.',
-            '客户域名下使用客户的品牌方块、名称和品牌色，不出现 MetaRoom 字样。法律链接指向客户自己的条款。',
+            'On a customer domain: the customer tile, name and field colour, and no Metaroom text. Legal links go to the customer\u2019s terms.',
+            '客户域名下使用客户的品牌方块、名称和品牌色，不出现 Metaroom 字样。法律链接指向客户自己的条款。',
           ),
         ],
         [
@@ -238,11 +238,11 @@ class Logic extends DCLogic {
 export const pageCss =
   'html, body { margin: 0; background: var(--sunk-2); -webkit-font-smoothing: antialiased; }\n    a { color: var(--text-primary); text-underline-offset: 3px; }\n    a:hover { color: var(--text-secondary); }';
 
-export default function MetaRoomAuth(props) {
+export default function MetaroomAuth(props) {
   const v = useLogic(Logic, props);
   return (
     <>
-      <style href="MetaRoomAuth" precedence="page">
+      <style href="MetaroomAuth" precedence="page">
         {pageCss}
       </style>
       <div
@@ -318,7 +318,7 @@ export default function MetaRoomAuth(props) {
                   >
                     <img src="../assets/logo-icon.svg" alt="COSX" style={{ width: '78%', height: '78%', display: 'block' }} />
                   </span>
-                  <span style={{ fontSize: '15px', fontWeight: '500' }}>MetaRoom</span>
+                  <span style={{ fontSize: '15px', fontWeight: '500' }}>Metaroom</span>
                 </div>{' '}
                 <div style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {' '}
@@ -398,7 +398,7 @@ export default function MetaRoomAuth(props) {
                   }}
                 >
                   {' '}
-                  <span style={{ fontSize: '13px', fontWeight: '500', color: 'rgba(17,17,17,.7)' }}>MetaRoom</span>{' '}
+                  <span style={{ fontSize: '13px', fontWeight: '500', color: 'rgba(17,17,17,.7)' }}>Metaroom</span>{' '}
                   <span style={{ fontSize: '38px', fontWeight: '500', lineHeight: '1.25' }}>
                     {show(v.t?.panelA)}
                     <span style={{ boxShadow: 'inset 0 -3px 0 var(--ink)' }}>{show(v.t?.panelB)}</span>
@@ -958,7 +958,7 @@ export default function MetaRoomAuth(props) {
                 >
                   <img src="../assets/logo-icon.svg" alt="COSX" style={{ width: '78%', height: '78%', display: 'block' }} />
                 </span>
-                <span style={{ fontSize: '15px', fontWeight: '500' }}>MetaRoom</span>
+                <span style={{ fontSize: '15px', fontWeight: '500' }}>Metaroom</span>
               </div>{' '}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingTop: '24px' }}>
                 <span style={{ fontSize: '26px', fontWeight: '500', lineHeight: '1.25' }}>{show(v.t?.signInTitle)}</span>

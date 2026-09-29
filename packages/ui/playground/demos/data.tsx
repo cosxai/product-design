@@ -199,7 +199,7 @@ export function DataDemo({ zh }: { zh: boolean }) {
             root={
               <span className="flex items-center gap-2 font-medium text-fg">
                 <Logo variant="tile" height={20} alt="" />
-                MetaRoom
+                Metaroom
               </span>
             }
             items={[{ label: t('Harbour data room', 'Harbour 数据室'), href: '#' }, { label: 'Series A', href: '#' }, { label: t('Legal', '法务'), href: '#' }, { label: t('Shareholder agreement v3', '股东协议 v3'), tag: 'PDF' }]}

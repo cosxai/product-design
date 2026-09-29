@@ -20,7 +20,7 @@ components on the pages are drawn by `@cosxai/ui` through `src/dc/ds.jsx`;
 ## Search and sharing
 
 - `src/seo.json` — per page: title, description (≈155 chars), share-image
-  title and line, and whether it is indexed (the MetaRoom prototypes are
+  title and line, and whether it is indexed (the Metaroom prototypes are
   `noindex`). Edit by hand; `node scripts/seo.mjs meta` re-extracts it.
 - `src/layouts/Page.astro` writes canonical, robots, Open Graph, Twitter
   and JSON-LD (WebSite + WebPage, publisher = the cosx.co Organization).

@@ -141,7 +141,7 @@ function StatusDemo({ zh }: { zh: boolean }) {
         </div>
         <PageNotice>{t('This document has 1,240 pages. Only the first 500 were processed for search and the Agent.', '此文档共 1,240 页，只有前 500 页已处理，可供搜索和 Agent 使用。')}</PageNotice>
         <PageNotice tone="update" action={<Button size="sm" ground="yellow">{t('Refresh', '刷新')}</Button>}>
-          {t('MetaRoom has been updated. Refresh to load this page.', 'MetaRoom 已更新，刷新以加载此页面。')}
+          {t('Metaroom has been updated. Refresh to load this page.', 'Metaroom 已更新，刷新以加载此页面。')}
         </PageNotice>
       </Section>
 

@@ -48,8 +48,8 @@ const NAMES = {
   '/bilingual': 'Chinese and English', '/pattern-navigation': 'Navigation', '/pattern-action-bar': 'Action bar', '/pattern-agent': 'Agent conversation',
   '/pattern-status': 'Status', '/template-sign-in': 'Sign in', '/template-settings': 'Settings', '/template-list': 'Lists', '/template-viewer': 'Viewer',
   '/spacing': 'Spacing and shape', '/yellow': 'The yellow', '/marker': 'The marker',
-  '/pages/metaroom-auth': 'MetaRoom sign-in', '/pages/metaroom-customer-portal': 'MetaRoom customer portal', '/pages/metaroom-ops-workbench': 'MetaRoom Ops workbench',
-  '/ui-spec/metaroom-components': 'MetaRoom components', '/ui-spec/metaroom-navigation': 'MetaRoom navigation', '/metaroom-auth/metaroom-sign-in': 'MetaRoom sign-in prototype',
+  '/pages/metaroom-auth': 'Metaroom sign-in', '/pages/metaroom-customer-portal': 'Metaroom customer portal', '/pages/metaroom-ops-workbench': 'Metaroom Ops workbench',
+  '/ui-spec/metaroom-components': 'Metaroom components', '/ui-spec/metaroom-navigation': 'Metaroom navigation', '/metaroom-auth/metaroom-sign-in': 'Metaroom sign-in prototype',
 };
 
 /** About 155 characters, cut at a word. */

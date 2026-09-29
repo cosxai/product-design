@@ -113,10 +113,10 @@ class Logic extends DCLogic {
           location.href = '/button';
         },
         spec: () => {
-          location.href = '../ui-spec/MetaRoom Components.dc.html';
+          location.href = '../ui-spec/Metaroom Components.dc.html';
         },
         portal: () => {
-          location.href = '../pages/MetaRoom Customer Portal.dc.html';
+          location.href = '../pages/Metaroom Customer Portal.dc.html';
         },
       },
     };
@@ -786,8 +786,8 @@ export default function Table(props) {
                 }}
               >
                 <h2 style={{ margin: '0', fontSize: '26px', fontWeight: '500', lineHeight: '1.3', letterSpacing: '-.01em' }}>
-                  <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>MetaRoom 中的完整规范</span>
-                  <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Full spec in MetaRoom</span>
+                  <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Metaroom 中的完整规范</span>
+                  <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>Full spec in Metaroom</span>
                 </h2>
                 <p
                   style={{
@@ -800,10 +800,10 @@ export default function Table(props) {
                   }}
                 >
                   <span style={{ display: v.dz, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                    以下内容来自 MetaRoom 组件规范：更多类型、状态矩阵和业务示例。
+                    以下内容来自 Metaroom 组件规范：更多类型、状态矩阵和业务示例。
                   </span>
                   <span style={{ display: v.de, lineHeight: 'inherit', letterSpacing: 'inherit' }}>
-                    From the MetaRoom component spec: more types, state matrices and product examples.
+                    From the Metaroom component spec: more types, state matrices and product examples.
                   </span>
                 </p>
               </div>

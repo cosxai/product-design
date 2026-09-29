@@ -1,4 +1,4 @@
-// MetaRoomSignIn — converted once from the Claude Design export (metaroom-auth/MetaRoom Sign In.dc.html); edit freely.
+// MetaroomSignIn — converted once from the Claude Design export (metaroom-auth/Metaroom Sign In.dc.html); edit freely.
 import * as React from 'react';
 import { Fragment } from 'react';
 
@@ -193,7 +193,7 @@ class Logic extends DCLogic {
         [
           '从 portal.halden.co 这类客户域名或邀请链接进入时，卡片顶部显示工作区品牌，标题写“登录 Halden Capital”。',
           '工作区已经确定，登录后直接进入，跳过选择工作区。',
-          '页面上不出现 MetaRoom 或 COSX。',
+          '页面上不出现 Metaroom 或 COSX。',
         ],
         '旧流程要先发现未登录，再带着工作区信息跳转 SSO，再跳回来。',
       ],
@@ -308,7 +308,7 @@ class Logic extends DCLogic {
         '回调页：成功后自动返回',
         [
           '浏览器页面显示“已登录”，并自动通过深链接打开 app。',
-          '自动跳转失败时，保留一个“打开 MetaRoom”按钮。',
+          '自动跳转失败时，保留一个“打开 Metaroom”按钮。',
           '同一模板用于各数据源的 OAuth 回调，只换标题和图标。',
         ],
         '旧版文案是 You’re all set，要用户自己关窗口回 app。',
@@ -354,7 +354,7 @@ class Logic extends DCLogic {
     );
     const P = {
       signin: [
-        'MetaRoom',
+        'Metaroom',
         'Documents, tasks and conversations with your clients, ',
         'in one private workspace.',
         'One sign-in for every workspace you belong to.',
@@ -368,7 +368,7 @@ class Logic extends DCLogic {
       sso: [
         'Single sign-on',
         'Harbour Ventures checks who you are. ',
-        'MetaRoom never sees your password.',
+        'Metaroom never sees your password.',
         'After Okta signs you in, you come straight back here.',
       ],
       secure: [
@@ -570,12 +570,12 @@ class Logic extends DCLogic {
           ? 'Enter your work email and we\u2019ll send you to your company\u2019s sign-in.'
           : undefined,
       emailShown: email,
-      signinTitle: branded ? 'Sign in to Halden Capital' : 'Sign in to MetaRoom',
+      signinTitle: branded ? 'Sign in to Halden Capital' : 'Sign in to Metaroom',
       signinSub: branded ? 'Use the email your invitation was sent to.' : 'Use your work email or an account you already have.',
       brandTile: branded ? '#D6E4DA' : '#FFE3A0',
       logoD: branded ? 'none' : 'block',
       initialD: branded ? 'inline' : 'none',
-      brandName: branded ? 'Halden Capital' : 'MetaRoom',
+      brandName: branded ? 'Halden Capital' : 'Metaroom',
       ssoLabel: 'Continue with Okta',
       ssoGo: go.done,
       passkeyBtn: 'Use passkey',
@@ -609,11 +609,11 @@ class Logic extends DCLogic {
 export const pageCss =
   'html, body { margin: 0; background: #F5F2EC; -webkit-font-smoothing: antialiased; }\n    a { color: var(--text-primary); text-underline-offset: 3px; }\n    a:hover { color: var(--text-secondary); }\n    @keyframes mr-spin { to { transform: rotate(360deg); } }\n.h160:hover{background: var(--hover) !important}';
 
-export default function MetaRoomSignIn(props) {
+export default function MetaroomSignIn(props) {
   const v = useLogic(Logic, props);
   return (
     <>
-      <style href="MetaRoomSignIn" precedence="page">
+      <style href="MetaroomSignIn" precedence="page">
         {pageCss}
       </style>
       <div
@@ -644,7 +644,7 @@ export default function MetaRoomSignIn(props) {
           }}
         >
           {' '}
-          <span style={{ fontSize: '14px', fontWeight: '500', whiteSpace: 'nowrap' }}>MetaRoom 登录与注册 · v2 原型</span>{' '}
+          <span style={{ fontSize: '14px', fontWeight: '500', whiteSpace: 'nowrap' }}>Metaroom 登录与注册 · v2 原型</span>{' '}
           <div style={{ flex: '1' }} />{' '}
           <span style={{ fontSize: '12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>试试这些邮箱</span>{' '}
           {list(v.samples).map((s$, $i) => {
@@ -991,7 +991,7 @@ export default function MetaRoomSignIn(props) {
                           </div>{' '}
                           <div style={{ height: '1px', background: 'var(--rule-soft)' }} />{' '}
                           <span style={{ fontSize: '13px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                            New to MetaRoom? Enter your email above and we'll set up your account.
+                            New to Metaroom? Enter your email above and we'll set up your account.
                           </span>{' '}
                           <span style={{ fontSize: '12px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
                             By continuing you agree to the Terms of Service and Privacy Policy.
@@ -1030,7 +1030,7 @@ export default function MetaRoomSignIn(props) {
                             <span style={{ fontSize: '12px', fontWeight: '600', textDecoration: 'underline' }}>Change</span>
                           </button>{' '}
                           <span style={{ fontSize: '14px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                            Your company signs you in through Okta. You'll come straight back to MetaRoom afterwards.
+                            Your company signs you in through Okta. You'll come straight back to Metaroom afterwards.
                           </span>{' '}
                           <div className="sc-host-x" style={{ width: '100%' }}>
                             <DS.Button size="lg" ground={v.ground} onClick={v.ssoGo} {...v.full}>
@@ -1723,7 +1723,7 @@ export default function MetaRoomSignIn(props) {
                           </span>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <span style={{ fontSize: '30px', fontWeight: '500', letterSpacing: '-.015em', lineHeight: '1.2' }}>
-                              Sign in to MetaRoom
+                              Sign in to Metaroom
                             </span>
                             <span style={{ fontSize: '15px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
                               Your browser opens to finish signing in, then brings you back here.
@@ -1799,12 +1799,12 @@ export default function MetaRoomSignIn(props) {
                               You’re signed in
                             </span>
                             <span style={{ fontSize: '15px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                              Returning you to the MetaRoom app. You can close this tab.
+                              Returning you to the Metaroom app. You can close this tab.
                             </span>
                           </div>
                           <div className="sc-host-x" style={{ width: '100%' }}>
                             <DS.Button size="lg" ground={v.ground} onClick={v.go?.chooser} {...v.full}>
-                              Open MetaRoom
+                              Open Metaroom
                             </DS.Button>
                           </div>
                           <button
@@ -1847,15 +1847,15 @@ export default function MetaRoomSignIn(props) {
                           </span>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <span style={{ fontSize: '30px', fontWeight: '500', letterSpacing: '-.015em', lineHeight: '1.2' }}>
-                              Open the MetaRoom app
+                              Open the Metaroom app
                             </span>
                             <span style={{ fontSize: '15px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                              Your browser asked before opening the app. Choose Open MetaRoom in the prompt, or use the button below.
+                              Your browser asked before opening the app. Choose Open Metaroom in the prompt, or use the button below.
                             </span>
                           </div>
                           <div className="sc-host-x" style={{ width: '100%' }}>
                             <DS.Button size="lg" ground={v.ground} onClick={v.go?.chooser} {...v.full}>
-                              Open MetaRoom
+                              Open Metaroom
                             </DS.Button>
                           </div>
                           <div
@@ -1984,7 +1984,7 @@ export default function MetaRoomSignIn(props) {
                           </div>{' '}
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <span style={{ fontSize: '30px', fontWeight: '500', letterSpacing: '-.015em', lineHeight: '1.2' }}>
-                              Claude wants to use MetaRoom
+                              Claude wants to use Metaroom
                             </span>
                             <span style={{ fontSize: '15px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
                               {'Signed in as sam@cosx.co · '}
