@@ -79,7 +79,7 @@ product-design/
 │       └── package.json
 ├── apps/
 │   ├── docs/                  0.x showcase (ui.cosx.co, Worker ui-docs)
-│   └── design/                COSX Design System 3.0 site (design.cosx.co, Worker design)
+│   └── design/                design.cosx.co on Astro + @cosxai/ui (Worker design)
 └── .claude/rules/             the rules above
 ```
 

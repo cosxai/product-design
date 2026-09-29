@@ -59,7 +59,7 @@ Craft's conversation components restyled to "Agent conversation" (design.cosx.co
 - Integration: the citation card renders in a portal with fixed placement (it was clipped inside the drawer); Tab order kept as if it sat after the chip. Button busy/done now overlay the hidden idle content (a button mounted busy no longer shrinks to the spinner).
 - First publish of `@cosxai/chat` is by hand (npm needs the package to exist before a trusted publisher can be added); then add publish-chat.yml as trusted publisher; later releases tag `chat-v*`.
 
-### Stage 4 — design.cosx.co on Astro
+### Stage 4 — design.cosx.co on Astro — done, live 2026-09-29
 Static pages, view transitions, interactive examples as islands on the
 real components; preview URL until parity with the 42 exported pages,
 then switch. After the switch, design changes are ported from Claude
@@ -76,7 +76,7 @@ Progress (2026-09-29):
 - [x] Converter, runtime shim, adapters (`ToastCard` added to @cosxai/ui for the toast specimens), Astro build (42 pages × 4 builds + 6 MetaRoom spec pages), Worker with cookie-picked builds and old file-URL redirects — 4 Worker tests
 - [x] Parity: every page screenshotted against design.cosx.co in all four builds — all within 8% of pixels, no browser errors; what remains is the kit's own differences (control heights, the icon stroke), i.e. the design-review list. Two global fixes found this way: the export kept the browser's line height and content-box sizing (Tailwind's reset changes both)
 - [x] Preview: https://design-next.cosx-584.workers.dev
-- [ ] Owner review of the preview → switch design.cosx.co to it (Worker `design` from apps/design-next; apps/design and the export sync retire)
+- [x] Owner reviewed; switched 2026-09-29: design.cosx.co = Worker `design` version e578dc9d from the Astro build (previous export version d92433c0 for rollback). The Astro app moved to `apps/design`; the export app and its sync script are retired (in git history).
 - [ ] Later: split Spec Sections (one ~100 KB gz chunk shared by 27 pages); ship no page script where a page has no state of its own
 
 ### Stage 5 — product-meta adopts 1.0

@@ -1,25 +1,12 @@
 {
+  "extends": "astro/tsconfigs/base",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "lib": [
-      "ES2022"
-    ],
-    "types": [
-      "@cloudflare/workers-types"
-    ],
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
+    "types": ["@cloudflare/workers-types"],
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "skipLibCheck": true
+    "jsx": "react-jsx"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "src/**/*.test.ts"
-  ]
+  "include": ["worker"],
+  "exclude": ["worker/**/*.test.ts"]
 }
