@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://design.cosx.co/sitemap.xml

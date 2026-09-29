@@ -1,0 +1,35 @@
+---
+// Share image template, 1200 × 630 (scripts/seo.mjs screenshots it into
+// public/og/<slug>.png). Not served: the Worker only routes site pages.
+import '../../styles/site.css';
+import Specimen from '../../og/Specimen.jsx';
+import seo from '../../seo.json';
+
+export function getStaticPaths() {
+  return Object.values(seo).map((meta) => ({ params: { slug: meta.slug }, props: { meta } }));
+}
+const { meta } = Astro.props;
+---
+<!doctype html>
+<html lang="en-GB">
+  <head><meta charset="utf-8" /><title>{meta.title}</title></head>
+  <body style="margin:0">
+    <div class="flex h-[630px] w-[1200px] gap-12 bg-linen p-[64px] pr-[56px] font-sans text-fg">
+      <div class="flex min-w-0 flex-1 flex-col">
+        <div class="text-[22px] font-medium tracking-[.01em] text-fg-secondary">COSX Design System</div>
+        <div class="mt-auto flex flex-col gap-5">
+          {meta.section && <div class="text-[22px] font-medium text-fg-secondary">{meta.section}</div>}
+          <h1 class={`m-0 font-medium leading-[1.08] tracking-[-.02em] ${meta.ogTitle.length > 20 ? 'text-[64px]' : 'text-[84px]'}`}>
+            <span class="box-decoration-clone bg-[linear-gradient(transparent_55%,var(--yellow-accent)_55%,var(--yellow-accent)_92%,transparent_92%)] px-1">{meta.ogTitle}</span>
+          </h1>
+          <p class="m-0 line-clamp-2 text-[24px] leading-[1.4] text-fg-secondary">{meta.ogLine}</p>
+        </div>
+        <div class="mt-9 flex items-center justify-between border-t border-rule pt-6">
+          <img src="/assets/logo-wordmark.svg" alt="COSX" class="h-7" />
+          <span class="text-[20px] font-semibold">design.cosx.co</span>
+        </div>
+      </div>
+      <div class="w-[470px] shrink-0"><Specimen /></div>
+    </div>
+  </body>
+</html>

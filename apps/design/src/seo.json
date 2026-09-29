@@ -1,0 +1,434 @@
+{
+  "/avatars": {
+    "slug": "avatars",
+    "title": "Avatars and members",
+    "ogTitle": "Avatars and members",
+    "section": "Components",
+    "ogLine": "People, organisations, the Agent and staff at a glance",
+    "description": "Avatars and members in the COSX Design System. People, organisations, the Agent and staff at a glance.",
+    "index": true
+  },
+  "/badge": {
+    "slug": "badge",
+    "title": "Badge",
+    "ogTitle": "Badge",
+    "section": "Components",
+    "ogLine": "Product UI only. Shape carries urgency: a fill needs a person, an outline is in progress, a dot is a known state. The wording is always there.",
+    "description": "Product UI only. Shape carries urgency: a fill needs a person, an outline is in progress, a dot is a known state. The wording is always there.",
+    "index": true
+  },
+  "/bilingual": {
+    "slug": "bilingual",
+    "title": "Chinese and English",
+    "ogTitle": "Chinese and English",
+    "section": "Components",
+    "ogLine": "One component, in Chinese and English",
+    "description": "Chinese and English in the COSX Design System. One component, in Chinese and English.",
+    "index": true
+  },
+  "/brand-injection": {
+    "slug": "brand-injection",
+    "title": "Brand injection",
+    "ogTitle": "Brand injection",
+    "section": "Foundations",
+    "ogLine": "A customer’s colour is for areas and small marks only",
+    "description": "Brand injection in the COSX Design System. A customer’s colour is for areas and small marks only.",
+    "index": true
+  },
+  "/button": {
+    "slug": "button",
+    "title": "Button",
+    "ogTitle": "Button",
+    "section": "Components",
+    "ogLine": "Triggers an action. The primary is ink on paper and on the yellow, and yellow on ink. One primary per view.",
+    "description": "Triggers an action. The primary is ink on paper and on the yellow, and yellow on ink. One primary per view.",
+    "index": true
+  },
+  "/charts": {
+    "slug": "charts",
+    "title": "Charts",
+    "ogTitle": "Charts",
+    "section": "Components",
+    "ogLine": "Ink is the base; only the finding takes the brand colour",
+    "description": "Charts in the COSX Design System. Ink is the base; only the finding takes the brand colour.",
+    "index": true
+  },
+  "/checkbox": {
+    "slug": "checkbox",
+    "title": "Checkbox and switch",
+    "ogTitle": "Checkbox and switch",
+    "section": "Components",
+    "ogLine": "Checkboxes choose; switches act at once",
+    "description": "Checkboxes choose; switches act at once. A checkbox is a choice in a form that takes effect on submit; a switch is a setting that takes effect when…",
+    "index": true
+  },
+  "/colour": {
+    "slug": "colour",
+    "title": "Colour",
+    "ogTitle": "Colour",
+    "section": "Foundations",
+    "ogLine": "Paper and linen are the page, ink writes every letter, and the yellow is the only colour: the pale field for large areas, the saturated accent for small ones, and never for letters. Click a swatch to copy its variable.",
+    "description": "Paper and linen are the page, ink writes every letter, and the yellow is the only colour: the pale field for large areas, the saturated accent for small…",
+    "index": true
+  },
+  "/data-display": {
+    "slug": "data-display",
+    "title": "Data display",
+    "ogTitle": "Data display",
+    "section": "Components",
+    "ogLine": "Cards, rows, the folder tree and the toolbar",
+    "description": "Data display in the COSX Design System. Cards, rows, the folder tree and the toolbar.",
+    "index": true
+  },
+  "/dialog": {
+    "slug": "dialog",
+    "title": "Dialog",
+    "ogTitle": "Dialog",
+    "section": "Components",
+    "ogLine": "For something that interrupts the task and needs an answer. Centred on the scrim, page colour, 16px corners, no shadow.",
+    "description": "For something that interrupts the task and needs an answer. Centred on the scrim, page colour, 16px corners, no shadow.",
+    "index": true
+  },
+  "/downloads": {
+    "slug": "downloads",
+    "title": "Downloads",
+    "ogTitle": "Downloads",
+    "section": "Resources",
+    "ogLine": "Everything here comes from COSX Design System 3.0. Read the logo rules before using them.",
+    "description": "Downloads in the COSX Design System. Everything here comes from COSX Design System 3.0. Read the logo rules before using them.",
+    "index": true
+  },
+  "/editing": {
+    "slug": "editing",
+    "title": "Editing and signing",
+    "ogTitle": "Editing and signing",
+    "section": "Components",
+    "ogLine": "The editor, version compare and signature fields",
+    "description": "Editing and signing in the COSX Design System. The editor, version compare and signature fields.",
+    "index": true
+  },
+  "/feedback": {
+    "slug": "feedback",
+    "title": "Feedback",
+    "ogTitle": "Feedback",
+    "section": "Components",
+    "ogLine": "Toasts, type to confirm, step-up and rename",
+    "description": "Feedback in the COSX Design System. Toasts, type to confirm, step-up and rename.",
+    "index": true
+  },
+  "/form-extensions": {
+    "slug": "form-extensions",
+    "title": "Form extensions",
+    "ogTitle": "Form extensions",
+    "section": "Components",
+    "ogLine": "Wizards, money, date ranges, tags and brand colour",
+    "description": "Form extensions in the COSX Design System. Wizards, money, date ranges, tags and brand colour.",
+    "index": true
+  },
+  "/": {
+    "slug": "home",
+    "title": "COSX Design System",
+    "ogTitle": "COSX Design System",
+    "section": "Brand · Components · Patterns",
+    "ogLine": "Warm white paper, ink type and one yellow.",
+    "description": "The COSX Design System: brand, foundations, components, product patterns and page templates for the COSX website and the MetaRoom AI workspace.",
+    "index": true
+  },
+  "/input": {
+    "slug": "input",
+    "title": "Input",
+    "ogTitle": "Input",
+    "section": "Components",
+    "ogLine": "Single-line text entry. The field sinks to linen and takes an ink edge on focus. Label above, hint or error below.",
+    "description": "Single-line text entry. The field sinks to linen and takes an ink edge on focus. Label above, hint or error below.",
+    "index": true
+  },
+  "/kanban": {
+    "slug": "kanban",
+    "title": "Board",
+    "ogTitle": "Board",
+    "section": "Components",
+    "ogLine": "A board and a list are two views of the same data",
+    "description": "Board in the COSX Design System. A board and a list are two views of the same data.",
+    "index": true
+  },
+  "/logo": {
+    "slug": "logo",
+    "title": "Logo",
+    "ogTitle": "Logo",
+    "section": "Brand",
+    "ogLine": "The logo takes its colour from the ground, never from the mark",
+    "description": "The logo takes its colour from the ground, never from the mark. In the COSX wordmark the CO is one continuous cosine-infinity loop; the icon is the loop…",
+    "index": true
+  },
+  "/marker": {
+    "slug": "marker",
+    "title": "The marker",
+    "ogTitle": "The marker",
+    "section": "Brand",
+    "ogLine": "The marker sits under the phrase that carries the finding",
+    "description": "The marker sits under the phrase that carries the finding. An accent-yellow highlighter in the lower 60% of the line. It is the COSX signature: one per…",
+    "index": true
+  },
+  "/mobile": {
+    "slug": "mobile",
+    "title": "Mobile",
+    "ogTitle": "Mobile",
+    "section": "Components",
+    "ogLine": "On phones: one layer, bottom tabs, targets of 44px or more",
+    "description": "Mobile in the COSX Design System. On phones: one layer, bottom tabs, targets of 44px or more.",
+    "index": true
+  },
+  "/motion": {
+    "slug": "motion",
+    "title": "Motion",
+    "ogTitle": "Motion",
+    "section": "Foundations",
+    "ogLine": "Paper settling: one entry, then stillness",
+    "description": "Paper settling: one entry, then stillness. Two registers. State changes move colour, border and opacity; entry is one choreographed settle. Nothing…",
+    "index": true
+  },
+  "/overlays": {
+    "slug": "overlays",
+    "title": "Overlays and menus",
+    "ogTitle": "Overlays and menus",
+    "section": "Components",
+    "ogLine": "Menus, the command palette, side panels and stacking",
+    "description": "Overlays and menus in the COSX Design System. Menus, the command palette, side panels and stacking.",
+    "index": true
+  },
+  "/pattern-action-bar": {
+    "slug": "pattern-action-bar",
+    "title": "Action bar",
+    "ogTitle": "Action bar",
+    "section": "Patterns",
+    "ogLine": "One global action area that changes with state, kept sparing",
+    "description": "One global action area that changes with state, kept sparing. An ink bar floats at the bottom centre. It carries only the page’s most used actions;…",
+    "index": true
+  },
+  "/pattern-agent": {
+    "slug": "pattern-agent",
+    "title": "Agent conversation",
+    "ogTitle": "Agent conversation",
+    "section": "Patterns",
+    "ogLine": "Show what it did and what it relied on; people confirm anything that leaves",
+    "description": "Show what it did and what it relied on; people confirm anything that leaves. The portal’s Conversation and the Ops Agent drawer share these parts:…",
+    "index": true
+  },
+  "/pattern-navigation": {
+    "slug": "pattern-navigation",
+    "title": "Navigation",
+    "ogTitle": "Navigation",
+    "section": "Patterns",
+    "ogLine": "An icon rail for modules, a context column for the current module",
+    "description": "An icon rail for modules, a context column for the current module. The MetaRoom customer portal and Ops workbench share this shell. Menus go two levels…",
+    "index": true
+  },
+  "/pattern-status": {
+    "slug": "pattern-status",
+    "title": "Status",
+    "ogTitle": "Status",
+    "section": "Patterns",
+    "ogLine": "Shape says how urgent; the wording says what",
+    "description": "Shape says how urgent; the wording says what. Product UI has yellow, ink and one red. A fill needs a person, an outline is under way, a dot is a known…",
+    "index": true
+  },
+  "/select": {
+    "slug": "select",
+    "title": "Select",
+    "ogTitle": "Select",
+    "section": "Components",
+    "ogLine": "Pick one from a fixed set. The selected row sits on the yellow; above eight options a filter appears.",
+    "description": "Pick one from a fixed set. The selected row sits on the yellow; above eight options a filter appears.",
+    "index": true
+  },
+  "/share-dialog": {
+    "slug": "share-dialog",
+    "title": "Share dialog",
+    "ogTitle": "Share dialog",
+    "section": "Components",
+    "ogLine": "Who, what they can do, and until when",
+    "description": "Share dialog in the COSX Design System. Who, what they can do, and until when.",
+    "index": true
+  },
+  "/spacing": {
+    "slug": "spacing",
+    "title": "Spacing and shape",
+    "ogTitle": "Spacing and shape",
+    "section": "Foundations",
+    "ogLine": "Whitespace separates first, rules second",
+    "description": "Whitespace separates first, rules second. Spacing, radius and rules each follow a fixed ladder. No shadows: depth comes from sunk grounds and the scrim.",
+    "index": true
+  },
+  "/system": {
+    "slug": "system",
+    "title": "System",
+    "ogTitle": "System",
+    "section": "Components",
+    "ogLine": "Notifications, shortcuts, the preview banner, error pages and onboarding",
+    "description": "System in the COSX Design System. Notifications, shortcuts, the preview banner, error pages and onboarding.",
+    "index": true
+  },
+  "/table": {
+    "slug": "table",
+    "title": "Table",
+    "ogTitle": "Table",
+    "section": "Components",
+    "ogLine": "A register table: linen head, hairline rows, washes on rows that need attention",
+    "description": "A register table: linen head, hairline rows, washes on rows that need attention. For lists people compare, such as members, shares and review queues.…",
+    "index": true
+  },
+  "/tabs": {
+    "slug": "tabs",
+    "title": "Tabs",
+    "ogTitle": "Tabs",
+    "section": "Components",
+    "ogLine": "Switch between views at the same level",
+    "description": "Switch between views at the same level. Product UI uses the underline style; marketing sections use pills, with the active one on the yellow field.",
+    "index": true
+  },
+  "/template-list": {
+    "slug": "template-list",
+    "title": "Lists",
+    "ogTitle": "Lists",
+    "section": "Templates",
+    "ogLine": "Cards or a list; selecting swaps the action bar to selection actions",
+    "description": "Cards or a list; selecting swaps the action bar to selection actions. Documents, clients and tasks share this list: page actions in the header, search,…",
+    "index": true
+  },
+  "/template-settings": {
+    "slug": "template-settings",
+    "title": "Settings",
+    "ogTitle": "Settings",
+    "section": "Templates",
+    "ogLine": "Grouped menu on the left, description and control on the right",
+    "description": "Grouped menu on the left, description and control on the right. Workspace settings, personal preferences and entity settings share this template. Switches…",
+    "index": true
+  },
+  "/template-sign-in": {
+    "slug": "template-sign-in",
+    "title": "Sign in",
+    "ogTitle": "Sign in",
+    "section": "Templates",
+    "ogLine": "One card: providers first, email after",
+    "description": "One card: providers first, email after. The workspace brand tops the card; on a customer domain the platform name never appears. Which methods show is set…",
+    "index": true
+  },
+  "/template-viewer": {
+    "slug": "template-viewer",
+    "title": "Viewer",
+    "ogTitle": "Viewer",
+    "section": "Templates",
+    "ogLine": "The page in the middle, comments on the right, the action bar below",
+    "description": "The page in the middle, comments on the right, the action bar below. Documents, sheets and emails share one viewer. The watermark, pins and zoom sit over…",
+    "index": true
+  },
+  "/toast": {
+    "slug": "toast",
+    "title": "Toast",
+    "ogTitle": "Toast",
+    "section": "Components",
+    "ogLine": "Report only what happened off the page",
+    "description": "Report only what happened off the page. An ink notice in the bottom right. When a result can show in place (a button, a row, a field), skip the toast;…",
+    "index": true
+  },
+  "/typography": {
+    "slug": "typography",
+    "title": "Typography",
+    "ogTitle": "Typography",
+    "section": "Foundations",
+    "ogLine": "One family; size carries the hierarchy",
+    "description": "One family; size carries the hierarchy. Geist for Latin and digits, Noto Sans SC for Chinese. Headlines at 500, body at 400, never 700.",
+    "index": true
+  },
+  "/upload": {
+    "slug": "upload",
+    "title": "Upload",
+    "ogTitle": "Upload",
+    "section": "Components",
+    "ogLine": "Drop files in, or choose them",
+    "description": "Drop files in, or choose them. The drop zone, the full-screen drop, upload rows and progress, for libraries, task attachments and the Agent conversation.",
+    "index": true
+  },
+  "/voice": {
+    "slug": "voice",
+    "title": "Voice",
+    "ogTitle": "Voice",
+    "section": "Brand",
+    "ogLine": "Short sentences. The headline is the finding, stated as a fact with the number in it. Speak about the firm and the work, not about “us”.",
+    "description": "Short sentences. The headline is the finding, stated as a fact with the number in it. Speak about the firm and the work, not about “us”.",
+    "index": true
+  },
+  "/writing": {
+    "slug": "writing",
+    "title": "Writing",
+    "ogTitle": "Writing",
+    "section": "Content",
+    "ogLine": "Interface copy says what will happen",
+    "description": "Interface copy says what will happen. The voice rules live on the brand page. This page covers product UI only: buttons, states, errors, empty states,…",
+    "index": true
+  },
+  "/yellow": {
+    "slug": "yellow",
+    "title": "The yellow",
+    "ogTitle": "The yellow",
+    "section": "Brand",
+    "ogLine": "One yellow, three strengths by area",
+    "description": "One yellow, three strengths by area. The yellow is COSX’s only colour, and it never writes a letter. Field for large areas, accent for small ones, light…",
+    "index": true
+  },
+  "/pages/metaroom-auth": {
+    "slug": "pages-metaroom-auth",
+    "title": "MetaRoom sign-in",
+    "ogTitle": "MetaRoom sign-in",
+    "section": "MetaRoom",
+    "ogLine": "Email first, then whichever method the workspace allows",
+    "description": "Email first, then whichever method the workspace allows. One flow for both products. The email decides what comes next: a code, a password, single sign-on…",
+    "index": false
+  },
+  "/pages/metaroom-customer-portal": {
+    "slug": "pages-metaroom-customer-portal",
+    "title": "MetaRoom customer portal",
+    "ogTitle": "MetaRoom customer portal",
+    "section": "MetaRoom",
+    "ogLine": "Conversation first, then tasks, documents, clients and content",
+    "description": "Conversation first, then tasks, documents, clients and content. Each page at 1440 desktop and 390 phone. The customer sees five entries and no internal…",
+    "index": false
+  },
+  "/pages/metaroom-ops-workbench": {
+    "slug": "pages-metaroom-ops-workbench",
+    "title": "MetaRoom Ops workbench",
+    "ogTitle": "MetaRoom Ops workbench",
+    "section": "MetaRoom",
+    "ogLine": "One person serving many customers",
+    "description": "One person serving many customers. A cross-customer inbox where customer tasks and conversations arrive, and the project review queue with its split…",
+    "index": false
+  },
+  "/ui-spec/metaroom-components": {
+    "slug": "ui-spec-metaroom-components",
+    "title": "MetaRoom components",
+    "ogTitle": "MetaRoom components",
+    "section": "MetaRoom",
+    "ogLine": "MetaRoom component specification for the customer portal and the Ops workbench, built on COSX Design System 3.0.",
+    "description": "MetaRoom component specification for the customer portal and the Ops workbench, built on COSX Design System 3.0.",
+    "index": false
+  },
+  "/ui-spec/metaroom-navigation": {
+    "slug": "ui-spec-metaroom-navigation",
+    "title": "MetaRoom navigation",
+    "ogTitle": "MetaRoom navigation",
+    "section": "MetaRoom",
+    "ogLine": "MetaRoom navigation specification: the icon rail, the context column and where each module’s menu lives.",
+    "description": "MetaRoom navigation specification: the icon rail, the context column and where each module’s menu lives.",
+    "index": false
+  },
+  "/metaroom-auth/metaroom-sign-in": {
+    "slug": "metaroom-auth-metaroom-sign-in",
+    "title": "MetaRoom sign-in prototype",
+    "ogTitle": "MetaRoom sign-in prototype",
+    "section": "MetaRoom",
+    "ogLine": "Nineteen screens: email first, passkeys, single sign-on, desktop and MCP authorisation.",
+    "description": "MetaRoom sign-in and sign-up prototype: email first, passkeys, single sign-on, desktop sign-in and MCP authorisation.",
+    "index": false
+  }
+}
