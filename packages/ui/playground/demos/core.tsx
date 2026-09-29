@@ -5,6 +5,8 @@ import { Row, Section } from './Row';
 
 const T = (zh: boolean, en: string, cn: string) => (zh ? cn : en);
 
+export const demo = { id: 'core', title: 'Core — button, badge, tag, card, figure, marker, label, logo', render: CoreDemo };
+
 export function CoreDemo({ zh }: { zh: boolean }) {
   const t = (en: string, cn: string) => T(zh, en, cn);
   return (
