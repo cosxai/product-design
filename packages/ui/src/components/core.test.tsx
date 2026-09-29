@@ -39,6 +39,9 @@ describe('Button', () => {
     expect(b).toHaveAttribute('title', 'Downloads are off for this share');
     await userEvent.click(b);
     expect(onClick).not.toHaveBeenCalled();
+    // sinks into the well with grey text rather than fading
+    expect(b.className).toMatch(/aria-disabled:bg-well!/);
+    expect(b.className).not.toMatch(/opacity-40/);
   });
 
   it('busy: aria-busy, keeps its name, ignores clicks', async () => {
@@ -50,6 +53,7 @@ describe('Button', () => {
     );
     const b = screen.getByRole('button', { name: 'Publish' });
     expect(b).toHaveAttribute('aria-busy', 'true');
+    expect(b).not.toHaveAttribute('aria-disabled'); // busy keeps its look
     await userEvent.click(b);
     expect(onClick).not.toHaveBeenCalled();
   });

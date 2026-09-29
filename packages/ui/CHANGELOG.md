@@ -1,3 +1,25 @@
+## 1.0.0-alpha.2 (2026-09-29)
+
+MetaRoom product patterns (spec P0), checked light / ink × en / zh.
+
+- Surfaces: ActionBar (pages register actions; idle / selection / mode,
+  Esc steps back; folds by group and past six; responsive, fold handle
+  with status dot, drag + remembered position), Menu, CommandPalette
+  (async sources, no "No results" until all return), SidePanel (one
+  right-hand slot), Dialog sizes 800 / 1120, ConfirmDialog (type to
+  confirm), PromptDialog, StepUpDialog.
+- Data display: useSelection, FileCard, FileList/FileRow, ListToolbar,
+  VirtualList + InfiniteLoader, FolderTree (WAI-ARIA tree, lazy,
+  reveal, partial ticks), Breadcrumb, PageHeader, Steps, ActivityTimeline.
+- Inputs: SearchField, CopyField, SegmentedControl, ChoiceCards,
+  DateInput, FuzzyDateInput, CodeInput, AsyncSelect, RecipientsInput,
+  MentionInput.
+- Upload and status: Progress, StageProgress, Dropzone, WindowDrop,
+  UploadCheck, UploadList, SyncStatus, PulseDot, Skeleton, PageState.
+- Button: disabled sinks into the well with grey text (was opacity);
+  busy keeps its look. Dialog returns focus to whatever opened it.
+- 144 tests (behaviour + axe). Test files no longer ship in the package.
+
 ## 1.0.0-alpha.1 (2026-09-29)
 
 All 22 COSX Design System 3.0 primitives, checked against their

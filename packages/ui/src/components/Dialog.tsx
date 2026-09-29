@@ -1,6 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
-import type { ComponentProps, ReactNode } from 'react';
+import { useRef, type ComponentProps, type ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
 import { IconButton } from './IconButton';
@@ -12,7 +12,15 @@ export const DialogTrigger = DialogPrimitive.Trigger;
 /** Closes the dialog (asChild onto the Cancel button). */
 export const DialogClose = DialogPrimitive.Close;
 
-const WIDTH = { sm: 'sm:max-w-[400px]', md: 'sm:max-w-[520px]', lg: 'sm:max-w-[640px]' } as const;
+// sm/md/lg are the site's 400 / 520 / 640; xl (a wizard) and split (a
+// document beside its detail) are the MetaRoom spec's 800 and 1120.
+const WIDTH = {
+  sm: 'sm:max-w-[400px]',
+  md: 'sm:max-w-[520px]',
+  lg: 'sm:max-w-[640px]',
+  xl: 'sm:max-w-[800px]',
+  split: 'sm:max-w-[1120px]',
+} as const;
 
 const MOBILE = {
   // Confirmations stay centred.
@@ -32,7 +40,7 @@ export type DialogContentProps = Omit<ComponentProps<typeof DialogPrimitive.Cont
   description?: ReactNode;
   /** Actions, bottom right: secondary left, primary right. A destructive primary is Button variant="danger". */
   footer?: ReactNode;
-  /** sm 400 (confirm) · md 520 (form, up to five fields) · lg 640. @default "md" */
+  /** sm 400 (confirm) · md 520 (form, up to five fields) · lg 640 · xl 800 (wizard) · split 1120 (two panes). @default "md" */
   size?: keyof typeof WIDTH | undefined;
   /** How it shows on phones: center (confirmations) · page (long forms) · sheet (light choices). @default "center" */
   mobile?: keyof typeof MOBILE | undefined;
@@ -60,8 +68,13 @@ export function DialogContent({
   className,
   children,
   onOpenAutoFocus,
+  onCloseAutoFocus,
   ...rest
 }: DialogContentProps) {
+  // Whatever had focus when it opened gets it back on close — a
+  // DialogTrigger or a button that set `open` (Radix only restores its own
+  // Trigger).
+  const opener = useRef<Element | null>(null);
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-scrim" />
@@ -73,10 +86,21 @@ export function DialogContent({
            close button: no ring before the person has done anything. Tab
            then reaches the controls; focus stays trapped. */
         onOpenAutoFocus={(e) => {
+          // Focus has not moved yet: this is what opened it.
+          opener.current = document.activeElement;
           onOpenAutoFocus?.(e);
           if (e.defaultPrevented) return;
           e.preventDefault();
           (e.currentTarget as HTMLElement | null)?.focus();
+        }}
+        onCloseAutoFocus={(e) => {
+          onCloseAutoFocus?.(e);
+          if (e.defaultPrevented) return;
+          const el = opener.current;
+          if (el instanceof HTMLElement && el.isConnected && el !== document.body) {
+            e.preventDefault();
+            el.focus();
+          }
         }}
         className={cn(
           'fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100dvh-48px)] w-[calc(100%-48px)] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden',

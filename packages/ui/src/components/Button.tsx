@@ -17,7 +17,9 @@ const button = cva(
     'rounded-md border border-transparent font-sans font-semibold leading-none',
     'transition-[background-color,border-color,color] duration-[120ms] ease-standard',
     'cursor-pointer outline-none focus-visible:shadow-(--focus-ring)',
-    'disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:cursor-not-allowed aria-disabled:opacity-40',
+    // Disabled sinks: the well with grey text (3.0 readme and design.cosx.co;
+    // the 3.0 Button source used opacity). "!" so hover never lifts it back.
+    'disabled:cursor-not-allowed aria-disabled:cursor-not-allowed',
   ],
   {
     variants: {
@@ -45,6 +47,17 @@ const button = cva(
       // Focus ring follows the ground.
       { ground: 'yellow', class: 'focus-visible:shadow-[0_0_0_3px_var(--yellow),0_0_0_5px_var(--ink)]' },
       { ground: 'ink', class: 'focus-visible:shadow-[0_0_0_3px_var(--ink),0_0_0_5px_var(--yellow)]' },
+      // Disabled: filled types sink into the well; outlined and text-only turn grey.
+      {
+        variant: ['primary', 'yellow', 'ink', 'danger'],
+        class:
+          'disabled:border-transparent! disabled:bg-well! disabled:text-fg-secondary! aria-disabled:border-transparent! aria-disabled:bg-well! aria-disabled:text-fg-secondary!',
+      },
+      {
+        variant: ['secondary', 'ghost'],
+        class:
+          'disabled:bg-transparent! disabled:text-fg-secondary! aria-disabled:bg-transparent! aria-disabled:text-fg-secondary! disabled:hover:border-[rgba(17,17,17,.18)] aria-disabled:hover:border-[rgba(17,17,17,.18)]',
+      },
     ],
     defaultVariants: { size: 'md', variant: 'primary', ground: 'auto' },
   },
@@ -141,7 +154,9 @@ export function Button({
       className={classes}
       style={lockedWidth ? { ...style, width: lockedWidth } : style}
       disabled={disabled && !disabledReason ? true : undefined}
-      aria-disabled={blocked || busy ? true : undefined}
+      // Busy is not disabled (spec: "busy and disabled are different states"):
+      // it keeps its look; aria-busy says so and repeat clicks are ignored below.
+      aria-disabled={blocked ? true : undefined}
       aria-busy={busy || undefined}
       title={blocked ? disabledReason : rest.title}
       onClick={(e) => {

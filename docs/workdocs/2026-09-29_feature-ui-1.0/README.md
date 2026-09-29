@@ -38,7 +38,17 @@ Per component: types, behaviour tests (Testing Library), axe, screenshots
 light + ink × en + zh compared with its design.cosx.co page.
 Select / Popover / Menu / Tooltip: `placement="auto"` (spec proposal).
 
-### Stage 2 — product patterns (MetaRoom spec P0)
+### Stage 2 — product patterns (MetaRoom spec P0) — done, 1.0.0-alpha.2
+Four forked sub-agents in parallel (A surfaces, B data display, C inputs, D upload/status), integrated and re-checked:
+- A: ActionBar (+ provider and hooks: items, selection, mode, hidden, activity), Menu, CommandPalette, SidePanel (+ provider/slot), Dialog sizes xl 800 / split 1120 + focus returns to the opener, ConfirmDialog / PromptDialog / StepUpDialog — 19 tests
+- B: useSelection, FileCard, FileList/FileRow, ListToolbar, VirtualList + InfiniteLoader, FolderTree, Breadcrumb, PageHeader, Steps, ActivityTimeline — 18 tests
+- C: SearchField, CopyField, SegmentedControl, ChoiceCards, DateInput + FuzzyDateInput, CodeInput, AsyncSelect, RecipientsInput, MentionInput — 20 tests
+- D: Progress, StageProgress, Dropzone, WindowDrop, UploadCheck, UploadList/Row, SyncStatus, PulseDot, Skeleton, PageState/PageNotice — 22 tests
+- Whole package: 144 tests. My review caught the disabled look (now the well) and busy looking disabled.
+
+Deferred from stage 2: marquee drag-select, drag-and-drop moves (tree/cards), tree multi-select + virtualisation, grid arrow keys, list toolbar phone layout; action bar keyboard move, fold hint, per-page default fold, phone bottom strip for selection, context menu (P2); date range, tag input, money input, wizard, brand-colour picker (§19); mention list at the caret + highlighted tokens + remote people search; AsyncSelect joined search card; folder drop targets during upload; camera capture on phones; drag-over type check; UploadCheck deeper than one level. Nothing below 500px wide was screenshotted (headless Chrome floor).
+
+### Stage 2 — original scope (MetaRoom spec P0)
 Action bar, upload, file card + list row, folder tree, list toolbar,
 breadcrumb, status badges, page states, side panel, command palette.
 
@@ -75,7 +85,7 @@ Async search select (single + multi "To" field), verification-code cells, @menti
 
 ## For design review (spec vs source vs site)
 - Control heights: Button page says 32/40/48; the 3.0 source measures ≈32/38/44; the MetaRoom spec says 32 compact · 38 default · 44 mobile. **Built 32/38/44.**
-- Disabled: 3.0 readme says "sinks to --sunk-2 with grey text"; the 3.0 Button source uses opacity .4. **Built opacity .4** (source).
+- Disabled: 3.0 readme says "sinks to --sunk-2 with grey text"; the 3.0 Button source uses opacity .4; design.cosx.co draws the disabled confirm button grey on the well. **Resolved in stage 2: sinks into the well with grey text** (readme + site). Busy is not disabled — it keeps its look (spec).
 - Complete status: 3.0 source grey dot; MetaRoom spec ink dot. **Built ink dot** (owner decision).
 - Ink mode: 3.0 colours switch on data-mode="ink" and .ink-mode, but its marker rules only on .ink-mode. **Kit adds the data-mode rule (src/modes.css).**
 - Brand injection (--brand-field / --brand-mark) is in the MetaRoom spec but not in the 3.0 tokens. **Kit defines them (src/brand.css), default the COSX yellow.**
@@ -89,3 +99,13 @@ Async search select (single + multi "To" field), verification-code cells, @menti
 - Table washes on ink: 3.0 washes are light tints, unreadable under linen text. **Kit: accent 15% / error 20% on ink.**
 - Table meta columns: source mono 11px, but 3.0 retired mono. **Kit: 12px grey tabular.**
 - Pills tabs: source mono index, active on the yellow. **Kit: 12px index, active on --brand-field.**
+- Dialog footer: 3.0 Dialog source has a hairline + sunk footer; the spec's feedback illustration puts the buttons on paper. **Kept the source's sunk footer.**
+- Action bar folding: site "at most five per state"; spec "more than six fold into More" and also "more than two of a kind". **Built: >2 in a group fold into that group; >6 overall into More (maxActions).**
+- Dialog M width: spec 560, site 520. **Kept 520.**
+- Card/row titles: spec card shows regular weight. **Built 14px medium** (product rows scale).
+- Tree ticks: spec shows checkboxes. **Built aria-checked tree items** (WAI-ARIA multi-select tree), not separate checkboxes.
+- Motion durations not in the spec: indeterminate progress 1.4s, pulse dot 2.4s, skeleton 1.6s (Web Animations API, off with reduced motion).
+- Determinate progress colour unspecified: **brand-mark, red when failed.** File sizes: **decimal (1000)**, matching the spec's figures.
+- Sync dots unspecified: **synced grey · syncing/retrying pulsing brand · error red · paused/unlinked grey ring.**
+- Window drop layer unspecified beyond "covers the page": **page dimmed 60%, a yellow card naming the target.** Dotfiles unticked by default.
+- FuzzyDateInput: one text field + Day · Month · Year segment (site), not three cells.
