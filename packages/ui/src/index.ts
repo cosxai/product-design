@@ -31,7 +31,7 @@ export { Switch, type SwitchProps } from './components/Switch';
 export { Table, type TableColumn, type TableProps, type TableRowBase, type TableSort, type TableSortDirection } from './components/Table';
 export { Tab, TabList, TabPanel, Tabs, type TabItem, type TabListProps, type TabPanelProps, type TabProps, type TabsProps, type TabsVariant } from './components/Tabs';
 export { Textarea, type TextareaProps } from './components/Textarea';
-export { Toaster, toast, type ToasterProps, type ToastLabels, type ToastOptions, type ToastStatus } from './components/Toast';
+export { ToastCard, Toaster, toast, type ToastCardProps, type ToasterProps, type ToastLabels, type ToastOptions, type ToastStatus } from './components/Toast';
 export { Tooltip, TooltipProvider, type TooltipProps } from './components/Tooltip';
 
 // Stage 2 — product patterns

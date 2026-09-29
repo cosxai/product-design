@@ -1,0 +1,22 @@
+/* The kit (tokens identical to the 3.0 export's) + Tailwind for its components. */
+@import "tailwindcss";
+@import "@cosxai/ui/theme.css";
+@import "@cosxai/ui/styles.css";
+@source "../../../../packages/ui/src";
+@source "../";
+
+/* The export's page base (every page's helmet carried it). */
+html, body { margin: 0; background: var(--paper); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-underline-offset: 3px; }
+a:hover { color: var(--text-secondary); }
+@view-transition { navigation: auto; }
+/* The export had no CSS reset: keep the browser's line height, not Tailwind's 1.5. */
+html { line-height: normal; }
+/* The export relied on the browser's content-box sizing; Tailwind's reset
+   makes everything border-box. Converted markup styles inline, without
+   classes; the kit's components always carry classes and keep border-box. */
+@layer base {
+  /* Buttons and fields are border-box in the browser's own stylesheet. */
+  :not([class], button, input, select, textarea, meter, progress),
+  :not([class])::before, :not([class])::after { box-sizing: content-box; }
+}

@@ -8,7 +8,7 @@ import { Button } from './Button';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from './Dialog';
 import { Table, type TableSort } from './Table';
 import { TabPanel, Tabs } from './Tabs';
-import { Toaster, toast } from './Toast';
+import { ToastCard, Toaster, toast } from './Toast';
 import { Tooltip } from './Tooltip';
 
 
@@ -159,6 +159,21 @@ describe('Toast', () => {
     screen.getByRole('button', { name: 'Work' }).focus();
     act(() => void toast({ title: 'Link copied.' }));
     expect(screen.getByRole('button', { name: 'Work' })).toHaveFocus();
+  });
+});
+
+describe('ToastCard', () => {
+  it('draws one toast in place with its status, action and dismiss', async () => {
+    const onClick = vi.fn();
+    const onClose = vi.fn();
+    const { container } = render(<ToastCard status="complete" title="3 files moved to Archive." action={{ label: 'Undo', onClick }} onClose={onClose} />);
+    expect(container).toHaveTextContent('Done');
+    expect(container).toHaveTextContent('3 files moved to Archive.');
+    await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledOnce();
+    expect(await a11y(container)).toHaveNoViolations();
   });
 });
 

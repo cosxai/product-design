@@ -1,0 +1,11 @@
+---
+import Layout from '../../../../layouts/Page.astro';
+import { variants } from '../../../../lib/variants';
+import Page from '../../../../site/MetaRoomComponents.jsx';
+
+export const getStaticPaths = () => variants(false);
+const { state } = Astro.props;
+---
+<Layout title="MetaRoom Components" lang={state?.lang}>
+  <Page client:load />
+</Layout>

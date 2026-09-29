@@ -1,0 +1,25 @@
+---
+// Every page: title, description, icon, the kit's CSS, prerender on hover.
+import '../styles/site.css';
+
+type Props = { title: string; lang?: 'en' | 'zh' | undefined };
+const { title, lang = 'en' } = Astro.props;
+const SITE = 'COSX Design System';
+const speculation = JSON.stringify({
+  prerender: [{ where: { and: [{ href_matches: '/*' }, { not: { href_matches: '/*.*' } }] }, eagerness: 'moderate' }],
+});
+---
+<!doctype html>
+<html lang={lang === 'zh' ? 'zh-CN' : 'en-GB'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title === 'Home' ? SITE : `${title} · ${SITE}`}</title>
+    <meta name="description" content="Brand, foundations, components and product patterns of COSX." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="speculationrules" set:html={speculation} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,3 +1,7 @@
+## Unreleased
+
+- ToastCard: one toast drawn in place (documentation specimens, previews).
+
 ## 1.0.0-alpha.3 (2026-09-29)
 
 - Button: busy and done draw over the idle content, kept in place and

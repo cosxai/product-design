@@ -91,6 +91,47 @@ const DEFAULT_LABELS: ToastLabels = {
   region: 'Notifications',
 };
 
+const CARD = 'flex w-80 max-w-full items-start gap-3 rounded-[12px] bg-ink px-4 py-3.5 font-sans text-linen ink:border ink:border-inv-rule ink:bg-ink-raised';
+const ACTION =
+  'mt-2.5 inline-flex h-8 cursor-pointer items-center rounded-md border border-inv-rule bg-transparent px-3 text-[13px] font-semibold text-linen outline-none hover:border-linen focus-visible:shadow-[0_0_0_3px_var(--ink),0_0_0_5px_var(--yellow)]';
+const CLOSE = 'flex cursor-pointer rounded-xs border-0 bg-transparent p-0.5 text-grey-inverse outline-none hover:text-linen focus-visible:shadow-[0_0_0_2px_var(--yellow)]';
+const statusLabelClass = (status: ToastStatus) => cn('mb-0.5 text-meta font-medium', status === 'attention' ? 'text-yellow-accent' : 'text-grey-inverse');
+
+export type ToastCardProps = Omit<ToastOptions, 'duration' | 'action'> & {
+  /** A label, or the full action (label + onClick). */
+  action?: string | ToastOptions['action'];
+  onClose?: (() => void) | undefined;
+  labels?: Partial<ToastLabels> | undefined;
+  className?: string | undefined;
+};
+
+/**
+ * ToastCard — one toast drawn in place, not queued: documentation
+ * specimens and previews. In the product, call toast() instead.
+ */
+export function ToastCard({ title, description, status = 'neutral', action, onClose, labels, className }: ToastCardProps) {
+  const l = { ...DEFAULT_LABELS, ...labels };
+  const act = typeof action === 'string' ? { label: action, onClick: () => {} } : action;
+  return (
+    <div className={cn(CARD, className)}>
+      <span aria-hidden className={cn('mt-[5px] size-2 shrink-0 rounded-pill', DOT[status])} />
+      <div className="min-w-0 flex-1">
+        <div className={statusLabelClass(status)}>{l[status]}</div>
+        <div className="text-ui leading-[1.4] font-medium">{title}</div>
+        {description && <div className="mt-0.5 text-[13px] leading-normal text-grey-inverse">{description}</div>}
+        {act && (
+          <button type="button" onClick={act.onClick} className={ACTION}>
+            {act.label}
+          </button>
+        )}
+      </div>
+      <button type="button" aria-label={l.dismiss} onClick={onClose} className={CLOSE}>
+        <X size={14} strokeWidth={2} aria-hidden />
+      </button>
+    </div>
+  );
+}
+
 export type ToasterProps = {
   /** Wording of the status labels and controls (e.g. Chinese). */
   labels?: Partial<ToastLabels> | undefined;
@@ -120,22 +161,18 @@ export function Toaster({ labels, offset = 24 }: ToasterProps) {
             }}
             duration={t.duration ?? (t.action ? 8000 : 4000)}
             type={status === 'error' ? 'foreground' : 'background'}
-            className={cn(
-              'flex w-80 max-w-full items-start gap-3 rounded-[12px] bg-ink px-4 py-3.5 font-sans text-linen',
-              'ink:border ink:border-inv-rule ink:bg-ink-raised',
-              'data-[swipe=move]:translate-x-(--radix-toast-swipe-move-x) data-[swipe=end]:hidden',
-            )}
+            className={cn(CARD, 'data-[swipe=move]:translate-x-(--radix-toast-swipe-move-x) data-[swipe=end]:hidden')}
           >
             <span aria-hidden className={cn('mt-[5px] size-2 shrink-0 rounded-pill', DOT[status])} />
             <div className="min-w-0 flex-1">
-              <div className={cn('mb-0.5 text-meta font-medium', status === 'attention' ? 'text-yellow-accent' : 'text-grey-inverse')}>{l[status]}</div>
+              <div className={statusLabelClass(status)}>{l[status]}</div>
               <ToastPrimitive.Title className="text-ui leading-[1.4] font-medium">{t.title}</ToastPrimitive.Title>
               {t.description && <ToastPrimitive.Description className="mt-0.5 text-[13px] leading-normal text-grey-inverse">{t.description}</ToastPrimitive.Description>}
               {t.action && (
                 <ToastPrimitive.Action
                   altText={t.action.altText ?? t.action.label}
                   onClick={t.action.onClick}
-                  className="mt-2.5 inline-flex h-8 cursor-pointer items-center rounded-md border border-inv-rule bg-transparent px-3 text-[13px] font-semibold text-linen outline-none hover:border-linen focus-visible:shadow-[0_0_0_3px_var(--ink),0_0_0_5px_var(--yellow)]"
+                  className={ACTION}
                 >
                   {t.action.label}
                 </ToastPrimitive.Action>
@@ -143,7 +180,7 @@ export function Toaster({ labels, offset = 24 }: ToasterProps) {
             </div>
             <ToastPrimitive.Close
               aria-label={l.dismiss}
-              className="flex cursor-pointer rounded-xs border-0 bg-transparent p-0.5 text-grey-inverse outline-none hover:text-linen focus-visible:shadow-[0_0_0_2px_var(--yellow)]"
+              className={CLOSE}
             >
               <X size={14} strokeWidth={2} aria-hidden />
             </ToastPrimitive.Close>

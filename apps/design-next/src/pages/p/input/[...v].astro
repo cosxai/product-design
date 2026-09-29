@@ -1,0 +1,11 @@
+---
+import Layout from '../../../layouts/Page.astro';
+import { variants } from '../../../lib/variants';
+import Page from '../../../site/Input.jsx';
+
+export const getStaticPaths = () => variants(true);
+const { state } = Astro.props;
+---
+<Layout title="Input" lang={state?.lang}>
+  <Page client:load __state={state} />
+</Layout>

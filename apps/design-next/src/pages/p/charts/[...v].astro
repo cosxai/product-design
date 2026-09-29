@@ -1,0 +1,11 @@
+---
+import Layout from '../../../layouts/Page.astro';
+import { variants } from '../../../lib/variants';
+import Page from '../../../site/Charts.jsx';
+
+export const getStaticPaths = () => variants(true);
+const { state } = Astro.props;
+---
+<Layout title="Charts" lang={state?.lang}>
+  <Page client:load __state={state} />
+</Layout>

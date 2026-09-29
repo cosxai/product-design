@@ -1,0 +1,387 @@
+[
+  {
+    "name": "Avatars",
+    "component": "Avatars",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Badge",
+    "component": "Badge",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Bilingual",
+    "component": "Bilingual",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Brand Injection",
+    "component": "BrandInjection",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Button",
+    "component": "Button",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Charts",
+    "component": "Charts",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Checkbox",
+    "component": "Checkbox",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Colour",
+    "component": "Colour",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Data Display",
+    "component": "DataDisplay",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Dialog",
+    "component": "Dialog",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Downloads",
+    "component": "Downloads",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Editing",
+    "component": "Editing",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Feedback",
+    "component": "Feedback",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Form Extensions",
+    "component": "FormExtensions",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Home",
+    "component": "Home",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Input",
+    "component": "Input",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Kanban",
+    "component": "Kanban",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Logo",
+    "component": "Logo",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Marker",
+    "component": "Marker",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Mobile",
+    "component": "Mobile",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Motion",
+    "component": "Motion",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Overlays",
+    "component": "Overlays",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Pattern Action Bar",
+    "component": "PatternActionBar",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Pattern Agent",
+    "component": "PatternAgent",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Pattern Navigation",
+    "component": "PatternNavigation",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Pattern Status",
+    "component": "PatternStatus",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Select",
+    "component": "Select",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Share Dialog",
+    "component": "ShareDialog",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Site Header",
+    "component": "SiteHeader",
+    "dir": "",
+    "site": false,
+    "partial": true
+  },
+  {
+    "name": "Site Nav",
+    "component": "SiteNav",
+    "dir": "",
+    "site": false,
+    "partial": true
+  },
+  {
+    "name": "Spacing",
+    "component": "Spacing",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Spec Sections EN",
+    "component": "SpecSectionsEN",
+    "dir": "",
+    "site": false,
+    "partial": true
+  },
+  {
+    "name": "Spec Sections",
+    "component": "SpecSections",
+    "dir": "",
+    "site": false,
+    "partial": true
+  },
+  {
+    "name": "System",
+    "component": "System",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Table",
+    "component": "Table",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Tabs",
+    "component": "Tabs",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Template List",
+    "component": "TemplateList",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Template Settings",
+    "component": "TemplateSettings",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Template Sign In",
+    "component": "TemplateSignIn",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Template Viewer",
+    "component": "TemplateViewer",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Toast",
+    "component": "Toast",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Typography",
+    "component": "Typography",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Upload",
+    "component": "Upload",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Voice",
+    "component": "Voice",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Writing",
+    "component": "Writing",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "Yellow",
+    "component": "Yellow",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
+    "name": "MetaRoom Auth",
+    "component": "MetaRoomAuth",
+    "dir": "pages",
+    "site": false,
+    "partial": false
+  },
+  {
+    "name": "MetaRoom Customer Portal",
+    "component": "MetaRoomCustomerPortal",
+    "dir": "pages",
+    "site": false,
+    "partial": false
+  },
+  {
+    "name": "MetaRoom Ops Workbench",
+    "component": "MetaRoomOpsWorkbench",
+    "dir": "pages",
+    "site": false,
+    "partial": false
+  },
+  {
+    "name": "Ops Rail",
+    "component": "OpsRail",
+    "dir": "pages",
+    "site": false,
+    "partial": true
+  },
+  {
+    "name": "Portal Rail",
+    "component": "PortalRail",
+    "dir": "pages",
+    "site": false,
+    "partial": true
+  },
+  {
+    "name": "Portal Tabs",
+    "component": "PortalTabs",
+    "dir": "pages",
+    "site": false,
+    "partial": true
+  },
+  {
+    "name": "MetaRoom Components",
+    "component": "MetaRoomComponents",
+    "dir": "ui-spec",
+    "site": false,
+    "partial": false
+  },
+  {
+    "name": "MetaRoom Navigation",
+    "component": "MetaRoomNavigation",
+    "dir": "ui-spec",
+    "site": false,
+    "partial": false
+  },
+  {
+    "name": "MetaRoom Sign In",
+    "component": "MetaRoomSignIn",
+    "dir": "metaroom-auth",
+    "site": false,
+    "partial": false
+  }
+]

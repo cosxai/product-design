@@ -1,0 +1,11 @@
+---
+import Layout from '../../../layouts/Page.astro';
+import { variants } from '../../../lib/variants';
+import Page from '../../../site/Badge.jsx';
+
+export const getStaticPaths = () => variants(true);
+const { state } = Astro.props;
+---
+<Layout title="Badge" lang={state?.lang}>
+  <Page client:load __state={state} />
+</Layout>

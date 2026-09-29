@@ -65,6 +65,20 @@ real components; preview URL until parity with the 42 exported pages,
 then switch. After the switch, design changes are ported from Claude
 Design by hand (the export sync retires).
 
+How (decided when starting the stage):
+- `apps/design-next` (Astro, static output, React integration), Worker `design-next` on workers.dev as the preview; on the switch it takes over `apps/design` / Worker `design`.
+- The export's pages are *converted once* by `scripts/convert.mjs` into source that is then edited by hand: each `.dc.html` becomes a JSX template (`{{ path }}` → `{v.path}`, `sc-if` → `&&`, `sc-for` → `.map`, `dc-import` → the converted partial, `x-import` of a 3.0 component → an adapter over the @cosxai/ui component) plus its logic class kept verbatim (a small `DCLogic` shim gives it React state). Same markup and behaviour as the export, no in-browser Babel or template parsing.
+- Language: every page is built twice, `/button` (English) and `/zh/button`; the Worker serves the Chinese build at the clean URL when the visitor chose Chinese (cookie), so URLs stay as they are. Theme: `data-mode="ink"` set before paint from the stored choice.
+- Pages whose logic has its own state (playgrounds) hydrate; the rest ship no page script.
+- Parity check: screenshots of every page, export vs Astro, light / ink × en / zh.
+
+Progress (2026-09-29):
+- [x] Converter, runtime shim, adapters (`ToastCard` added to @cosxai/ui for the toast specimens), Astro build (42 pages × 4 builds + 6 MetaRoom spec pages), Worker with cookie-picked builds and old file-URL redirects — 4 Worker tests
+- [x] Parity: every page screenshotted against design.cosx.co in all four builds — all within 8% of pixels, no browser errors; what remains is the kit's own differences (control heights, the icon stroke), i.e. the design-review list. Two global fixes found this way: the export kept the browser's line height and content-box sizing (Tailwind's reset changes both)
+- [x] Preview: https://design-next.cosx-584.workers.dev
+- [ ] Owner review of the preview → switch design.cosx.co to it (Worker `design` from apps/design-next; apps/design and the export sync retire)
+- [ ] Later: split Spec Sections (one ~100 KB gz chunk shared by 27 pages); ship no page script where a page has no state of its own
+
 ### Stage 5 — product-meta adopts 1.0
 Replace craft's `packages/ui` primitives; desktop dmg + web checked.
 
