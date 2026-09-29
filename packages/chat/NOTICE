@@ -1,0 +1,10 @@
+@cosxai/chat
+© 2026 COSINE X LTD. All rights reserved. Proprietary — see package.json
+("UNLICENSED"): no licence is granted to use, copy or modify this package,
+except the third-party code below under its own licence.
+
+Parts of the markdown renderer (src/markdown/) are adapted from Craft Agents
+(https://github.com/craft-ai-agents/craft-agents-oss), licensed under the
+Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0).
+Copyright 2026 Craft Docs Ltd. Each adapted file carries a header stating
+its origin and that it was modified by COSINE X LTD.

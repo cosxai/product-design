@@ -1,0 +1,129 @@
+name: Publish @cosxai/chat
+
+# Triggers:
+#   - git tag `chat-v*` (e.g. chat-v1.0.0-alpha.0) → publish to npm
+#   - manual workflow_dispatch → publish current main
+#
+# Authentication: npm Trusted Publishing (OIDC). No NPM_TOKEN required.
+#
+# One-time setup on npmjs.com:
+#   1. Sign in as a maintainer of the @cosxai org
+#   2. Org Settings → Trusted Publishers → Add publisher
+#      - Publisher: GitHub Actions
+#      - Organization: cosxai
+#      - Repository:   product-design
+#      - Workflow:     publish-chat.yml
+#      - Environment:  (leave blank)
+#      - Package name pattern: @cosxai/chat  (or @cosxai/* for the whole scope)
+#   A brand-new package must exist on npm before a trusted publisher can
+#   be attached: publish the first version by hand (npm publish --tag next
+#   from packages/chat after resolving the workspace range), then add the
+#   publisher above.
+#   3. Done — no token to copy, no secret to paste
+#
+# Release flow:
+#   cd product-design/packages/chat
+#   # bump version in package.json
+#   git commit -am "release(chat): v1.2.0"
+#   git tag chat-v1.2.0
+#   git push origin main --tags
+#
+# npm verifies the OIDC token from this workflow run matches the
+# trusted-publisher config and publishes automatically with provenance.
+
+on:
+  push:
+    tags:
+      - 'chat-v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write   # required for OIDC trusted publishing + provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm --filter @cosxai/chat typecheck
+
+      # npm Trusted Publishing (OIDC handshake) requires npm CLI
+      # >= 11.5.0. pnpm 9 bundles npm 10.x and does NOT perform the
+      # OIDC exchange itself, so publishing via `pnpm publish` falls
+      # through as an anonymous request and npm answers 404
+      # ("OIDC token not bound to any trusted publisher"). Upgrade
+      # the system npm and publish from packages/chat directly with
+      # `npm publish` — npm handles the OIDC handshake natively.
+      - name: Upgrade npm for OIDC Trusted Publishing
+        # Pinned to 11.5.0 (min version that supports Trusted
+        # Publishing). Some recent `npm@latest` bumps shipped a
+        # broken libnpmpublish that fails with "Cannot find module
+        # 'sigstore'" when --provenance is set. Sticking to the
+        # min-supported version until upstream stabilises.
+        run: npm install -g npm@11.5.0
+
+      # npm publish does not rewrite pnpm's "workspace:" ranges (pnpm
+      # publish would); left as is, the published package could not be
+      # installed. Pin @cosxai/ui to the version in this commit, caret range.
+      - name: Resolve workspace dependencies
+        working-directory: packages/chat
+        run: |
+          node -e '
+            const fs = require("fs");
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            const ui = JSON.parse(fs.readFileSync("../ui/package.json", "utf8")).version;
+            for (const field of ["dependencies", "peerDependencies"]) {
+              for (const [name, range] of Object.entries(pkg[field] || {})) {
+                if (!String(range).startsWith("workspace:")) continue;
+                if (name !== "@cosxai/ui") throw new Error("unknown workspace dependency " + name);
+                pkg[field][name] = "^" + ui;
+              }
+            }
+            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");
+            console.log("@cosxai/ui →", pkg.dependencies["@cosxai/ui"]);
+          '
+
+      # Which npm dist-tag this version goes out under:
+      #   1.0.0-alpha.1 (any prerelease) → next  — never reaches `latest`
+      #   0.x                            → v0    — maintenance line (branch
+      #                                             ui-0.x); ^0.x ranges still
+      #                                             get it, `latest` is not moved
+      #   everything else (1.x)          → latest
+      - name: Pick the dist-tag
+        id: dist
+        working-directory: packages/chat
+        run: |
+          v=$(node -p "require('./package.json').version")
+          case "$v" in
+            *-*) tag=next ;;
+            0.*) tag=v0 ;;
+            *)   tag=latest ;;
+          esac
+          echo "version $v → dist-tag $tag"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Publish (Trusted Publishing — OIDC, no token)
+        working-directory: packages/chat
+        # --provenance signs the published tarball with a sigstore
+        # statement linking it to this repo + workflow run + commit
+        # SHA. Downstream consumers can verify on sigstore.dev that
+        # the artifact really came from a known build of known
+        # source. Requires the source repo to be PUBLIC on GitHub.
+        run: npm publish --access public --provenance --tag ${{ steps.dist.outputs.tag }}
