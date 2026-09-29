@@ -1,0 +1,10 @@
+/* @cosxai/ui — ink mode, completed.
+ *
+ * 3.0 switches its colours on either data-mode="ink" (root) or .ink-mode
+ * (subtree) — colors.css — but its marker rules (typography.css,
+ * typography-cjk.css) only know .ink-mode. Same rules for data-mode, so a
+ * page in ink mode gets the ink marker: no band, the finding in accent
+ * yellow. Reported to the design system; drop this when 3.0 covers it.
+ */
+[data-mode="ink"] .marker { color: var(--yellow-accent); background: none; padding: 0; margin: 0; border-radius: 0; }
+[data-mode="ink"] :lang(zh) .marker, :lang(zh)[data-mode="ink"] .marker { background: none; }

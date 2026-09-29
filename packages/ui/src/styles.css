@@ -14,4 +14,6 @@
 @import "./tokens/elevation.css";
 @import "./tokens/motion.css";
 @import "./tokens/compat.css";
+@import "./brand.css";
+@import "./modes.css";
 @import "./fonts.css";

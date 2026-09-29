@@ -63,3 +63,15 @@ Replace craft's `packages/ui` primitives; desktop dmg + web checked.
   `--font-cjk` meaning Noto-only in 3.0 on the first run).
 - Tokens keep blue/green status colours for legacy surfaces; the theme
   exposes only attention (yellow) and error (red), per the spec.
+
+## Stage 1 progress
+- [x] Batch A (core): Logo, Icon, IconButton, MetaLabel, Marker, Figure, Button (+ useButtonAction), Badge, Tag, Card, Spinner, ThemeProvider — 28 tests (behaviour + axe); playground `pnpm --filter @cosxai/ui playground`, checked light/ink × en/zh
+- [ ] Batch B (forms): Field, Input, Textarea, Select, Checkbox, Radio, Switch
+- [ ] Batch C: Tabs, Dialog, Toast, Tooltip, Table
+
+## For design review (spec vs source vs site)
+- Control heights: Button page says 32/40/48; the 3.0 source measures ≈32/38/44; the MetaRoom spec says 32 compact · 38 default · 44 mobile. **Built 32/38/44.**
+- Disabled: 3.0 readme says "sinks to --sunk-2 with grey text"; the 3.0 Button source uses opacity .4. **Built opacity .4** (source).
+- Complete status: 3.0 source grey dot; MetaRoom spec ink dot. **Built ink dot** (owner decision).
+- Ink mode: 3.0 colours switch on data-mode="ink" and .ink-mode, but its marker rules only on .ink-mode. **Kit adds the data-mode rule (src/modes.css).**
+- Brand injection (--brand-field / --brand-mark) is in the MetaRoom spec but not in the 3.0 tokens. **Kit defines them (src/brand.css), default the COSX yellow.**

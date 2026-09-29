@@ -18,7 +18,7 @@ function rootVars(css: string): Map<string, string> {
 
 // Effective token values, in styles.css import order (later wins).
 const order = ['colors', 'typography', 'typography-cjk', 'spacing', 'elevation', 'motion', 'compat'].map((f) => `tokens/${f}.css`);
-order.push('fonts.css');
+order.push('brand.css', 'fonts.css');
 const tokens = new Map<string, string>();
 for (const f of order) for (const [k, v] of rootVars(read(f))) tokens.set(k, v);
 

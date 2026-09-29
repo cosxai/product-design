@@ -16,6 +16,11 @@
  * (theme.test.ts). In particular font sizes avoid --text-primary /
  * --text-secondary / --text-label, which are colours in 3.0.
  */
+/* ink: — styles for ink mode (data-mode="ink" on <html>, or inside
+   .ink-mode). The semantic colours switch by themselves; this is for the
+   rules that flip on ink (the primary becomes the yellow). */
+@custom-variant ink (&:where([data-mode="ink"], [data-mode="ink"] *, .ink-mode, .ink-mode *));
+
 @theme inline {
   --color-*: initial;
   --radius-*: initial;
@@ -69,6 +74,12 @@
   --color-rule-soft: var(--rule-soft);
   --color-hover: var(--hover);
   --color-scrim: var(--scrim);
+
+  /* Workspace brand (brand.css): the COSX yellow unless a customer's
+     colour is injected. Selection and grounds use field; dots and
+     progress use mark. Never for text. */
+  --color-brand-field: var(--brand-field);
+  --color-brand-mark: var(--brand-mark);
 
   /* On an ink surface inside a paper page */
   --color-inv: var(--inv-bg);

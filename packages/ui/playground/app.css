@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@import "../src/theme.css";
+@import "../src/styles.css";
+@source "../src";
+@source "./";
+
+html, body { margin: 0; background: var(--bg-page); color: var(--text-primary); font-family: var(--font-sans-cjk); -webkit-font-smoothing: antialiased; }

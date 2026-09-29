@@ -1,0 +1,13 @@
+/* @cosxai/ui — workspace brand injection (MetaRoom spec §01).
+ *
+ * A customer's colour replaces the COSX yellow through two variables;
+ * everything else stays ink, so any colour keeps text readable:
+ *   --brand-field  large areas: selected nav and tabs, section grounds
+ *   --brand-mark   small marks: dots, progress, highlights, attention fills
+ * Ink (text, primary button, icons) and --status-error are not injectable.
+ * Default: the COSX yellow. A workspace sets both on <html>.
+ */
+:root {
+  --brand-field: var(--yellow);
+  --brand-mark: var(--yellow-accent);
+}
