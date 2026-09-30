@@ -1,3 +1,12 @@
+## 1.0.0-alpha.10 (2026-09-30)
+
+- BrandLoader: the COSX loop as a loading indicator (Claude Design, COSX
+  Loader). A short stroke runs the loop, blooms into the full mark, holds,
+  gathers back — 3.4 s a round, the head's speed continuous; at rest it
+  is the logo itself. Tones ink / linen / accent / current, an optional
+  faint track, `speed`; the full mark, still, under reduced motion. For
+  whole-page and start-up waits; buttons, rows and inputs keep Spinner.
+
 ## 1.0.0-alpha.9 (2026-09-30)
 
 - WorkspaceRow: `badge` — what the workspace still needs, as an attention

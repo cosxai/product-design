@@ -17,6 +17,7 @@ export { Logo, type LogoProps } from './components/Logo';
 export { Marker, type MarkerProps } from './components/Marker';
 export { MetaLabel, type MetaLabelProps } from './components/MetaLabel';
 export { Spinner, type SpinnerProps } from './components/Spinner';
+export { BrandLoader, loaderState, type BrandLoaderProps } from './components/BrandLoader';
 export { Tag, type TagProps } from './components/Tag';
 export { ThemeProvider, useTheme, type ThemeMode, type ThemeProviderProps } from './components/ThemeProvider';
 export { useButtonAction, type ButtonAction } from './components/useButtonAction';
