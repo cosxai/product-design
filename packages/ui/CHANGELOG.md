@@ -1,3 +1,9 @@
+## 1.0.0-alpha.9 (2026-09-30)
+
+- WorkspaceRow: `badge` — what the workspace still needs, as an attention
+  badge beside the chevron ("Needs setup"; Metaroom Sign In, Set up your
+  workspace).
+
 ## 1.0.0-alpha.8 (2026-09-30)
 
 - ThemeSwitch: `defaultOpen` starts it opened (documentation specimens).

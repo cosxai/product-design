@@ -95,6 +95,11 @@ describe('WorkspaceRow', () => {
     expect(screen.getByRole('button', { name: /Halden Capital/ })).toHaveAttribute('aria-busy', 'true');
   });
 
+  it('says what a workspace still needs, inside its name', () => {
+    render(<WorkspaceRow name="Sam Ortiz" detail="78f77bd3" badge="Needs setup" />);
+    expect(screen.getByRole('button', { name: /Sam Ortiz.*Needs setup/ })).toBeInTheDocument();
+  });
+
   it('falls back to the initial when there is no logo', () => {
     const { container } = render(<WorkspaceMark name=" vela" />);
     expect(container).toHaveTextContent('V');

@@ -2,6 +2,7 @@ import { ChevronRight } from 'lucide-react';
 import { forwardRef, useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
+import { Badge } from './Badge';
 import { Spinner } from './Spinner';
 
 export type WorkspaceMarkProps = {
@@ -39,14 +40,17 @@ export type WorkspaceRowProps = Omit<ComponentProps<'button'>, 'children'> & {
   logoUrl?: string | undefined;
   /** Being opened: a spinner in place of the chevron. */
   busy?: boolean | undefined;
+  /** A state beside the chevron, as an attention badge: "Needs setup". */
+  badge?: ReactNode;
 };
 
 /**
- * WorkspaceRow — one workspace in a chooser: mark, name, detail, chevron.
+ * WorkspaceRow — one workspace in a chooser: mark, name, detail, chevron;
+ * `badge` says what it still needs ("Needs setup").
  * The whole row is the button; `busy` shows it opening (disable the others).
  */
 export const WorkspaceRow = forwardRef<HTMLButtonElement, WorkspaceRowProps>(function WorkspaceRow(
-  { name, detail, logoUrl, busy = false, className, ...rest },
+  { name, detail, logoUrl, busy = false, badge, className, ...rest },
   ref,
 ) {
   return (
@@ -65,6 +69,11 @@ export const WorkspaceRow = forwardRef<HTMLButtonElement, WorkspaceRowProps>(fun
         <span className="truncate text-[14px] font-medium">{name}</span>
         {detail && <span className="truncate text-[12px] text-fg-secondary">{detail}</span>}
       </span>
+      {badge && (
+        <span className="flex shrink-0">
+          <Badge status="attention">{badge}</Badge>
+        </span>
+      )}
       {busy ? <Spinner size={16} /> : <ChevronRight size={16} aria-hidden className="text-fg-secondary" />}
     </button>
   );
