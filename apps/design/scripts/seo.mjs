@@ -2,7 +2,7 @@
 //
 //   pnpm build && pnpm exec astro preview --port 4321 &   then
 //   node scripts/seo.mjs meta     page section / title / intro → src/seo.json (then edit by hand)
-//   node scripts/seo.mjs og       share images → public/og/<slug>.png (after a rebuild)
+//   node scripts/seo.mjs og [slug …]  share images → public/og/<slug>.png (after a rebuild); slugs: only those
 //
 // Both drive a headless Chrome over the DevTools protocol.
 
@@ -93,12 +93,12 @@ async function meta() {
   writeFileSync(join(here, '../src/seo.json'), JSON.stringify(out, null, 2) + '\n');
 }
 
-async function og() {
+async function og(only = []) {
   const seo = JSON.parse(readFileSync(join(here, '../src/seo.json'), 'utf8'));
   const c = await chrome();
   await c.send('Emulation.setDeviceMetricsOverride', { width: 1200, height: 630, deviceScaleFactor: 1, mobile: false });
   mkdirSync(join(here, '../public/og'), { recursive: true });
-  for (const m of Object.values(seo)) {
+  for (const m of Object.values(seo).filter((m) => only.length === 0 || only.includes(m.slug))) {
     await c.open(`${BASE}/og/${m.slug}`, 700);
     await c.eval('document.fonts.ready.then(() => true)');
     const shot = await c.send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: 1200, height: 630, scale: 1 } });
@@ -127,5 +127,5 @@ async function icons() {
 const step = process.argv[2];
 if (step === 'icons') await icons();
 else if (step === 'meta') await meta();
-else if (step === 'og') await og();
+else if (step === 'og') await og(process.argv.slice(3));
 else console.error('usage: node scripts/seo.mjs meta|og|icons');
