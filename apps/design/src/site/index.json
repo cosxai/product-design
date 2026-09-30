@@ -308,6 +308,13 @@
     "partial": false
   },
   {
+    "name": "Loader",
+    "component": "Loader",
+    "dir": "",
+    "site": true,
+    "partial": false
+  },
+  {
     "name": "Voice",
     "component": "Voice",
     "dir": "",

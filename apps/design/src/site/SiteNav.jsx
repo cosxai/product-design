@@ -46,6 +46,7 @@ class Logic extends DCLogic {
           ['badge', '状态徽章', 'Badge', '/badge'],
           ['dialog', '对话框', 'Dialog', '/dialog'],
           ['upload', '上传', 'Upload', '/upload'],
+          ['loader', '加载动画', 'Loader', '/loader'],
           ['checkbox', '勾选与开关', 'Checkbox and switch', '/checkbox'],
           ['tabs', '标签页', 'Tabs', '/tabs'],
           ['toast', '提示', 'Toast', '/toast'],

@@ -357,7 +357,8 @@ class Emitter {
 
   xImport(n, s, ind) {
     const g = attr(n, 'component-from-global-scope') || '';
-    const m = g.match(/^COSXDesignSystem30_460d0b\.([A-Za-z]+)$/);
+    // <cosx-loader> (assets/cosx-loader.js) is the kit's BrandLoader
+    const m = g === 'cosx-loader' ? [g, 'Loader'] : g.match(/^COSXDesignSystem30_460d0b\.([A-Za-z]+)$/);
     if (!m) { this.warnings.push(`x-import ${g || attr(n, 'name')} not converted`); return `{/* x-import ${g} */}`; }
     const C = m[1];
     this.ds.add(C);

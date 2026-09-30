@@ -359,6 +359,15 @@
     "description": "Drop files in, or choose them. The drop zone, the full-screen drop, upload rows and progress, for libraries, task attachments and the Agent conversation.",
     "index": true
   },
+  "/loader": {
+    "slug": "loader",
+    "title": "Loader",
+    "ogTitle": "Loader",
+    "section": "Components",
+    "ogLine": "The COSX loop, running",
+    "description": "The COSX loop as a loading indicator: a stroke runs the loop and opens into the mark. For full pages, launch screens and signing in.",
+    "index": true
+  },
   "/voice": {
     "slug": "voice",
     "title": "Voice",

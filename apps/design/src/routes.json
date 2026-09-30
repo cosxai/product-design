@@ -240,6 +240,12 @@
     "file": "/Upload.dc.html"
   },
   {
+    "name": "Loader",
+    "path": "/loader",
+    "site": true,
+    "file": "/Loader.dc.html"
+  },
+  {
     "name": "Voice",
     "path": "/voice",
     "site": true,

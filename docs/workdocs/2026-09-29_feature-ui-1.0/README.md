@@ -92,6 +92,10 @@ WorkspaceMark. Every string is a prop with an English default.
 alpha.7 matched them to the Claude Design page Patterns · Sign-in; alpha.8 put
 that page on design.cosx.co (/pattern-sign-in) drawn with the real components.
 
+BrandLoader (alpha.10) is the Claude Design `<cosx-loader>` (assets/cosx-loader.js)
+in React; the Components · Loader page is on design.cosx.co (/loader), drawn
+with it (convert.mjs maps `cosx-loader` → DS.Loader).
+
 ## Notes
 - 3.0 variable names overlap Tailwind namespaces (`--radius-md`,
   `--ease-out`, `--font-sans`) and one prefix means different things

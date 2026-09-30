@@ -5,6 +5,7 @@
 
 import {
   Badge as UIBadge,
+  BrandLoader,
   Button as UIButton,
   Checkbox as UICheckbox,
   Dialog as UIDialog,
@@ -137,4 +138,10 @@ export function Dialog({ open, title, eyebrow, width, onClose, footer, children 
       </DialogContent>
     </UIDialog>
   );
+}
+
+/** <cosx-loader size tone track="off" speed> — the kit's BrandLoader. */
+export function Loader({ size, tone, track, speed }) {
+  const n = (x) => (x == null || x === '' ? undefined : Number(x));
+  return <BrandLoader size={n(size)} tone={tone || undefined} track={track !== 'off' && track !== false} speed={n(speed)} />;
 }
