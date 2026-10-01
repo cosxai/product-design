@@ -77,3 +77,10 @@ export { WindowDrop, useWindowDrop, type WindowDropProps } from './components/Wi
 export { AuthIconTile, AuthLayout, AuthPanel, AuthStepHead, type AuthIconTileProps, type AuthLayoutProps, type AuthPanelProps, type AuthStepHeadProps } from './components/AuthLayout';
 export { ThemeSwitch, type ThemeSwitchLabels, type ThemeSwitchProps } from './components/ThemeSwitch';
 export { WorkspaceMark, WorkspaceRow, type WorkspaceMarkProps, type WorkspaceRowProps } from './components/WorkspaceRow';
+
+// Stage 4 — app shell (Metaroom Agent)
+export { AppRail, AppRailSlot, type AppRailItem, type AppRailProps, type AppRailSlotProps } from './components/AppRail';
+export { Avatar, type AvatarProps, type AvatarSize } from './components/Avatar';
+export { BottomSheet, type BottomSheetProps } from './components/BottomSheet';
+export { BottomTabs, type BottomTabItem, type BottomTabsProps } from './components/BottomTabs';
+export { Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, type PopoverContentProps } from './components/Popover';

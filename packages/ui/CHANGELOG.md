@@ -1,3 +1,23 @@
+## 1.0.0-alpha.11 (2026-10-01)
+
+App shell for the Agent module (Metaroom Agent, desktop and phone):
+
+- Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverClose: a
+  small non-modal panel on Radix Popover — portal, flips to fit, Esc and
+  outside click close, focus returns. `inline` keeps it out of the portal.
+- Avatar: a person's photo or initials, sizes 20–52, tone chrome / brand,
+  optional ring; decorative unless `label` is given.
+- BottomSheet: the phone's sheet on Radix Dialog — drag handle, title, drag
+  or flick down to close, scrim, 20px top corners, safe-area padding, a
+  screen-reader close button.
+- BottomTabs: the phone tab bar — 48×28 pill in the brand field for the
+  current tab, counts, avatar tab, disabled tabs at 40% (aria-disabled,
+  `onDisabledSelect`).
+- AppRail + AppRailSlot: the 60px desktop rail — workspace slot, 40×38
+  module buttons (brand field when current), counts and dots, disabled
+  modules with the caller's tooltip, account slot. A nav of buttons with
+  aria-current.
+
 ## 1.0.0-alpha.10 (2026-09-30)
 
 - BrandLoader: the COSX loop as a loading indicator (Claude Design, COSX
