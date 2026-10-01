@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.0-alpha.3 (2026-10-01)
+
+- AgentMessage, AgentDrawer: `avatar` replaces the default AgentAvatar
+  (pass a MetaAvatar whose state follows the answer). The message gutter
+  now fits the avatar's width (28px minimum).
+- Composer, for the Metaroom Agent layout: a leading "+" (`addMenu` — the
+  host's MenuItems, or a function given `pickFiles`; or `onAdd`), the
+  host's own scope picker in a popover (`scopePicker`, `scopePickerOpen`,
+  `onScopePickerOpenChange`), `scopeIcon`, `hint` before Send ("Enter to
+  send"), `showAttachButton`; `labels.add`. With a "+" the paperclip hides
+  by default. Needs @cosxai/ui 1.0.0-alpha.11 (Popover).
+
 ## 1.0.0-alpha.2 (2026-10-01)
 
 - MetaAvatar: Meta, the COSX Agent, on canvas (port of the design

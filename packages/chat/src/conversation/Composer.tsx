@@ -1,5 +1,5 @@
-import { IconButton, Menu, MenuCheckboxItem, MenuContent, MenuTrigger, cn } from '@cosxai/ui';
-import { ArrowUp, BriefcaseBusiness, ChevronDown, Paperclip, Square, SquareCheck } from 'lucide-react';
+import { IconButton, Menu, MenuCheckboxItem, MenuContent, MenuTrigger, Popover, PopoverContent, PopoverTrigger, cn } from '@cosxai/ui';
+import { ArrowUp, BriefcaseBusiness, ChevronDown, Paperclip, Plus, Square, SquareCheck, type LucideIcon } from 'lucide-react';
 import {
   useId,
   useLayoutEffect,
@@ -60,6 +60,8 @@ export type ComposerLabels = {
   scope: string;
   /** Name of the slash-command list. @default "Commands" */
   commands: string;
+  /** The leading "+" button. */
+  add: string;
 };
 
 const LABELS: ComposerLabels = {
@@ -73,6 +75,7 @@ const LABELS: ComposerLabels = {
   stop: 'Stop',
   scope: 'Scope',
   commands: 'Commands',
+  add: 'Add files or context',
 };
 
 export type ComposerProps = Omit<ComponentProps<'div'>, 'children' | 'defaultValue' | 'onChange' | 'placeholder' | 'autoFocus'> & {
@@ -89,6 +92,23 @@ export type ComposerProps = Omit<ComponentProps<'div'>, 'children' | 'defaultVal
   /** Other scopes to pick from; shows a menu on the scope tag. */
   scopes?: ComposerScope[] | undefined;
   onScopeChange?: ((id: string) => void) | undefined;
+  /** The scope tag's icon. @default BriefcaseBusiness */
+  scopeIcon?: LucideIcon | undefined;
+  /** The host's own scope picker (a project list with search), in a popover from the scope tag.
+   *  Wins over `scopes`. Close it after a pick with PopoverClose, or control it with scopePickerOpen. */
+  scopePicker?: ReactNode;
+  scopePickerOpen?: boolean | undefined;
+  onScopePickerOpenChange?: ((open: boolean) => void) | undefined;
+  /** A leading "+" opening a menu the host renders (MenuItem children). As a function it gets
+   *  `pickFiles`, which opens the file chooser (onAddFiles receives the files).
+   *  With a "+" the paperclip is hidden unless showAttachButton. */
+  addMenu?: ReactNode | ((api: { pickFiles: () => void }) => ReactNode);
+  /** A leading "+" that calls this instead of opening a menu. */
+  onAdd?: (() => void) | undefined;
+  /** Show the paperclip beside a "+". @default false with addMenu / onAdd, else true */
+  showAttachButton?: boolean | undefined;
+  /** Before the send button, small and grey: "Enter to send". */
+  hint?: ReactNode;
   /** Shows the "As a task" toggle. @default true */
   showAsTask?: boolean | undefined;
   asTask?: boolean | undefined;
@@ -121,7 +141,9 @@ const MAX_HEIGHT = 240;
  * the scope tag says what the Agent can see; "As a task" hands it to the
  * team. Files come from the button, a paste or a drop. While the Agent
  * writes, Send becomes Stop and the next message can be typed. "/" opens
- * the commands.
+ * the commands. For the Metaroom Agent layout — "+" (a menu the host
+ * renders: `addMenu`, or `onAdd`) · scope tag (`scopePicker` popover) ·
+ * spacer · `hint` ("Enter to send") · Send/Stop — set those props.
  */
 export function Composer({
   value: valueProp,
@@ -133,6 +155,14 @@ export function Composer({
   scope,
   scopes,
   onScopeChange,
+  scopeIcon: ScopeIcon = BriefcaseBusiness,
+  scopePicker,
+  scopePickerOpen,
+  onScopePickerOpenChange,
+  addMenu,
+  onAdd,
+  showAttachButton,
+  hint,
   showAsTask = true,
   asTask: asTaskProp,
   defaultAsTask = false,
@@ -233,6 +263,10 @@ export function Composer({
     }
   };
 
+  const pickFiles = () => {
+    if (!locked) fileInput.current?.click();
+  };
+
   const addFiles = (files: File[]) => {
     if (files.length && onAddFiles && !locked) onAddFiles(files);
   };
@@ -267,7 +301,7 @@ export function Composer({
   const chip = 'inline-flex h-7 items-center gap-1.5 rounded-sm px-2 text-meta font-medium outline-none focus-visible:shadow-(--focus-ring)';
   const scopeTag = scope && (
     <>
-      <BriefcaseBusiness size={13} strokeWidth={1.75} aria-hidden />
+      <ScopeIcon size={13} strokeWidth={1.75} aria-hidden />
       <span className="max-w-[180px] truncate">{scope}</span>
     </>
   );
@@ -341,8 +375,30 @@ export function Composer({
           className="block min-h-[24px] w-full resize-none border-0 bg-transparent p-0 text-body leading-[1.6] text-fg outline-none placeholder:text-fg-secondary disabled:cursor-not-allowed"
         />
         <div className="flex items-center gap-2">
+          {addMenu !== undefined ? (
+            <Menu>
+              <MenuTrigger asChild disabled={locked}>
+                <IconButton icon={Plus} label={labels.add} size="sm" />
+              </MenuTrigger>
+              <MenuContent side="top">{typeof addMenu === 'function' ? addMenu({ pickFiles }) : addMenu}</MenuContent>
+            </Menu>
+          ) : (
+            onAdd && <IconButton icon={Plus} label={labels.add} size="sm" disabled={locked} onClick={onAdd} />
+          )}
           {scope &&
-            (scopes && scopes.length > 0 && onScopeChange && !locked ? (
+            (scopePicker !== undefined && !locked ? (
+              <Popover {...(scopePickerOpen !== undefined ? { open: scopePickerOpen } : {})} {...(onScopePickerOpenChange ? { onOpenChange: onScopePickerOpenChange } : {})}>
+                <PopoverTrigger asChild>
+                  <button type="button" aria-label={`${labels.scope}: ${scope}`} className={cn(chip, 'cursor-pointer bg-page hover:bg-hover')}>
+                    {scopeTag}
+                    <ChevronDown size={12} strokeWidth={2} aria-hidden />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent side="top" aria-label={labels.scope}>
+                  {scopePicker}
+                </PopoverContent>
+              </Popover>
+            ) : scopes && scopes.length > 0 && onScopeChange && !locked ? (
               <Menu>
                 <MenuTrigger asChild>
                   <button type="button" aria-label={`${labels.scope}: ${scope}`} className={cn(chip, 'cursor-pointer bg-page hover:bg-hover')}>
@@ -365,7 +421,7 @@ export function Composer({
             ))}
           {onAddFiles && (
             <>
-              <IconButton icon={Paperclip} label={labels.attach} size="sm" disabled={locked} onClick={() => fileInput.current?.click()} />
+              {(showAttachButton ?? (addMenu === undefined && !onAdd)) && <IconButton icon={Paperclip} label={labels.attach} size="sm" disabled={locked} onClick={pickFiles} />}
               <input
                 ref={fileInput}
                 type="file"
@@ -397,6 +453,7 @@ export function Composer({
             </button>
           )}
           <span className="flex-1" />
+          {hint && <span className="text-[11px] text-fg-secondary">{hint}</span>}
           {writing ? (
             <IconButton icon={Square} label={labels.stop} variant="solid" size="sm" onClick={onStop} disabled={!onStop} className="[&_svg]:fill-current" />
           ) : (

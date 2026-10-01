@@ -91,6 +91,9 @@ export type AgentMessageProps = ComponentProps<'article'> & {
   /** Under the answer: its action row, result cards, confirmation cards, Hand to the team. */
   footer?: ReactNode;
   labels?: Partial<AgentMessageLabels> | undefined;
+  /** Who is answering, in the gutter: `<MetaAvatar state={…} size={30} track={false} />`, its state
+   *  following the answer. Decorative — the article is labelled. @default AgentAvatar */
+  avatar?: ReactNode;
 };
 
 /**
@@ -113,6 +116,7 @@ export function AgentMessage({
   onAskTeam,
   footer,
   labels: labelsProp,
+  avatar,
   className,
   children,
   ...rest
@@ -142,10 +146,12 @@ export function AgentMessage({
     <article
       aria-label={labels.agent}
       aria-busy={state === 'thinking' || writing || undefined}
-      className={cn('grid grid-cols-[28px_minmax(0,1fr)] gap-x-3.5', className)}
+      className={cn('grid grid-cols-[auto_minmax(0,1fr)] gap-x-3.5', className)}
       {...rest}
     >
-      <AgentAvatar />
+      <div aria-hidden className="flex min-w-7 justify-center self-start">
+        {avatar ?? <AgentAvatar />}
+      </div>
       <div className="flex min-w-0 flex-col gap-3">
         {steps}
         {state === 'thinking' && (

@@ -1,4 +1,4 @@
-import { SidePanelProvider, SidePanelSlot, useSidePanel } from '@cosxai/ui';
+import { MenuItem, SidePanelProvider, SidePanelSlot, useSidePanel } from '@cosxai/ui';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useEffect, useState } from 'react';
@@ -457,5 +457,58 @@ describe('a11y', () => {
     const panel = await screen.findByRole('complementary');
     await act(async () => {});
     expect(await a11y(panel)).toHaveNoViolations();
+  });
+});
+
+describe('Agent identity and the Metaroom composer', () => {
+  it('AgentMessage and AgentDrawer take an avatar in place of AgentAvatar', () => {
+    const { container, rerender } = render(<AgentMessage>Hi</AgentMessage>);
+    expect(container.querySelector('[data-testid="meta"]')).toBeNull();
+    rerender(<AgentMessage avatar={<span data-testid="meta" />}>Hi</AgentMessage>);
+    expect(screen.getByTestId('meta')).toBeInTheDocument();
+    expect(container.querySelector('.lucide-sparkles')).toBeNull();
+  });
+
+  it('a "+" opens the host menu; pickFiles opens the chooser; the paperclip hides', async () => {
+    const user = userEvent.setup();
+    const onAddFiles = vi.fn();
+    const click = vi.spyOn(HTMLInputElement.prototype, 'click').mockImplementation(() => {});
+    render(
+      <Composer
+        onAddFiles={onAddFiles}
+        addMenu={({ pickFiles }) => (
+          <>
+            <MenuItem onSelect={pickFiles}>Upload files</MenuItem>
+            <MenuItem>Add a document</MenuItem>
+          </>
+        )}
+        hint="Enter to send"
+      />,
+    );
+    expect(screen.queryByRole('button', { name: 'Attach files' })).toBeNull();
+    expect(screen.getByText('Enter to send')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Add files or context' }));
+    await user.click(await screen.findByRole('menuitem', { name: 'Upload files' }));
+    expect(click).toHaveBeenCalled();
+    click.mockRestore();
+  });
+
+  it('onAdd is a plain "+"', async () => {
+    const onAdd = vi.fn();
+    render(<Composer onAdd={onAdd} labels={{ add: '添加' }} />);
+    await userEvent.click(screen.getByRole('button', { name: '添加' }));
+    expect(onAdd).toHaveBeenCalled();
+  });
+
+  it('scopePicker shows the host picker in a popover from the scope tag', async () => {
+    const user = userEvent.setup();
+    render(
+      <main>
+        <Composer scope="All projects" scopePicker={<button type="button">Harbour Series A</button>} hint="Enter to send" addMenu={<MenuItem>x</MenuItem>} />
+      </main>,
+    );
+    await user.click(screen.getByRole('button', { name: 'Scope: All projects' }));
+    expect(await screen.findByRole('dialog', { name: 'Scope' })).toContainElement(screen.getByRole('button', { name: 'Harbour Series A' }));
+    expect(await a11y(document.body)).toHaveNoViolations();
   });
 });
