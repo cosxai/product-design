@@ -9,6 +9,7 @@ export { CodeBlock, InlineCode, type CodeBlockLabels, type CodeBlockProps } from
 export { type LinkResolver } from './markdown/link-target';
 export { remarkCitations, type RemarkCitationsOptions } from './markdown/remark-citations';
 export { Citation, citationLocation, defaultCitationLabels, type CitationLabels, type CitationProps, type CitationSource, type Citations } from './Citation';
+export { MetaAvatar, type MetaAvatarProps, type MetaAvatarState } from './MetaAvatar';
 export { ScopeLine, SourcesList, type ScopeLineProps, type SourcesListProps } from './Sources';
 export { AgentDrawer, type AgentDrawerProps } from './conversation';
 export { AgentSteps, type AgentStep, type AgentStepState, type AgentStepsLabels, type AgentStepsProps } from './conversation';

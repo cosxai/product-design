@@ -1,6 +1,6 @@
 {
   "name": "@cosxai/chat",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Agent conversation components for the COSX Design System 3.0 \u2014 messages, steps, citations, result and confirmation cards, composer, markdown",
   "license": "UNLICENSED",
   "type": "module",

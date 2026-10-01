@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.0-alpha.2 (2026-10-01)
+
+- MetaAvatar: Meta, the COSX Agent, on canvas (port of the design
+  project's `<meta-avatar>`). Seven states — idle, listening, thinking,
+  talking, done, error, sleeping; blinks, leans toward the pointer
+  (`track`), squashes when poked, the thinking eyes chase along an
+  infinity path. A tile below 34px, eyes only below 22px. The body takes
+  `--brand-field`, so a workspace colour applies. Still under reduced
+  motion; the animation stops on unmount. `label` for other languages.
+- AgentAvatar: deprecated in favour of MetaAvatar.
+
 ## 1.0.0-alpha.1 (2026-09-29)
 
 - Builds without DOM.Iterable (Citation Tab order); needs @cosxai/ui

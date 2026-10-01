@@ -2,7 +2,11 @@ import { initialsOf, cn, formatBytes } from '@cosxai/ui';
 import { FileText, Sparkles, X } from 'lucide-react';
 import type { ComponentProps, ReactNode } from 'react';
 
-/** AgentAvatar — the Agent's ink tile with the yellow spark. Decorative: the message says who spoke. */
+/**
+ * AgentAvatar — the Agent's ink tile with the yellow spark. Decorative: the message says who spoke.
+ *
+ * @deprecated Use MetaAvatar — Meta drawn in its states, in the workspace's brand colour.
+ */
 export function AgentAvatar({ size = 28, className, ...rest }: Omit<ComponentProps<'span'>, 'children'> & { size?: number | undefined }) {
   return (
     <span
