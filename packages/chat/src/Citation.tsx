@@ -183,10 +183,19 @@ export function Citation({ n, source, labels, open: openProp, onOpenChange, clas
     }
   };
 
+  // The design's inline label (Metaroom Agent): number, source, location
+  // on the brand field; a deeper yellow while hovered or open.
   const chipClass = cn(
-    'inline-grid h-[18px] min-w-[18px] cursor-pointer place-items-center rounded-[5px] border-0 px-1 align-[2px] font-sans text-[11px] leading-none font-semibold tabular-nums',
+    'inline-flex h-[22px] max-w-full cursor-pointer items-center gap-[5px] rounded-[6px] border-0 py-0 pr-[7px] pl-[3px] align-[1px] font-sans text-[12px] leading-none font-medium whitespace-nowrap text-ink',
     'mx-0.5 outline-none transition-colors duration-[120ms] ease-standard focus-visible:shadow-(--focus-ring)',
-    open ? 'bg-brand-field text-ink' : 'bg-sunk text-fg hover:bg-well',
+    open ? 'bg-yellow-accent' : 'bg-brand-field hover:bg-yellow-accent',
+  );
+  const chipBody = (
+    <>
+      <span className="inline-grid h-4 min-w-4 place-items-center rounded-[4px] bg-ink px-[3px] text-[10px] font-bold text-brand-field tabular-nums">{n}</span>
+      <span className="max-w-[min(220px,40vw)] truncate">{source.title}</span>
+      {location !== undefined && <span className="text-ink/60 tabular-nums">{location}</span>}
+    </>
   );
 
   return (
@@ -206,7 +215,7 @@ export function Citation({ n, source, labels, open: openProp, onOpenChange, clas
     >
       {source.href && !source.onOpen ? (
         <a ref={setChip} href={source.href} aria-label={l.source(n)} aria-describedby={open ? cardId : undefined} className={cn(chipClass, 'no-underline')} data-citation={n}>
-          {n}
+          {chipBody}
         </a>
       ) : (
         <button
@@ -219,7 +228,7 @@ export function Citation({ n, source, labels, open: openProp, onOpenChange, clas
           className={chipClass}
           data-citation={n}
         >
-          {n}
+          {chipBody}
         </button>
       )}
       {open &&

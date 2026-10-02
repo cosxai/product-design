@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.0-alpha.4 (2026-10-02)
+
+- Citation: the chip is the Metaroom Agent's inline label — the number
+  on an ink badge, the source's title (truncated past 220px) and its
+  location ("p. 14"), on the brand field; deeper yellow while hovered or
+  open. The source card on hover/focus is unchanged. Hosts that kept the
+  linked text before the chip should now replace the link with the chip.
+
 ## 1.0.0-alpha.3 (2026-10-01)
 
 - AgentMessage, AgentDrawer: `avatar` replaces the default AgentAvatar
