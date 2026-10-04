@@ -3,11 +3,11 @@ import { forwardRef, useEffect, useRef, useState, type ComponentProps } from 're
 import { cn } from '../lib/cn';
 import { initialsOf } from './ActivityTimeline';
 
-export type AvatarSize = 20 | 24 | 28 | 32 | 36 | 40 | 52;
+export type AvatarSize = 20 | 24 | 28 | 32 | 36 | 40 | 52 | 64;
 
 // Initials size per avatar size (Metaroom Agent / Account: 22→9, 28→10,
-// 32→11, 40→13, 52→16).
-const TYPE: Record<AvatarSize, number> = { 20: 9, 24: 9, 28: 10, 32: 11, 36: 12, 40: 13, 52: 16 };
+// 32→11, 40→13, 52→16, Account's profile photo 64→20).
+const TYPE: Record<AvatarSize, number> = { 20: 9, 24: 9, 28: 10, 32: 11, 36: 12, 40: 13, 52: 16, 64: 20 };
 
 export type AvatarProps = Omit<ComponentProps<'span'>, 'children'> & {
   /** The person's name: gives the initials (two Latin initials, or the first hanzi). */
@@ -29,8 +29,8 @@ export type AvatarProps = Omit<ComponentProps<'span'>, 'children'> & {
 
 /**
  * Avatar — a person: their photo, or their initials on a round disc. Sizes
- * 20–52 as the Metaroom app uses them (rail account 32, phone tab 24, lists
- * 28–40, profile 52). For the Agent use MetaAvatar (@cosxai/chat); for a
+ * 20–64 as the Metaroom app uses them (rail account 32, phone tab 24, lists
+ * 28–40, Me card 52, Account's profile photo 64). For the Agent use MetaAvatar (@cosxai/chat); for a
  * workspace, WorkspaceMark.
  *
  * Compose with: AppRail `account` slot (inside a button), BottomTabs item

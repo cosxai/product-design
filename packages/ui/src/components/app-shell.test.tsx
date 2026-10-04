@@ -191,6 +191,79 @@ describe('BottomSheet', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('holds an action in the title row and a footer below the list', () => {
+    render(
+      <BottomSheet title="Link files" defaultOpen action={<button type="button">Done</button>} footer={<button type="button">Add 2</button>}>
+        <button type="button">Contract.pdf</button>
+      </BottomSheet>,
+    );
+    const sheet = screen.getByRole('dialog', { name: 'Link files' });
+    expect(sheet).toContainElement(screen.getByRole('button', { name: 'Done' }));
+    expect(sheet).toContainElement(screen.getByRole('button', { name: 'Add 2' }));
+  });
+
+  it('two heights: opens at half, a drag up lifts it to full, a drag down goes back to half', () => {
+    render(<BottomSheet title="Link files" detents="two" defaultOpen><button type="button">Contract.pdf</button></BottomSheet>);
+    const sheet = screen.getByRole('dialog');
+    const handle = sheet.querySelector('[data-sheet-drag]')!;
+    expect(sheet.style.height).toBe('60dvh');
+    const now = vi.spyOn(performance, 'now');
+    now.mockReturnValue(0);
+    fireEvent.pointerDown(handle, { button: 0, clientY: 500, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientY: 400, pointerId: 1 });
+    expect(sheet.style.transform).toBe('translateY(-30px)');
+    now.mockReturnValue(1000);
+    act(() => {
+      fireEvent.pointerUp(handle, { clientY: 400, pointerId: 1 });
+    });
+    expect(sheet.style.height).toContain('100dvh');
+    now.mockReturnValue(2000);
+    fireEvent.pointerDown(handle, { button: 0, clientY: 300, pointerId: 1 });
+    now.mockReturnValue(3000);
+    act(() => {
+      fireEvent.pointerUp(handle, { clientY: 500, pointerId: 1 });
+    });
+    expect(sheet.style.height).toBe('60dvh');
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    now.mockRestore();
+  });
+
+  it('plays its exit before it goes, the scrim marked as leaving', () => {
+    let finish: (() => void) | null = null;
+    const animate = vi.fn(() => {
+      const a = { onfinish: null as null | (() => void) };
+      finish = () => a.onfinish?.();
+      return a as unknown as Animation;
+    });
+    Object.defineProperty(HTMLElement.prototype, 'animate', { value: animate, configurable: true });
+    try {
+      function Ctl() {
+        const [open, setOpen] = useState(true);
+        return (
+          <>
+            <button type="button" onClick={() => setOpen(false)}>Shut</button>
+            <BottomSheet title="Menu" open={open} onOpenChange={setOpen}>
+              <button type="button">Rename</button>
+            </BottomSheet>
+          </>
+        );
+      }
+      render(<Ctl />);
+      act(() => {
+        screen.getByRole('dialog').focus();
+      });
+      act(() => {
+        fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+      });
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      expect(document.querySelector('.cosx-sheet-scrim')).toHaveAttribute('data-leaving');
+      act(() => finish?.());
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    } finally {
+      delete (HTMLElement.prototype as { animate?: unknown }).animate;
+    }
+  });
+
   it('passes axe open', async () => {
     render(<BottomSheet title="Language" description="Used across COSX" defaultOpen><button type="button">English</button></BottomSheet>);
     expect(screen.getByRole('dialog', { name: 'Language' })).toHaveAccessibleDescription('Used across COSX');

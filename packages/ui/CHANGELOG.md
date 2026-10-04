@@ -1,3 +1,17 @@
+## 1.0.0-alpha.12 (2026-10-04)
+
+From the Metaroom app (Motion & Native Feel §04, Account):
+
+- BottomSheet: rises in 280ms and now leaves in 220ms instead of vanishing
+  (it stays mounted for its exit; the scrim fades with it and carries
+  `data-leaving` while it goes). `detents="two"`: half (60%) and full —
+  typing in it, scrolling its list or dragging up lifts it to full,
+  dragging down from full goes back to half; dragging above its top gives
+  way at 0.3×. `action` (the title row's button) and `footer` (pinned below
+  the list). The rise starts when Radix puts the content on the page, so it
+  always plays. Buttons and fields in the title row don't start a drag.
+- Avatar: size 64 (Account's profile photo), initials at 20px.
+
 ## 1.0.0-alpha.11 (2026-10-01)
 
 App shell for the Agent module (Metaroom Agent, desktop and phone):
