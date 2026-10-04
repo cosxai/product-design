@@ -236,7 +236,9 @@ export function BottomSheet({
             {description && <DialogPrimitive.Description className="m-0 px-1 pb-2 text-small text-fg-secondary">{description}</DialogPrimitive.Description>}
           </div>
           <div
-            className={cn('flex min-h-0 flex-1 flex-col gap-0.5', two && !full ? 'overflow-hidden' : 'overflow-y-auto overscroll-contain')}
+            // Edge to edge (its padding is the sheet's): a row that bleeds
+            // to the sheet's sides with -mx-4 fits, and it never pans sideways
+            className={cn('-mx-4 flex min-h-0 flex-1 flex-col gap-0.5 px-4', two && !full ? 'overflow-hidden' : 'overflow-x-hidden overflow-y-auto overscroll-contain')}
             // At half height, a pull up on the list lifts the sheet first
             onWheel={(e) => two && !full && e.deltaY > 0 && setFull(true)}
             onTouchMove={() => two && !full && setFull(true)}

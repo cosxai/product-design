@@ -1,6 +1,6 @@
 {
   "name": "@cosxai/ui",
-  "version": "1.0.0-alpha.12",
+  "version": "1.0.0-alpha.13",
   "description": "COSX Design System 3.0 \u2014 tokens, Tailwind v4 theme and React components",
   "license": "UNLICENSED",
   "type": "module",

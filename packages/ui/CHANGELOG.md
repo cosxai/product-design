@@ -1,3 +1,9 @@
+## 1.0.0-alpha.13 (2026-10-04)
+
+- BottomSheet: the scrolling list reaches the sheet's sides (its padding
+  is the sheet's) and never pans sideways — a row bleeding to the edges
+  with `-mx-4` made it scroll 32px sideways and showed a scrollbar.
+
 ## 1.0.0-alpha.12 (2026-10-04)
 
 From the Metaroom app (Motion & Native Feel §04, Account):
