@@ -11,6 +11,7 @@ import {
   useRef,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
+  type ReactElement,
   type ReactNode,
 } from 'react';
 
@@ -35,6 +36,14 @@ export type ActionBarAction = {
   disabledReason?: string | undefined;
   /** Actions of a kind: more than two sharing a group fold into one menu. */
   group?: string | undefined;
+  /** A thin rule before it, setting it apart from the actions on its left. */
+  divider?: boolean | undefined;
+  /** Always just the icon (a star, ⋯); the label names it for screen readers and the tooltip. */
+  iconOnly?: boolean | undefined;
+  /** Wrap the button, e.g. in a menu's or popover's trigger (asChild), so it opens something anchored to itself. */
+  wrap?: ((button: ReactElement) => ReactElement) | undefined;
+  /** Changes when what `wrap` shows changes (the bar re-renders only when an action's fields change). */
+  wrapKey?: string | undefined;
 };
 
 export type ActionBarSelection = {
@@ -126,7 +135,7 @@ function editable(t: EventTarget | null): boolean {
 const dialogOpen = () => Boolean(document.querySelector('[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"]'));
 
 const signature = (a: ActionBarAction[] | null | undefined) =>
-  a ? a.map((x) => [x.id, x.label, x.shortcut, x.active, x.disabled, x.disabledReason, x.group, x.icon?.displayName].join('\u0001')).join('\u0002') : '';
+  a ? a.map((x) => [x.id, x.label, x.shortcut, x.active, x.disabled, x.disabledReason, x.group, x.icon?.displayName, x.divider, x.iconOnly, x.wrapKey].join('\u0001')).join('\u0002') : '';
 
 // ─── Provider ─────────────────────────────────────────────────────────
 
@@ -465,8 +474,8 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
   const renderAction = (a: ActionBarAction) => {
     const keys = a.shortcut ? formatShortcut(a.shortcut) : null;
     const Glyph = a.icon;
-    const iconOnly = shown === 'icons' && Glyph;
-    const button = (
+    const iconOnly = (shown === 'icons' || a.iconOnly) && Glyph;
+    const plain = (
       <button
         type="button"
         aria-label={iconOnly ? a.label : undefined}
@@ -479,16 +488,18 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
       >
         {Glyph && <Glyph size={16} strokeWidth={1.75} aria-hidden />}
         {!iconOnly && <span>{a.label}</span>}
-        {shown === 'full' && keys && <kbd className="font-sans text-meta font-medium opacity-55">{keys}</kbd>}
+        {shown === 'full' && keys && !iconOnly && <kbd className="font-sans text-meta font-medium opacity-55">{keys}</kbd>}
       </button>
     );
-    const hint = a.disabledReason ?? (shown !== 'full' ? [a.label, keys].filter(Boolean).join(' · ') : null);
-    return hint && (iconOnly || a.disabledReason || keys) ? (
-      <Tooltip key={a.id} content={hint}>
-        {button}
-      </Tooltip>
-    ) : (
-      <Fragment key={a.id}>{button}</Fragment>
+    const button = a.wrap ? a.wrap(plain) : plain;
+    const rule = a.divider ? <span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/20 ink:bg-ink/20" /> : null;
+    const hint = a.disabledReason ?? (shown !== 'full' || iconOnly ? [a.label, keys].filter(Boolean).join(' · ') : null);
+    const tipped = hint && (iconOnly || a.disabledReason || keys) ? <Tooltip content={hint}>{button}</Tooltip> : button;
+    return (
+      <Fragment key={a.id}>
+        {rule}
+        {tipped}
+      </Fragment>
     );
   };
 

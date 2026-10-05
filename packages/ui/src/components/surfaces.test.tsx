@@ -30,6 +30,28 @@ function Page({ actions }: { actions: ActionBarAction[] }) {
 }
 
 describe('ActionBar', () => {
+  it('draws a divider, an icon-only item and a wrapped trigger', async () => {
+    const opened = vi.fn();
+    render(
+      <ActionBarProvider storageKey={null}>
+        <Page
+          actions={[
+            act_('Share', { icon: Upload }),
+            act_('Star', { icon: Plus, iconOnly: true, divider: true }),
+            act_('More', { icon: Plus, iconOnly: true, wrap: (b) => <span data-testid="wrapped" onClick={opened}>{b}</span> }),
+          ]}
+        />
+        <ActionBar presentation="full" />
+      </ActionBarProvider>,
+    );
+    const star = screen.getByRole('button', { name: 'Star' });
+    expect(star.textContent).toBe('');
+    expect(star.previousElementSibling?.getAttribute('aria-hidden')).toBe('true');
+    await userEvent.click(screen.getByRole('button', { name: 'More' }));
+    expect(screen.getByTestId('wrapped')).toBeTruthy();
+    expect(opened).toHaveBeenCalled();
+  });
+
   it('shows registered actions and hides when the page withdraws them', () => {
     const view = render(
       <ActionBarProvider storageKey={null}>

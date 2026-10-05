@@ -1,3 +1,7 @@
+## 1.0.0-alpha.14
+
+- ActionBar: an action can carry `divider` (a rule before it), `iconOnly` (just the icon, label in the tooltip) and `wrap` + `wrapKey` (wrap the button in a menu or popover trigger so it opens something anchored to itself).
+
 ## 1.0.0-alpha.13 (2026-10-04)
 
 - BottomSheet: the scrolling list reaches the sheet's sides (its padding
