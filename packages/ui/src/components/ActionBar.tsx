@@ -6,6 +6,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -82,6 +83,8 @@ type Ctx = {
   setMode: (source: string, mode: ActionBarMode | null) => void;
   setHidden: (source: string, hidden: boolean) => void;
   setActivity: (source: string, label: string | null) => void;
+  /** A mounted bar whose fold would take effect (foldable, presentation not forced) — the \\ shortcut needs one. */
+  setFoldable: (source: string, can: boolean) => void;
   read: () => {
     idle: ActionBarAction[];
     selection: ActionBarSelection | null;
@@ -165,6 +168,7 @@ export function ActionBarProvider({ children, storageKey = 'cosx-action-bar', de
   const hidden = useRef(new Set<string>());
   const activity = useRef(new Map<string, string>());
   const sigs = useRef(new Map<string, string>());
+  const foldables = useRef(new Set<string>());
 
   const changed = (key: string, sig: string) => {
     if (sigs.current.get(key) === sig) return false;
@@ -190,6 +194,10 @@ export function ActionBarProvider({ children, storageKey = 'cosx-action-bar', de
         if (had !== h) bump();
       },
       setActivity: (s: string, label: string | null) => put(activity.current, 'a', s, label, label ?? ''),
+      setFoldable: (s: string, can: boolean) => {
+        if (can) foldables.current.add(s);
+        else foldables.current.delete(s);
+      },
       read: () => {
         const last = <T,>(m: Map<string, T>) => [...m.values()].at(-1) ?? null;
         const sel = [...selections.current.values()].filter((x) => x.count > 0).at(-1) ?? null;
@@ -250,6 +258,8 @@ export function ActionBarProvider({ children, storageKey = 'cosx-action-bar', de
       }
       if (editable(e.target) || dialogOpen()) return;
       if (e.key === '\\' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        // No bar here can fold (a forced presentation, foldable={false}): leave the key alone.
+        if (foldables.current.size === 0) return;
         e.preventDefault();
         setPrefsState((cur) => {
           const merged = { ...cur, folded: !cur.folded };
@@ -424,6 +434,14 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
   // Entering a selection or a mode unfolds it; back in idle the user's fold state returns.
   const folded = foldable && state === 'idle' && (auto === 'folded' || (presentation === undefined && prefs.folded));
   const shown: Exclude<ActionBarPresentation, 'folded'> = auto === 'folded' ? 'icons' : auto;
+  // Folding by the user (« and \\) only takes effect when the presentation follows the fold state.
+  const canFold = foldable && presentation === undefined;
+  const foldId = useId();
+  const { setFoldable } = ctx;
+  useLayoutEffect(() => {
+    setFoldable(foldId, canFold);
+    return () => setFoldable(foldId, false);
+  }, [setFoldable, foldId, canFold]);
 
   // Pull the bar back into view when the window shrinks.
   useEffect(() => {
@@ -523,34 +541,36 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
         className,
       )}
     >
-      <span
-        aria-hidden
-        title={labels.grip ?? 'Move'}
-        onPointerDown={(e) => {
-          if (inline) return;
-          (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
-          drag.current = { px: e.clientX, py: e.clientY, x: prefs.x, y: prefs.y };
-        }}
-        onPointerMove={(e) => {
-          const d = drag.current;
-          if (!d || !bar.current) return;
-          bar.current.style.transform = `translate(calc(-50% + ${d.x + e.clientX - d.px}px), ${d.y + e.clientY - d.py}px)`;
-        }}
-        onPointerUp={(e) => {
-          const d = drag.current;
-          drag.current = null;
-          if (!d) return;
-          const x = d.x + e.clientX - d.px;
-          const y = d.y + e.clientY - d.py;
-          // Dragged to the left edge: fold.
-          if (e.clientX < 24) setPrefs({ folded: true, x: 0, y: 0 });
-          else setPrefs({ x, y });
-        }}
-        onDoubleClick={() => setPrefs({ x: 0, y: 0 })}
-        className={cn('grid h-9 w-5 shrink-0 touch-none place-items-center opacity-50 hover:opacity-100 max-md:hidden', inline ? 'cursor-default' : 'cursor-grab')}
-      >
-        <GripVertical size={14} />
-      </span>
+      {/* An inline bar sits in the page: nothing to drag. */}
+      {!inline && (
+        <span
+          aria-hidden
+          title={labels.grip ?? 'Move'}
+          onPointerDown={(e) => {
+            (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+            drag.current = { px: e.clientX, py: e.clientY, x: prefs.x, y: prefs.y };
+          }}
+          onPointerMove={(e) => {
+            const d = drag.current;
+            if (!d || !bar.current) return;
+            bar.current.style.transform = `translate(calc(-50% + ${d.x + e.clientX - d.px}px), ${d.y + e.clientY - d.py}px)`;
+          }}
+          onPointerUp={(e) => {
+            const d = drag.current;
+            drag.current = null;
+            if (!d) return;
+            const x = d.x + e.clientX - d.px;
+            const y = d.y + e.clientY - d.py;
+            // Dragged to the left edge: fold.
+            if (e.clientX < 24) setPrefs({ folded: true, x: 0, y: 0 });
+            else setPrefs({ x, y });
+          }}
+          onDoubleClick={() => setPrefs({ x: 0, y: 0 })}
+          className="grid h-9 w-5 shrink-0 cursor-grab touch-none place-items-center opacity-50 hover:opacity-100 max-md:hidden"
+        >
+          <GripVertical size={14} />
+        </span>
+      )}
 
       {selection && !mode && (
         <span aria-live="polite" className="px-2.5 text-ui font-medium whitespace-nowrap">
@@ -608,7 +628,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
           </button>
         </>
       )}
-      {state === 'idle' && foldable && (
+      {state === 'idle' && canFold && (
         <Tooltip content={`${labels.fold ?? 'Fold the action bar'} · \\`}>
           <button type="button" aria-label={labels.fold ?? 'Fold the action bar'} onClick={() => setPrefs({ folded: true })} className={cn(itemCls, 'px-2 opacity-60 hover:opacity-100 max-md:hidden')}>
             <ChevronsLeft size={16} aria-hidden />

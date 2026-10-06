@@ -42,6 +42,38 @@ describe('ActionBar', () => {
     expect(screen.queryByRole('button', { name: 'Show the action bar' })).toBeNull();
   });
 
+  it('an inline bar has no grip; the floating bar keeps the grip and the fold button', () => {
+    const { container, rerender } = render(
+      <ActionBarProvider storageKey={null}>
+        <Page actions={[act_('New')]} />
+        <ActionBar inline />
+      </ActionBarProvider>,
+    );
+    expect(container.querySelector('[title="Move"]')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Fold the action bar' })).toBeInTheDocument();
+    rerender(
+      <ActionBarProvider storageKey={null}>
+        <Page actions={[act_('New')]} />
+        <ActionBar />
+      </ActionBarProvider>,
+    );
+    expect(container.querySelector('[title="Move"]')).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Fold the action bar' })).toBeInTheDocument();
+  });
+
+  it('a forced presentation has no fold button, and \\ leaves it (and the key) alone', () => {
+    render(
+      <ActionBarProvider storageKey={null}>
+        <Page actions={[act_('New')]} />
+        <ActionBar inline presentation="full" />
+      </ActionBarProvider>,
+    );
+    expect(screen.queryByRole('button', { name: 'Fold the action bar' })).toBeNull();
+    const notHandled = fireEvent.keyDown(document.body, { key: '\\' });
+    expect(notHandled).toBe(true);
+    expect(screen.getByRole('toolbar')).toBeInTheDocument();
+  });
+
   it('draws a divider, an icon-only item and a wrapped trigger', async () => {
     const opened = vi.fn();
     render(

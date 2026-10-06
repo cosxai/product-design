@@ -1,3 +1,11 @@
+## 1.0.0-alpha.18 (2026-10-06)
+
+- ActionBar `inline`: no grip — an inline bar sits in the page and can't
+  be dragged. The floating bar keeps the grip.
+- ActionBar: the fold button («) shows only when folding takes effect —
+  `foldable` and no forced `presentation`. With no such bar mounted, the
+  `\\` shortcut is left alone (not consumed, no stored fold toggled).
+
 ## 1.0.0-alpha.17 (2026-10-06)
 
 - FolderTree `glide`: pass the surrounding container's useGlide result
