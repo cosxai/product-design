@@ -1,3 +1,8 @@
+## 1.0.0-alpha.19 (2026-10-06)
+
+- ActionBar shortcuts read as keys: `backspace` → ⌫ (⌘⌫ with mod),
+  `delete` → ⌦ on Apple / Del elsewhere, `enter` → ↵ (was "Backspace").
+
 ## 1.0.0-alpha.18 (2026-10-06)
 
 - ActionBar `inline`: no grip — an inline bar sits in the page and can't

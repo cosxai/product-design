@@ -112,6 +112,9 @@ export function formatShortcut(shortcut: string): string {
       if (k === 'shift') return '⇧';
       if (k === 'alt') return isMac ? '⌥' : 'Alt+';
       if (k === 'escape' || k === 'esc') return 'Esc';
+      if (k === 'backspace') return '⌫';
+      if (k === 'delete' || k === 'del') return isMac ? '⌦' : 'Del';
+      if (k === 'enter' || k === 'return') return '↵';
       return k.length === 1 ? k.toUpperCase() : k[0]!.toUpperCase() + k.slice(1);
     })
     .join('');
