@@ -413,7 +413,7 @@ export type ActionBarProps = {
 
 const itemCls = cn(
   'inline-flex h-9 shrink-0 cursor-pointer items-center gap-2 rounded-md border-0 bg-transparent px-2.5 font-sans text-ui font-medium text-inherit outline-none',
-  'hover:bg-white/10 ink:hover:bg-ink/8 focus-visible:shadow-[0_0_0_2px_var(--yellow-accent)] ink:focus-visible:shadow-[0_0_0_2px_var(--ink)]',
+  'hover:bg-white/10 focus-visible:shadow-[0_0_0_2px_var(--yellow-accent)]',
   'disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:cursor-not-allowed aria-disabled:opacity-40',
 );
 
@@ -472,7 +472,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
         className={cn(
           inline ? 'relative' : 'fixed bottom-6 left-0 z-40',
           'inline-flex h-11 cursor-pointer items-center gap-1.5 rounded-r-lg border-0 bg-ink pr-2.5 pl-2 text-linen outline-none',
-          'hover:bg-ink-raised focus-visible:shadow-(--focus-ring) ink:bg-linen ink:text-ink',
+          'hover:bg-ink-raised focus-visible:shadow-(--focus-ring) ink:shadow-[0_0_0_1px_rgba(255,255,255,0.12)]',
           className,
         )}
       >
@@ -515,7 +515,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
       </button>
     );
     const button = a.wrap ? a.wrap(plain) : plain;
-    const rule = a.divider ? <span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/20 ink:bg-ink/20" /> : null;
+    const rule = a.divider ? <span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/20" /> : null;
     const hint = a.disabledReason ?? (shown !== 'full' || iconOnly ? [a.label, keys].filter(Boolean).join(' · ') : null);
     const tipped = hint && (iconOnly || a.disabledReason || keys) ? <Tooltip content={hint}>{button}</Tooltip> : button;
     return (
@@ -534,21 +534,22 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
       onKeyDown={onToolbarKey}
       data-state={state}
       data-presentation={shown}
-      style={inline ? undefined : { transform: `translate(calc(-50% + ${prefs.x}px), ${prefs.y}px)` }}
+      style={{ transform: inline ? `translate(${prefs.x}px, ${prefs.y}px)` : `translate(calc(-50% + ${prefs.x}px), ${prefs.y}px)` }}
       className={cn(
         'flex max-w-[calc(100vw-16px)] items-center gap-0.5 overflow-x-auto rounded-lg bg-ink p-1.5 font-sans text-linen',
-        'ink:bg-linen ink:text-ink',
+        // Ink in both themes (the designs' dark boards too); on the dark ground a hairline keeps its edge
+        'ink:shadow-[0_0_0_1px_rgba(255,255,255,0.12)]',
         inline
           ? 'relative w-fit'
           : 'fixed bottom-6 left-1/2 z-40 max-md:bottom-0 max-md:left-0 max-md:w-full max-md:max-w-none max-md:translate-x-0! max-md:rounded-none',
         className,
       )}
     >
-      {/* An inline bar sits in the page: nothing to drag. */}
-      {!inline && (
+      {/* The grip (desktop): drag to move, double-click to reset; an inline bar moves from where the page puts it */}
+      {(
         <span
           aria-hidden
-          title={labels.grip ?? 'Move'}
+          title={labels.grip ?? 'Drag to move · double-click to reset'}
           onPointerDown={(e) => {
             (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
             drag.current = { px: e.clientX, py: e.clientY, x: prefs.x, y: prefs.y };
@@ -556,7 +557,9 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
           onPointerMove={(e) => {
             const d = drag.current;
             if (!d || !bar.current) return;
-            bar.current.style.transform = `translate(calc(-50% + ${d.x + e.clientX - d.px}px), ${d.y + e.clientY - d.py}px)`;
+            const x = d.x + e.clientX - d.px;
+            const y = d.y + e.clientY - d.py;
+            bar.current.style.transform = inline ? `translate(${x}px, ${y}px)` : `translate(calc(-50% + ${x}px), ${y}px)`;
           }}
           onPointerUp={(e) => {
             const d = drag.current;
@@ -564,12 +567,12 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
             if (!d) return;
             const x = d.x + e.clientX - d.px;
             const y = d.y + e.clientY - d.py;
-            // Dragged to the left edge: fold.
-            if (e.clientX < 24) setPrefs({ folded: true, x: 0, y: 0 });
+            // Dragged to the left edge: fold (where folding works).
+            if (e.clientX < 24 && canFold) setPrefs({ folded: true, x: 0, y: 0 });
             else setPrefs({ x, y });
           }}
           onDoubleClick={() => setPrefs({ x: 0, y: 0 })}
-          className="grid h-9 w-5 shrink-0 cursor-grab touch-none place-items-center opacity-50 hover:opacity-100 max-md:hidden"
+          className="grid h-9 w-5 shrink-0 cursor-grab touch-none place-items-center opacity-50 hover:opacity-100 active:cursor-grabbing max-md:hidden"
         >
           <GripVertical size={14} />
         </span>
@@ -614,7 +617,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
 
       {selection && !mode && (
         <>
-          <span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/20 ink:bg-ink/20" />
+          <span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/20" />
           <button type="button" onClick={selection.onClear} className={itemCls}>
             <X size={16} aria-hidden />
             <span>{selection.clearLabel ?? 'Cancel'}</span>
@@ -624,7 +627,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
       )}
       {mode && (
         <>
-          <span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/20 ink:bg-ink/20" />
+          <span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/20" />
           <button type="button" onClick={mode.onDone} className={cn(itemCls, 'font-semibold')}>
             {mode.doneLabel ?? 'Done'}
             {shown === 'full' && <kbd className="font-sans text-meta font-medium opacity-55">Esc</kbd>}

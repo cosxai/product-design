@@ -42,14 +42,14 @@ describe('ActionBar', () => {
     expect(screen.queryByRole('button', { name: 'Show the action bar' })).toBeNull();
   });
 
-  it('an inline bar has no grip; the floating bar keeps the grip and the fold button', () => {
+  it('inline and floating bars both carry the grip (drag to move, double-click to reset) and the fold button', () => {
     const { container, rerender } = render(
       <ActionBarProvider storageKey={null}>
         <Page actions={[act_('New')]} />
         <ActionBar inline />
       </ActionBarProvider>,
     );
-    expect(container.querySelector('[title="Move"]')).toBeNull();
+    expect(container.querySelector('[title="Drag to move · double-click to reset"]')).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Fold the action bar' })).toBeInTheDocument();
     rerender(
       <ActionBarProvider storageKey={null}>
@@ -57,7 +57,7 @@ describe('ActionBar', () => {
         <ActionBar />
       </ActionBarProvider>,
     );
-    expect(container.querySelector('[title="Move"]')).not.toBeNull();
+    expect(container.querySelector('[title="Drag to move · double-click to reset"]')).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Fold the action bar' })).toBeInTheDocument();
   });
 

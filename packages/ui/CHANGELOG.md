@@ -1,3 +1,12 @@
+## 1.0.0-alpha.21 (2026-10-06)
+
+- ActionBar keeps its grip inline too (the designs draw it on every
+  desktop bar): drag to move, double-click to reset ("Drag to move ·
+  double-click to reset"); an inline bar moves from where the page puts
+  it. Dragging to the left edge folds only where folding works.
+- ActionBar stays ink in the dark theme (it turned linen); a 12% white
+  hairline keeps its edge on the dark ground, as in the dark boards.
+
 ## 1.0.0-alpha.20 (2026-10-06)
 
 - ThemeSwitch order is now light · match system · dark (system in the
