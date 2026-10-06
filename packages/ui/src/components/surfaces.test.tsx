@@ -30,6 +30,18 @@ function Page({ actions }: { actions: ActionBarAction[] }) {
 }
 
 describe('ActionBar', () => {
+  it('stays whole when not foldable, even with a stored fold', () => {
+    render(
+      <ActionBarProvider storageKey={null} defaultFolded>
+        <Page actions={[act_('Comment', { icon: Plus })]} />
+        <ActionBar foldable={false} />
+      </ActionBarProvider>,
+    );
+    expect(screen.getByRole('button', { name: /Comment/ })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Fold the action bar' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Show the action bar' })).toBeNull();
+  });
+
   it('draws a divider, an icon-only item and a wrapped trigger', async () => {
     const opened = vi.fn();
     render(

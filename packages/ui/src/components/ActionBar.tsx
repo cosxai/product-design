@@ -393,6 +393,8 @@ export type ActionBarProps = {
   labels?: ActionBarLabels | undefined;
   /** Lay it out in place (documentation, a demo) instead of floating: no fixed position, no dragging. */
   inline?: boolean | undefined;
+  /** false: always shown in full — no fold button, a stored fold is ignored (a page whose bar is its whole toolbar). @default true */
+  foldable?: boolean | undefined;
   className?: string | undefined;
 };
 
@@ -409,7 +411,7 @@ const itemCls = cn(
  * Narrowing drops shortcuts, then labels, then folds to a handle on the
  * left edge. Drag by the grip; double-click it to reset.
  */
-export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, labels = {}, inline = false, className }: ActionBarProps) {
+export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, labels = {}, inline = false, foldable = true, className }: ActionBarProps) {
   const ctx = useCtx();
   const { idle, selection, mode, hidden, activity } = ctx.read();
   const { prefs, setPrefs } = ctx;
@@ -420,7 +422,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
   const state: ActionBarState = mode ? 'mode' : selection ? 'selection' : 'idle';
   const auto = presentation ?? presentationFor(width);
   // Entering a selection or a mode unfolds it; back in idle the user's fold state returns.
-  const folded = state === 'idle' && (auto === 'folded' || (presentation === undefined && prefs.folded));
+  const folded = foldable && state === 'idle' && (auto === 'folded' || (presentation === undefined && prefs.folded));
   const shown: Exclude<ActionBarPresentation, 'folded'> = auto === 'folded' ? 'icons' : auto;
 
   // Pull the bar back into view when the window shrinks.
@@ -606,7 +608,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
           </button>
         </>
       )}
-      {state === 'idle' && (
+      {state === 'idle' && foldable && (
         <Tooltip content={`${labels.fold ?? 'Fold the action bar'} · \\`}>
           <button type="button" aria-label={labels.fold ?? 'Fold the action bar'} onClick={() => setPrefs({ folded: true })} className={cn(itemCls, 'px-2 opacity-60 hover:opacity-100 max-md:hidden')}>
             <ChevronsLeft size={16} aria-hidden />

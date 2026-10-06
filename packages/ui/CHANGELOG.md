@@ -1,3 +1,7 @@
+## 1.0.0-alpha.15
+
+- ActionBar `foldable={false}`: always shown in full — no fold button, and a stored fold is ignored (a page whose bar is its whole toolbar, like a document viewer).
+
 ## 1.0.0-alpha.14
 
 - ActionBar: an action can carry `divider` (a rule before it), `iconOnly` (just the icon, label in the tooltip) and `wrap` + `wrapKey` (wrap the button in a menu or popover trigger so it opens something anchored to itself).
