@@ -7,10 +7,10 @@ import { useTheme, type ThemeMode } from './ThemeProvider';
 export type ThemeSwitchLabels = {
   /** @default "Theme" */
   group?: string | undefined;
-  /** @default "Theme: match system" */
-  system?: string | undefined;
   /** @default "Theme: light" */
   light?: string | undefined;
+  /** @default "Theme: match system" */
+  system?: string | undefined;
   /** @default "Theme: dark" */
   ink?: string | undefined;
 };
@@ -29,7 +29,7 @@ export type ThemeSwitchProps = Omit<ComponentProps<'div'>, 'onChange' | 'childre
 const PICK_AFTER_MS = 800;
 
 /**
- * ThemeSwitch — match system · light · dark, folded to the current choice.
+ * ThemeSwitch — light · match system · dark, folded to the current choice.
  * Hovering or focusing opens all three. A click anywhere steps to the next;
  * a click on an option picks it only once the switch has been open a moment,
  * so the first tap on touch (which opens it) steps instead of landing on
@@ -47,8 +47,8 @@ export function ThemeSwitch({ value, onChange, labels, defaultOpen = false, clas
     setOpen(true);
   };
   const options: Array<[ThemeMode, LucideIcon, string]> = [
-    ['system', Monitor, labels?.system ?? 'Theme: match system'],
     ['light', Sun, labels?.light ?? 'Theme: light'],
+    ['system', Monitor, labels?.system ?? 'Theme: match system'],
     ['ink', Moon, labels?.ink ?? 'Theme: dark'],
   ];
   const cycle = () => {

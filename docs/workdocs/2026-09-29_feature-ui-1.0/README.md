@@ -87,7 +87,7 @@ Replace craft's `packages/ui` primitives; desktop dmg + web checked.
 The Metaroom sign-in look, shared by the COSX desktop app and web (product-meta
 keeps the words, languages and flows): AuthLayout (step + yellow panel,
 panel drops under 900px by container query), AuthPanel, AuthStepHead,
-AuthIconTile, ThemeSwitch (folded system · light · dark), WorkspaceRow and
+AuthIconTile, ThemeSwitch (folded light · match system · dark), WorkspaceRow and
 WorkspaceMark. Every string is a prop with an English default.
 alpha.7 matched them to the Claude Design page Patterns · Sign-in; alpha.8 put
 that page on design.cosx.co (/pattern-sign-in) drawn with the real components.

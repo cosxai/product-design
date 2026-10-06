@@ -445,8 +445,8 @@ class Logic extends DCLogic {
     };
     return {
       themeOpts: [
-        ['auto', 'monitor', 'Theme: match system'],
         ['light', 'sun', 'Theme: light'],
+        ['auto', 'monitor', 'Theme: match system'],
         ['dark', 'moon', 'Theme: dark'],
       ].map(([k, icon, label]) => ({
         icon,

@@ -1,3 +1,8 @@
+## 1.0.0-alpha.20 (2026-10-06)
+
+- ThemeSwitch order is now light · match system · dark (system in the
+  middle). A quick click steps light → match system → dark → light.
+
 ## 1.0.0-alpha.19 (2026-10-06)
 
 - ActionBar shortcuts read as keys: `backspace` → ⌫ (⌘⌫ with mod),

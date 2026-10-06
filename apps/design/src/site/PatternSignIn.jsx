@@ -189,7 +189,7 @@ function Frame({ t, zh, ink, width = 1000, height = 600, panel = true, dots = fa
   );
 }
 
-const themeLabels = (t) => ({ group: t('Theme', '主题'), system: t('Theme: match system', '主题：跟随系统'), light: t('Theme: light', '主题：浅色'), ink: t('Theme: dark', '主题：深色') });
+const themeLabels = (t) => ({ group: t('Theme', '主题'), light: t('Theme: light', '主题：浅色'), system: t('Theme: match system', '主题：跟随系统'), ink: t('Theme: dark', '主题：深色') });
 
 /** The yellow panel on its own, as AuthLayout's aside draws it. */
 function PanelCard({ children, zh, height = 320, width }) {
@@ -446,8 +446,8 @@ export default function PatternSignIn(props) {
               id="theme"
               title={t('ThemeSwitch · theme switch', 'ThemeSwitch · 主题切换')}
               lead={t(
-                'Collapsed it shows only the current option; hover or focus expands all three: match system · light · dark. A quick click steps to the next; a click on an option picks it only once the switch has been open for 0.8 s, so a first tap on touch screens doesn’t land on the wrong one.',
-                '收起时只显示当前选项；悬停或聚焦时展开三项：跟随系统 · 浅色 · 深色。快速点击切到下一项；展开满 0.8 秒后点击某项才会选中它，避免触屏的第一下点错。',
+                'Collapsed it shows only the current option; hover or focus expands all three: light · match system · dark. A quick click steps to the next; a click on an option picks it only once the switch has been open for 0.8 s, so a first tap on touch screens doesn’t land on the wrong one.',
+                '收起时只显示当前选项；悬停或聚焦时展开三项：浅色 · 跟随系统 · 深色。快速点击切到下一项；展开满 0.8 秒后点击某项才会选中它，避免触屏的第一下点错。',
               )}
             >
               <div style={{ ...card, padding: 24, display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', marginBottom: 16 }}>
@@ -460,8 +460,8 @@ export default function PatternSignIn(props) {
                   <Ground key={String(ink)} ink={ink} style={{ ...card, padding: 24, display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '14px 20px', alignItems: 'center' }}>
                     <span style={{ gridColumn: '1 / -1', fontSize: 14, fontWeight: 500 }}>{ink ? t('Ink', '墨色') : t('Light', '浅色')}</span>
                     {[
-                      ['system', t('Collapsed · match system', '收起 · 跟随系统')],
                       ['light', t('Collapsed · light', '收起 · 浅色')],
+                      ['system', t('Collapsed · match system', '收起 · 跟随系统')],
                       ['ink', t('Collapsed · dark', '收起 · 深色')],
                     ].map(([m, name]) => (
                       <div key={m} style={{ display: 'contents' }}>

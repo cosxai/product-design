@@ -14,7 +14,7 @@ describe('ThemeSwitch', () => {
     render(<ThemeSwitch value="system" onChange={onChange} />);
     expect(screen.getByRole('radio', { name: 'Theme: match system' })).toHaveAttribute('aria-checked', 'true');
     await userEvent.click(screen.getByRole('radio', { name: 'Theme: match system' }));
-    expect(onChange).toHaveBeenCalledWith('light');
+    expect(onChange).toHaveBeenCalledWith('ink');
   });
 
   it('picks an option once it has been open a moment', async () => {
@@ -41,13 +41,15 @@ describe('ThemeSwitch', () => {
     );
     expect(screen.getByRole('radio', { name: '主题：深色' })).toHaveAttribute('aria-checked', 'true');
     await userEvent.click(screen.getByRole('radio', { name: '主题：深色' }));
-    expect(screen.getByTestId('mode')).toHaveTextContent('system');
+    expect(screen.getByTestId('mode')).toHaveTextContent('light');
   });
 
   it('can start opened, every option reachable', () => {
     render(<ThemeSwitch value="light" onChange={() => {}} defaultOpen />);
-    for (const name of ['Theme: match system', 'Theme: light', 'Theme: dark']) {
-      expect(screen.getByRole('radio', { name })).toHaveAttribute('tabindex', '0');
+    const names = screen.getAllByRole('radio').map((r) => r.getAttribute('aria-label'));
+    expect(names).toEqual(['Theme: light', 'Theme: match system', 'Theme: dark']);
+    for (const name of names) {
+      expect(screen.getByRole('radio', { name: name! })).toHaveAttribute('tabindex', '0');
     }
   });
 
