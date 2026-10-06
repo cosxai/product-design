@@ -1,3 +1,12 @@
+## 1.0.0-alpha.17 (2026-10-06)
+
+- FolderTree `glide`: pass the surrounding container's useGlide result
+  and one block glides across the app's own nav buttons and the tree's
+  rows. Each row's field element carries `data-glide-key={id}`; while
+  `glide.active` the selected row leaves its brand field to the block
+  (keeps ink and medium weight). Expanding or collapsing a folder snaps
+  the block to the selected row's new place.
+
 ## 1.0.0-alpha.16 (2026-10-06)
 
 From Motion & Native Feel §07c (option B, "stretch then close"):

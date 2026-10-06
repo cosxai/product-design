@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRef } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { cn } from '../lib/cn';
+import { FolderTree, type TreeNode } from './FolderTree';
 import { SegmentedControl } from './SegmentedControl';
 import { GlideIndicator, glideTransition, useGlide, type GlideAxis } from './useGlide';
 
@@ -188,5 +189,86 @@ describe('SegmentedControl glide', () => {
   it('compact is 34px (28px segments)', () => {
     render(<SegmentedControl aria-label="Show" size="compact" segments={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]} />);
     expect(screen.getByRole('radio', { name: 'A' }).className).toContain('h-7');
+  });
+});
+
+describe('FolderTree in a gliding sidebar', () => {
+  // Rows stack 34px apart in document order (nav buttons, then the tree's rows).
+  beforeEach(() => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+      if (this.hasAttribute('data-glide-indicator')) return rectOf(this);
+      const key = this.getAttribute('data-glide-key');
+      const box = this.closest<HTMLElement>('[data-box]');
+      if (key !== null && box) {
+        const i = Array.from(box.querySelectorAll('[data-glide-key]')).indexOf(this);
+        return DOMRect.fromRect({ x: 0, y: i * 34, width: 200, height: 34 });
+      }
+      return DOMRect.fromRect({ x: 0, y: 0, width: W, height: H });
+    });
+  });
+
+  const nodes: TreeNode[] = [
+    {
+      id: 'room',
+      label: 'Harbour data room',
+      children: [
+        { id: 'legal', label: 'Legal', children: [{ id: 'sha', label: 'Shareholder agreements' }, { id: 'side', label: 'Side letters' }] },
+        { id: 'fin', label: 'Financials' },
+      ],
+    },
+  ];
+
+  function Sidebar({ value }: { value: string }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const glide = useGlide(ref, value, { axis: 'y' });
+    return (
+      <div ref={ref} data-box="" className="overflow-y-auto">
+        <GlideIndicator glide={glide} />
+        <nav>
+          {['recent', 'all'].map((k) => (
+            <button key={k} type="button" data-glide-key={k} className={cn(k === value && !glide.active && 'bg-brand-field')}>
+              {k}
+            </button>
+          ))}
+        </nav>
+        <FolderTree label="Folders" nodes={nodes} defaultExpandedIds={['room', 'legal']} selectedId={value} glide={glide} />
+      </div>
+    );
+  }
+
+  const row = (name: RegExp) => screen.getByRole('treeitem', { name }).firstElementChild as HTMLElement;
+
+  it('rows carry data-glide-key; the selected row leaves its field to the block but keeps ink and weight', () => {
+    render(<Sidebar value="fin" />);
+    const fin = row(/^Financials/);
+    expect(fin).toHaveAttribute('data-glide-key', 'fin');
+    expect(fin.className).not.toContain('bg-brand-field');
+    expect(fin.className).toContain('font-medium');
+    expect(fin.className).toContain('text-ink');
+    // the nested row is found: recent, all, room, legal, sha, side, fin → 7th
+    expect(block().style.opacity).toBe('1');
+    expect(block().style.top).toBe(`${6 * 34}px`);
+  });
+
+  it('without glide the selected row paints its own field', () => {
+    render(<FolderTree label="Folders" nodes={nodes} defaultExpandedIds={['room']} selectedId="fin" />);
+    expect(row(/^Financials/).className).toContain('bg-brand-field');
+  });
+
+  it('glides from a nav button down into the tree', () => {
+    const { rerender } = render(<Sidebar value="recent" />);
+    rerender(<Sidebar value="sha" />);
+    expect(block().style.transition.startsWith('bottom 200ms')).toBe(true);
+    expect(block().style.top).toBe(`${4 * 34}px`);
+  });
+
+  it('collapsing a folder above the selection snaps the block to the row\'s new place', async () => {
+    render(<Sidebar value="fin" />);
+    expect(block().style.top).toBe(`${6 * 34}px`);
+    screen.getByRole('treeitem', { name: /^Legal/ }).focus();
+    await userEvent.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('treeitem', { name: /^Legal/ })).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(() => expect(block().style.top).toBe(`${4 * 34}px`));
+    expect(block().style.transition).toBe('none');
   });
 });

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, type DragEven
 
 import { cn } from '../lib/cn';
 import { Spinner } from './Spinner';
+import type { Glide } from './useGlide';
 
 export type TreeNode = {
   id: string;
@@ -42,6 +43,14 @@ export type FolderTreeProps = {
   canDrop?: ((targetId: string) => boolean) | undefined;
   /** @default "Loading" */
   loadingLabel?: string | undefined;
+  /**
+   * The surrounding container's useGlide: each row carries
+   * `data-glide-key={id}`, and while `glide.active` the selected row leaves
+   * its brand field to the shared block (keeps ink, medium weight). Pass
+   * the same Glide the container's GlideIndicator uses — the block can then
+   * glide between the app's own nav buttons and the tree's rows.
+   */
+  glide?: Glide | undefined;
   className?: string | undefined;
 };
 
@@ -89,6 +98,7 @@ function pathTo(nodes: TreeNode[], id: string, loaded: Map<string, TreeNode[]>):
  * Home/End and typing a name move focus; Right/Left expand, collapse and
  * step in and out. Lazy children load on first expand; revealId opens a
  * folder's ancestors; checkbox mode shows partial ticks; nodes accept drops.
+ * With `glide`, the selected row's field is the container's gliding block.
  */
 export function FolderTree({
   nodes,
@@ -105,6 +115,7 @@ export function FolderTree({
   onDropItems,
   canDrop,
   loadingLabel = 'Loading',
+  glide,
   className,
 }: FolderTreeProps) {
   const [innerExpanded, setInnerExpanded] = useState<Set<string>>(() => new Set(defaultExpandedIds ?? []));
@@ -292,6 +303,7 @@ export function FolderTree({
           className="outline-none [&:focus-visible>div]:shadow-(--focus-ring)"
         >
           <div
+            data-glide-key={n.id}
             data-drop={dropId === n.id || undefined}
             onDragOver={(e: DragEvent) => {
               if (!allowDrop(n.id, n)) return;
@@ -307,7 +319,7 @@ export function FolderTree({
             }}
             className={cn(
               'flex h-[34px] items-center gap-1.5 rounded-md pr-2 text-ui',
-              selected ? 'bg-brand-field font-medium text-ink' : 'text-fg hover:bg-hover',
+              selected ? cn('font-medium text-ink', !glide?.active && 'bg-brand-field') : 'text-fg hover:bg-hover',
               dropId === n.id && 'ring-2 ring-fg ring-inset',
               n.disabled && 'opacity-40',
             )}

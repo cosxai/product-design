@@ -1,7 +1,7 @@
 import { FileText, MessageCircle, Settings, SquareCheck, Users } from 'lucide-react';
 import { useRef, useState } from 'react';
 
-import { AppRail, Avatar, BottomTabs, GlideIndicator, SegmentedControl, cn, useGlide, type AppRailItem, type BottomTabItem } from '../../src';
+import { AppRail, Avatar, BottomTabs, FolderTree, GlideIndicator, SegmentedControl, cn, useGlide, type AppRailItem, type BottomTabItem } from '../../src';
 import { Row, Section } from './Row';
 
 export const demo = { id: 'glide', title: 'Glide — the selected block moves (Motion §07c)', render: GlideDemo };
@@ -25,6 +25,30 @@ function ScrollList() {
           Conversation {r.slice(1)}
         </button>
       ))}
+    </div>
+  );
+}
+
+function Sidebar() {
+  const [sel, setSel] = useState('recent');
+  const ref = useRef<HTMLDivElement>(null);
+  const glide = useGlide(ref, sel, { axis: 'y' });
+  const nodes = [
+    { id: 'room', label: 'Harbour data room', children: [
+      { id: 'legal', label: 'Legal', children: [{ id: 'sha', label: 'Shareholder agreements' }, { id: 'side', label: 'Side letters' }] },
+      { id: 'fin', label: 'Financials' },
+    ] },
+  ];
+  return (
+    <div ref={ref} data-testid="sidebar" className="flex h-[300px] w-[280px] flex-col gap-0.5 overflow-y-auto rounded-[12px] border border-rule bg-page p-1.5">
+      <GlideIndicator glide={glide} />
+      {['recent', 'starred', 'all'].map((k) => (
+        <button key={k} type="button" data-glide-key={k} onClick={() => setSel(k)}
+          className={cn('flex h-9 shrink-0 items-center rounded-lg border-0 bg-transparent px-2.5 text-left text-[14px] text-fg', k === sel ? cn('font-medium text-ink', !glide.active && 'bg-brand-field') : 'hover:bg-hover')}>
+          {k}
+        </button>
+      ))}
+      <FolderTree label="Folders" nodes={nodes} defaultExpandedIds={['room', 'legal']} selectedId={sel} onSelect={setSel} glide={glide} />
     </div>
   );
 }
@@ -74,6 +98,9 @@ export function GlideDemo({ zh }: { zh: boolean }) {
       </Section>
       <Section title={t('A scrolling list (useGlide)', '可滚动列表（useGlide）')}>
         <ScrollList />
+      </Section>
+      <Section title={t('Nav buttons + FolderTree, one block', '导航按钮 + 文件夹树，一个色块')}>
+        <Sidebar />
       </Section>
     </div>
   );
