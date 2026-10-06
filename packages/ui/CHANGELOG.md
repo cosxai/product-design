@@ -1,3 +1,26 @@
+## 1.0.0-alpha.16 (2026-10-06)
+
+From Motion & Native Feel §07c (option B, "stretch then close"):
+
+- useGlide + GlideIndicator: one shared selected block moves between items
+  instead of the selection blinking. The leading edge goes first (200ms),
+  the trailing edge follows 50ms later and closes in over 300ms + 40ms per
+  item beyond the first (up to 6); cross edges 240ms; ease-out, no
+  overshoot. A fast second click turns from where the block is. First
+  paint, resizes and list changes that move the selection snap; reduced
+  motion jumps. Mark items with `data-glide-key`, hide the item's own
+  selected background while `glide.active`. Works in a scrolling list
+  (the block lives in the scroller's content). Also `glideTransition`,
+  `GLIDE_KEY`.
+- AppRail (vertical), BottomTabs and SegmentedControl (horizontal) glide.
+  The selected item no longer carries `bg-brand-field` itself — the block
+  does (same token, so workspace colours carry; the item's radius).
+- SegmentedControl matches Docs Mobile Home: equal-width segments on a
+  sunk track without a border (`w-full` fills the row), labels in the
+  primary text colour. Sizes: `md` 44px (38px segments, 14px, 12/9px
+  corners — was 38px), new `compact` 34px (13px), `sm` 32px. DateInput's
+  precision switch uses compact (sm with a small field).
+
 ## 1.0.0-alpha.15
 
 - ActionBar `foldable={false}`: always shown in full — no fold button, and a stored fold is ignored (a page whose bar is its whole toolbar, like a document viewer).

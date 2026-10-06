@@ -1,9 +1,10 @@
 import * as RadioPrimitive from '@radix-ui/react-radio-group';
-import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
 import { definedAria } from './inputs-aria';
 import { Tooltip } from './Tooltip';
+import { GlideIndicator, useGlide } from './useGlide';
 
 export type Segment = {
   value: string;
@@ -21,27 +22,28 @@ export type SegmentedControlProps = {
   /** Accessible name when there is no visible label. */
   'aria-label'?: string | undefined;
   'aria-labelledby'?: string | undefined;
-  /** 32 · 38. @default "md" */
-  size?: 'sm' | 'md' | undefined;
+  /**
+   * md — 44px, 14px labels (the phone's Recent · Starred · All, Docs Mobile
+   * Home); compact — 34px, 13px (desktop panels); sm — 32px, 12px (beside a
+   * small field). @default "md"
+   */
+  size?: 'md' | 'compact' | 'sm' | undefined;
   className?: string | undefined;
 };
 
 /**
  * SegmentedControl — two to five mutually exclusive views or modes, side
- * by side. Radio semantics: one tab stop, arrows move and choose. The
- * selected segment sits on the brand colour and the marker glides to it
- * (still, with reduced motion). A disabled segment explains why.
+ * by side in equal widths on a sunk track (give it `w-full` to fill the
+ * row). Radio semantics: one tab stop, arrows move and choose. The selected
+ * segment sits on the brand field (--brand-field), one shared block that
+ * stretches across to the new segment and closes in (useGlide, §07c; a
+ * jump under reduced motion). A disabled segment explains why.
  */
 export function SegmentedControl({ segments, value, defaultValue, onChange, size = 'md', className, ...aria }: SegmentedControlProps) {
   const [own, setOwn] = useState(defaultValue ?? segments.find((s) => !s.disabled)?.value);
   const current = value ?? own;
   const root = useRef<HTMLDivElement | null>(null);
-  const [marker, setMarker] = useState<{ left: number; width: number } | null>(null);
-
-  useLayoutEffect(() => {
-    const el = root.current?.querySelector<HTMLElement>('[data-state="checked"]');
-    setMarker(el ? { left: el.offsetLeft, width: el.offsetWidth } : null);
-  }, [current, segments]);
+  const glide = useGlide(root, current, { axis: 'x' });
 
   return (
     <RadioPrimitive.Root
@@ -54,26 +56,27 @@ export function SegmentedControl({ segments, value, defaultValue, onChange, size
       orientation="horizontal"
       loop
       {...definedAria(aria)}
-      className={cn('relative inline-flex rounded-md border border-rule bg-sunk p-[3px] font-sans', className)}
-    >
-      {marker && (
-        <span
-          aria-hidden
-          className="absolute top-[3px] bottom-[3px] rounded-sm bg-brand-field motion-safe:transition-[left,width] motion-safe:duration-[320ms] motion-safe:ease-out"
-          style={{ left: marker.left, width: marker.width }}
-        />
+      className={cn(
+        'relative isolate inline-grid auto-cols-fr grid-flow-col gap-0.5 bg-sunk p-[3px] font-sans',
+        size === 'md' ? 'rounded-[12px]' : 'rounded-[10px]',
+        className,
       )}
+    >
+      <GlideIndicator glide={glide} />
       {segments.map((s) => {
+        const on = s.value === current;
         const item = (
           <RadioPrimitive.Item
             key={s.value}
             value={s.value}
             disabled={s.disabled}
+            data-glide-key={s.value}
             className={cn(
-              'relative z-[1] inline-flex cursor-pointer items-center gap-1.5 rounded-sm px-3 font-medium whitespace-nowrap text-fg-secondary outline-none',
-              'transition-colors duration-[120ms] ease-standard hover:text-fg focus-visible:shadow-(--focus-ring)',
+              'inline-flex w-full cursor-pointer items-center justify-center gap-1.5 px-3 font-medium whitespace-nowrap text-fg outline-none',
+              'transition-colors duration-[120ms] ease-standard focus-visible:shadow-(--focus-ring)',
               'data-[state=checked]:text-ink disabled:cursor-not-allowed disabled:opacity-40',
-              size === 'sm' ? 'h-[24px] text-meta' : 'h-[30px] text-[13px]',
+              on && !glide.active && 'bg-brand-field',
+              size === 'md' ? 'h-[38px] rounded-[9px] text-[14px]' : size === 'compact' ? 'h-7 rounded-[7px] text-[13px]' : 'h-[26px] rounded-[7px] text-meta',
             )}
           >
             {s.label}
@@ -82,7 +85,7 @@ export function SegmentedControl({ segments, value, defaultValue, onChange, size
         );
         return s.disabled && s.reason ? (
           <Tooltip key={s.value} content={s.reason}>
-            <span className="relative z-[1] inline-flex" tabIndex={-1}>
+            <span className="inline-flex" tabIndex={-1}>
               {item}
             </span>
           </Tooltip>

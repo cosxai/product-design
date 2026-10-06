@@ -1,9 +1,10 @@
 import type { LucideIcon } from 'lucide-react';
-import { forwardRef, type ComponentProps, type ReactNode } from 'react';
+import { forwardRef, useImperativeHandle, useRef, type ComponentProps, type ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
 import { formatCount } from './Button';
 import { Icon } from './Icon';
+import { GlideIndicator, useGlide } from './useGlide';
 
 export type BottomTabItem = {
   key: string;
@@ -33,7 +34,8 @@ export type BottomTabsProps = Omit<ComponentProps<'nav'>, 'onChange' | 'children
  * BottomTabs — the phone's tab bar (Metaroom Agent phone): an icon in a
  * 48×28 pill over an 11px label; the current tab's pill takes the
  * workspace's field colour (--brand-field), a person's avatar gets an ink
- * ring. Tabs not built yet stay visible at 40% opacity (aria-disabled, still
+ * ring. The field is one shared pill that glides sideways between tabs
+ * (useGlide, §07c) — still under reduced motion. Tabs not built yet stay visible at 40% opacity (aria-disabled, still
  * focusable, so a press can explain). The bottom padding clears the home
  * indicator.
  *
@@ -47,14 +49,18 @@ export const BottomTabs = forwardRef<HTMLElement, BottomTabsProps>(function Bott
   { items, value, onChange, onDisabledSelect, label, className, style, ...rest },
   ref,
 ) {
+  const navRef = useRef<HTMLElement | null>(null);
+  useImperativeHandle(ref, () => navRef.current as HTMLElement);
+  const glide = useGlide(navRef, value, { axis: 'x' });
   return (
     <nav
-      ref={ref}
+      ref={navRef}
       aria-label={label}
       className={cn('flex shrink-0 border-t border-rule bg-page px-2 pt-1.5 font-sans text-fg', className)}
       style={{ paddingBottom: 'max(22px, env(safe-area-inset-bottom, 0px))', ...style }}
       {...rest}
     >
+      <GlideIndicator glide={glide} />
       {items.map((it) => {
         const on = it.key === value;
         const count = it.disabled || it.count === undefined ? null : formatCount(it.count);
@@ -72,9 +78,10 @@ export const BottomTabs = forwardRef<HTMLElement, BottomTabsProps>(function Bott
             )}
           >
             <span
+              data-glide-key={it.key}
               className={cn(
                 'grid h-7 w-12 place-items-center rounded-pill transition-colors duration-[120ms] ease-standard',
-                on && 'bg-brand-field text-ink',
+                on && cn('text-ink', !glide.active && 'bg-brand-field'),
               )}
             >
               {it.avatar ? (

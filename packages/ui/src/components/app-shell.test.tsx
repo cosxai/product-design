@@ -295,9 +295,14 @@ describe('BottomTabs', () => {
     expect(onChange).toHaveBeenCalledTimes(1);
   });
 
-  it('active pill uses the brand field; the avatar tab rings when current', () => {
-    const { rerender } = render(<BottomTabs label="Modules" items={tabItems} value="agent" onChange={() => {}} />);
-    expect(screen.getByRole('button', { name: 'Agent' }).firstElementChild!.className).toContain('bg-brand-field');
+  it('the current pill is the one gliding brand-field block; the avatar tab rings when current', () => {
+    const { container, rerender } = render(<BottomTabs label="Modules" items={tabItems} value="agent" onChange={() => {}} />);
+    const pill = screen.getByRole('button', { name: 'Agent' }).firstElementChild as HTMLElement;
+    expect(pill).toHaveAttribute('data-glide-key', 'agent');
+    expect(pill.className).not.toContain('bg-brand-field');
+    const block = container.querySelector<HTMLElement>('[data-glide-indicator]')!;
+    expect(block.className).toContain('bg-brand-field');
+    expect(block.style.opacity).toBe('1');
     rerender(<BottomTabs label="Modules" items={tabItems} value="me" onChange={() => {}} />);
     const me = screen.getByRole('button', { name: 'Me (3)' });
     expect(me.querySelector('.shadow-\\[0_0_0_1\\.5px_var\\(--text-primary\\)\\]')).not.toBeNull();
@@ -336,7 +341,8 @@ describe('AppRail', () => {
     );
     const nav = screen.getByRole('navigation', { name: 'Modules' });
     expect(screen.getByRole('button', { name: 'Agent' })).toHaveAttribute('aria-current', 'page');
-    expect(screen.getByRole('button', { name: 'Agent' }).className).toContain('bg-brand-field');
+    expect(screen.getByRole('button', { name: 'Agent' })).toHaveAttribute('data-glide-key', 'agent');
+    expect(nav.querySelector('[data-glide-indicator]')!.className).toContain('bg-brand-field');
     expect(nav.querySelector('[data-dot]')).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Documents (99+)' })).toBeInTheDocument();
 

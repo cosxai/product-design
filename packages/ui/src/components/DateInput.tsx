@@ -351,7 +351,7 @@ export function FuzzyDateInput(props: FuzzyDateInputProps) {
               { value: 'year', label: labels.year },
             ]}
             className="shrink-0"
-            {...(size === 'sm' ? { size: 'sm' as const } : {})}
+            size={size === 'sm' ? 'sm' : 'compact'}
           />
           {name && <input type="hidden" name={name} value={parsed ? toIso(parsed) : text} />}
         </div>

@@ -70,6 +70,7 @@ export { SyncStatus, type SyncState, type SyncStatusProps } from './components/S
 export { UploadCheck, groupByFolder, type UploadCheckLabels, type UploadCheckProps } from './components/UploadCheck';
 export { UploadFolderRow, UploadList, UploadRow, useBeforeUnloadWhile, type UploadItem, type UploadRowLabels, type UploadRowProps, type UploadState } from './components/UploadList';
 export { useSelection, type Selection, type SelectionOptions } from './components/useSelection';
+export { GLIDE_KEY, GlideIndicator, glideTransition, useGlide, type Glide, type GlideAxis, type GlideIndicatorProps, type GlideOptions } from './components/useGlide';
 export { InfiniteLoader, VirtualList, type InfiniteLoaderProps, type VirtualListProps } from './components/VirtualList';
 export { WindowDrop, useWindowDrop, type WindowDropProps } from './components/WindowDrop';
 

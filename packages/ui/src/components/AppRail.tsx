@@ -1,10 +1,11 @@
 import type { LucideIcon } from 'lucide-react';
-import { forwardRef, type ComponentProps, type ReactNode } from 'react';
+import { forwardRef, useImperativeHandle, useRef, type ComponentProps, type ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
 import { formatCount } from './Button';
 import { Icon } from './Icon';
 import { Tooltip } from './Tooltip';
+import { GlideIndicator, useGlide } from './useGlide';
 
 export type AppRailItem = {
   key: string;
@@ -41,7 +42,9 @@ export type AppRailProps = Omit<ComponentProps<'nav'>, 'onChange' | 'children'> 
  * the top, one 40×38 icon button per module, a flexible gap, the account at
  * the bottom. The current module takes the workspace's field colour
  * (--brand-field); modules not built yet stay visible at 40% with a tooltip
- * that says so. Counts and dots use --brand-mark.
+ * that says so. Counts and dots use --brand-mark. The field is one shared
+ * block that glides up and down between modules (useGlide, §07c) — still
+ * under reduced motion.
  *
  * Compose with: AppRailSlot + WorkspaceMark / Avatar for the slots, each
  * usually a PopoverTrigger (workspace switcher, account card); BottomTabs is
@@ -54,13 +57,17 @@ export const AppRail = forwardRef<HTMLElement, AppRailProps>(function AppRail(
   { items, value, onChange, onDisabledSelect, label, workspace, account, className, ...rest },
   ref,
 ) {
+  const navRef = useRef<HTMLElement | null>(null);
+  useImperativeHandle(ref, () => navRef.current as HTMLElement);
+  const glide = useGlide(navRef, value, { axis: 'y' });
   return (
     <nav
-      ref={ref}
+      ref={navRef}
       aria-label={label}
       className={cn('flex w-[60px] shrink-0 flex-col items-center gap-1 border-r border-rule bg-sunk py-3.5 font-sans text-fg', className)}
       {...rest}
     >
+      <GlideIndicator glide={glide} />
       {workspace && <div className="mb-3 flex">{workspace}</div>}
       {items.map((it) => {
         const on = it.key === value;
@@ -72,11 +79,12 @@ export const AppRail = forwardRef<HTMLElement, AppRailProps>(function AppRail(
               aria-label={count ? `${it.label} (${count})` : it.label}
               aria-current={on ? 'page' : undefined}
               aria-disabled={it.disabled || undefined}
+              data-glide-key={it.key}
               onClick={() => (it.disabled ? onDisabledSelect?.(it.key) : onChange(it.key))}
               className={cn(
                 'relative grid h-[38px] w-10 shrink-0 cursor-pointer place-items-center rounded-md border-0 p-0 outline-none',
                 'transition-colors duration-[120ms] ease-standard focus-visible:shadow-(--focus-ring)',
-                on ? 'bg-brand-field text-ink' : 'bg-transparent text-fg',
+                on ? cn('text-ink', !glide.active && 'bg-brand-field') : 'bg-transparent text-fg',
                 !on && !it.disabled && 'hover:bg-hover',
                 it.disabled && 'cursor-not-allowed opacity-40',
               )}
