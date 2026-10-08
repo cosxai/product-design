@@ -128,8 +128,9 @@ export function CodeInput({
             className={cn(
               'h-[52px] w-11 rounded-md border bg-sunk text-center font-sans text-[20px] font-medium text-fg tabular-nums outline-none',
               'transition-[border-color] duration-[120ms] ease-standard focus:border-fg focus:shadow-(--focus-ring)',
-              bad ? 'border-transparent bg-error-wash focus:border-error' : 'border-transparent',
-              off && 'cursor-not-allowed bg-well text-fg-secondary',
+              // Every cell shows its edge, like Input; the focused one darkens
+              bad ? 'border-error bg-error-wash focus:border-error' : 'border-rule',
+              off && 'cursor-not-allowed border-rule-soft bg-well text-fg-secondary',
             )}
           />
         ))}

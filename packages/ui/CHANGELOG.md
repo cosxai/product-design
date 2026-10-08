@@ -1,3 +1,9 @@
+## 1.0.0-alpha.23 (2026-10-08)
+
+- CodeInput: every cell shows its edge (the rule colour, as Input does);
+  the focused cell darkens to ink. On a sunk page the cells were
+  invisible. Invalid cells take the error edge.
+
 ## 1.0.0-alpha.22 (2026-10-08)
 
 - Breadcrumb: earlier levels no longer underline on hover (they aren't
