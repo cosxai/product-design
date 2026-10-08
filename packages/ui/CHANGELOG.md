@@ -1,3 +1,8 @@
+## 1.0.0-alpha.22 (2026-10-08)
+
+- Breadcrumb: earlier levels no longer underline on hover (they aren't
+  links in running text); hover deepens the colour only.
+
 ## 1.0.0-alpha.21 (2026-10-06)
 
 - ActionBar keeps its grip inline too (the designs draw it on every

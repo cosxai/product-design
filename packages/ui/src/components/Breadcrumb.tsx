@@ -26,7 +26,7 @@ export type BreadcrumbProps = Omit<ComponentProps<'nav'>, 'children'> & {
   status?: ReactNode;
 };
 
-const linkClass = 'cursor-pointer text-fg-secondary outline-none hover:text-fg hover:underline underline-offset-2 focus-visible:shadow-(--focus-ring) rounded-xs';
+const linkClass = 'cursor-pointer text-fg-secondary outline-none hover:text-fg focus-visible:shadow-(--focus-ring) rounded-xs';
 
 function Crumb({ item }: { item: BreadcrumbItem }) {
   if (item.href)
