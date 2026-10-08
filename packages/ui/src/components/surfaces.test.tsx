@@ -202,7 +202,11 @@ describe('ActionBar', () => {
 
   it('formats shortcuts', () => {
     expect(formatShortcut('n')).toBe('N');
-    expect(formatShortcut('shift+s')).toBe('⇧S');
+    expect(formatShortcut('shift+s', true)).toBe('⇧S');
+    expect(formatShortcut('mod+enter', true)).toBe('⌘↵');
+    expect(formatShortcut('shift+s', false)).toBe('Shift+S');
+    expect(formatShortcut('mod+enter', false)).toBe('Ctrl+Enter');
+    expect(formatShortcut('mod+backspace', false)).toBe('Ctrl+Backspace');
   });
 
   it('the folded handle carries the activity for screen readers', () => {

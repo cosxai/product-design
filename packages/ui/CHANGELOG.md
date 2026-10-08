@@ -1,3 +1,9 @@
+## 1.0.0-alpha.24 (2026-10-08)
+
+- formatShortcut writes keys the Windows way off Apple: "Ctrl+Enter",
+  "Shift+S", "Backspace" (it gave "Ctrl+↵" and "⇧S"). A second argument
+  forces the Mac or Windows form.
+
 ## 1.0.0-alpha.23 (2026-10-08)
 
 - CodeInput: every cell shows its edge (the rule colour, as Input does);

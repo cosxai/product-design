@@ -102,22 +102,24 @@ const ActionBarContext = createContext<Ctx | null>(null);
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
-/** "shift+s" → "⇧S", "mod+a" → "⌘A" (Ctrl+A off Apple). */
-export function formatShortcut(shortcut: string): string {
-  return shortcut
-    .split('+')
-    .map((p) => {
-      const k = p.trim().toLowerCase();
-      if (k === 'mod') return isMac ? '⌘' : 'Ctrl+';
-      if (k === 'shift') return '⇧';
-      if (k === 'alt') return isMac ? '⌥' : 'Alt+';
-      if (k === 'escape' || k === 'esc') return 'Esc';
-      if (k === 'backspace') return '⌫';
-      if (k === 'delete' || k === 'del') return isMac ? '⌦' : 'Del';
-      if (k === 'enter' || k === 'return') return '↵';
-      return k.length === 1 ? k.toUpperCase() : k[0]!.toUpperCase() + k.slice(1);
-    })
-    .join('');
+/**
+ * A shortcut as the platform writes it: "shift+s" → "⇧S", "mod+enter" → "⌘↵"
+ * on Apple; "Shift+S", "Ctrl+Enter" elsewhere. `mac` forces one way (tests).
+ */
+export function formatShortcut(shortcut: string, mac: boolean = isMac): string {
+  const keys = shortcut.split('+').map((p) => {
+    const k = p.trim().toLowerCase();
+    if (k === 'mod') return mac ? '⌘' : 'Ctrl';
+    if (k === 'ctrl' || k === 'control') return mac ? '⌃' : 'Ctrl';
+    if (k === 'shift') return mac ? '⇧' : 'Shift';
+    if (k === 'alt' || k === 'option') return mac ? '⌥' : 'Alt';
+    if (k === 'escape' || k === 'esc') return 'Esc';
+    if (k === 'backspace') return mac ? '⌫' : 'Backspace';
+    if (k === 'delete' || k === 'del') return mac ? '⌦' : 'Del';
+    if (k === 'enter' || k === 'return') return mac ? '↵' : 'Enter';
+    return k.length === 1 ? k.toUpperCase() : k[0]!.toUpperCase() + k.slice(1);
+  });
+  return keys.join(mac ? '' : '+');
 }
 
 function matches(shortcut: string, e: KeyboardEvent): boolean {
