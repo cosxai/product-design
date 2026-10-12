@@ -1,3 +1,10 @@
+## 1.0.0-alpha.26 (2026-10-12)
+
+- FolderTree: a double click on a folder's name opens or closes it (the
+  single click still selects it). The chevron's hover is the ink at 10%
+  instead of the hover ground, so it darkens whatever row it sits on —
+  on a selected row in a workspace's brand colour it showed a white chip.
+
 ## 1.0.0-alpha.25 (2026-10-12)
 
 - CodeInput: one key fills one cell with an input method on. A Windows

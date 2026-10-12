@@ -203,6 +203,18 @@ const tree: TreeNode[] = [
 ];
 
 describe('FolderTree', () => {
+  it('a double click on a folder opens or closes it, as well as selecting it', async () => {
+    const onSelect = vi.fn();
+    render(<FolderTree label="Folders" nodes={tree} onSelect={onSelect} />);
+    const room = screen.getByRole('treeitem', { name: /Harbour data room/ });
+    expect(room).toHaveAttribute('aria-expanded', 'false');
+    await userEvent.dblClick(within(room).getByText('Harbour data room'));
+    expect(room).toHaveAttribute('aria-expanded', 'true');
+    expect(onSelect).toHaveBeenCalledWith('room');
+    await userEvent.dblClick(within(room).getAllByText('Harbour data room')[0]!);
+    expect(room).toHaveAttribute('aria-expanded', 'false');
+  });
+
   it('is a tree: arrows move, Right expands and steps in, Left steps out, Enter opens', async () => {
     const onSelect = vi.fn();
     render(<FolderTree label="Folders" nodes={tree} defaultExpandedIds={['room']} onSelect={onSelect} />);

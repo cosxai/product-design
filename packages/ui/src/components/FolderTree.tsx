@@ -329,7 +329,7 @@ export function FolderTree({
               <span
                 aria-hidden
                 onClick={() => toggleExpand(n)}
-                className="grid size-5 shrink-0 cursor-pointer place-items-center rounded-xs text-fg hover:bg-hover"
+                className="grid size-5 shrink-0 cursor-pointer place-items-center rounded-xs text-fg hover:bg-fg/10"
               >
                 <ChevronRight size={14} strokeWidth={2} className={cn('transition-transform duration-[120ms]', open && 'rotate-90')} />
               </span>
@@ -354,6 +354,10 @@ export function FolderTree({
                 if (n.disabled) return;
                 setFocusId(n.id);
                 onSelect?.(n.id);
+              }}
+              // A double click opens or closes the folder, as in a file manager's sidebar
+              onDoubleClick={() => {
+                if (!n.disabled && canExpand) toggleExpand(n);
               }}
               className="flex min-w-0 flex-1 cursor-pointer items-center gap-2"
             >
