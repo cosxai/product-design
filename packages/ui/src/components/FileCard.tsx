@@ -118,7 +118,7 @@ export function FileCard({
       <div
         className={cn(
           'relative grid h-[180px] place-items-center text-fg',
-          selected ? 'bg-brand-field text-ink' : state === 'failed' ? 'bg-error-wash text-ink ink:bg-error/20 ink:text-fg' : kind === 'link' ? 'bg-page' : 'bg-sunk',
+          selected ? 'bg-brand-field text-brand-field-fg' : state === 'failed' ? 'bg-error-wash text-ink ink:bg-error/20 ink:text-fg' : kind === 'link' ? 'bg-page' : 'bg-sunk',
         )}
       >
         {state === 'converting' ? (

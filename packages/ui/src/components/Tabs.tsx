@@ -85,7 +85,7 @@ export function Tab({ className, children, count, ...rest }: TabProps) {
         className={cn(
           'group flex flex-1 cursor-pointer items-center gap-3 rounded-md border-0 bg-sunk px-[18px] py-3.5 text-left font-sans text-ui font-medium text-fg outline-none',
           'transition-colors duration-[120ms] ease-standard focus-visible:shadow-(--focus-ring)',
-          'data-[state=active]:bg-brand-field data-[state=active]:text-ink',
+          'data-[state=active]:bg-brand-field data-[state=active]:text-brand-field-fg',
           'disabled:cursor-not-allowed disabled:opacity-40',
           '[counter-increment:cosx-tab] before:text-meta before:font-normal before:text-fg-secondary before:content-[counter(cosx-tab,decimal-leading-zero)] data-[state=active]:before:text-ink',
           className,

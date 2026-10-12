@@ -101,7 +101,7 @@ export function FileRow({
         selectable ? GRID_SELECTABLE : GRID,
         'group relative min-h-[42px] border-b border-rule-soft px-3 py-2 text-ui text-fg',
         selected
-          ? 'bg-brand-field text-ink'
+          ? 'bg-brand-field text-brand-field-fg'
           : tone === 'attention'
             ? 'bg-yellow-wash-32 ink:bg-yellow-accent/15'
             : tone === 'error'
@@ -137,7 +137,7 @@ export function FileRow({
         {name}
       </button>
       <span className="min-w-0">{statusLabel ? <Badge status={status}>{statusLabel}</Badge> : null}</span>
-      <span className={cn('min-w-0 truncate text-small', selected ? 'text-fg-on-yellow-secondary' : 'text-fg-secondary')}>{updated}</span>
+      <span className={cn('min-w-0 truncate text-small', selected ? 'text-brand-field-fg/70' : 'text-fg-secondary')}>{updated}</span>
       <span className="flex justify-end">
         {onStarredChange && (
           <button

@@ -27,7 +27,7 @@ export function WorkspaceMark({ name, logoUrl, size = 36 }: WorkspaceMarkProps) 
     return <img ref={img} src={logoUrl} alt="" aria-hidden style={{ width: size, height: size }} className="shrink-0 rounded-[8px] object-cover" onError={() => setFailed(true)} />;
   }
   return (
-    <span aria-hidden style={{ width: size, height: size }} className="grid shrink-0 place-items-center rounded-[8px] bg-brand-field text-[13px] font-semibold text-ink">
+    <span aria-hidden style={{ width: size, height: size }} className="grid shrink-0 place-items-center rounded-[8px] bg-brand-field text-[13px] font-semibold text-brand-field-fg">
       {name.trim().charAt(0).toUpperCase()}
     </span>
   );

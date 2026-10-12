@@ -74,7 +74,7 @@ export function SegmentedControl({ segments, value, defaultValue, onChange, size
             className={cn(
               'inline-flex w-full cursor-pointer items-center justify-center gap-1.5 px-3 font-medium whitespace-nowrap text-fg outline-none',
               'transition-colors duration-[120ms] ease-standard focus-visible:shadow-(--focus-ring)',
-              'data-[state=checked]:text-ink disabled:cursor-not-allowed disabled:opacity-40',
+              'data-[state=checked]:text-brand-field-fg disabled:cursor-not-allowed disabled:opacity-40',
               on && !glide.active && 'bg-brand-field',
               size === 'md' ? 'h-[38px] rounded-[9px] text-[14px]' : size === 'compact' ? 'h-7 rounded-[7px] text-[13px]' : 'h-[26px] rounded-[7px] text-meta',
             )}

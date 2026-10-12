@@ -59,6 +59,7 @@
      colour is injected. Selection and grounds use field; dots and
      progress use mark. Never for text. */
   --color-brand-field: var(--brand-field);
+  --color-brand-field-fg: var(--brand-field-fg);
   --color-brand-mark: var(--brand-mark);
 
   /* On an ink surface inside a paper page */

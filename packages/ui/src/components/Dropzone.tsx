@@ -124,7 +124,7 @@ export function Dropzone({
         compact ? 'items-center justify-between gap-3 px-4 py-2.5' : 'flex-col items-center justify-center gap-2 px-6 py-8 text-center',
         state === 'idle' && 'border-dashed border-rule bg-transparent',
         state === 'dragging' && 'border-dashed border-fg bg-yellow-wash-20 ink:bg-sunk',
-        state === 'over' && 'border-solid border-ink bg-brand-field text-ink',
+        state === 'over' && 'border-solid border-ink bg-brand-field text-brand-field-fg',
         state === 'refused' && 'border-dashed border-error bg-error-wash text-error-text ink:bg-error/20 ink:text-fg',
         state === 'disabled' && 'border-dashed border-rule opacity-40',
         className,

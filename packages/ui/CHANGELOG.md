@@ -1,3 +1,15 @@
+## 1.0.0-alpha.27 (2026-10-12)
+
+- Brand: a third injection point, `--brand-field-fg` (Tailwind
+  `text-brand-field-fg`) — text and icons on the brand field. Ink by
+  default, so nothing changes until a workspace sets it (a field that is
+  its colour itself, not a tint, sets white where white reads better).
+  Every component that put ink on the field now uses it: AppRail,
+  BottomTabs, FolderTree, SegmentedControl, Tabs, ListToolbar, Select,
+  the listbox, FileRow, FileCard, Card (field), Dropzone, WindowDrop,
+  ActionBar, PageState, WorkspaceRow, Avatar (brand) and AuthLayout. The
+  secondary text on a selected row is the field text at 70%.
+
 ## 1.0.0-alpha.26 (2026-10-12)
 
 - FolderTree: a double click on a folder's name opens or closes it (the

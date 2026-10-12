@@ -58,7 +58,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
       data-tone={tone}
       className={cn(
         'inline-grid shrink-0 place-items-center overflow-hidden rounded-pill font-sans leading-none font-semibold select-none',
-        tone === 'brand' ? 'bg-brand-field text-ink' : 'bg-chrome text-fg',
+        tone === 'brand' ? 'bg-brand-field text-brand-field-fg' : 'bg-chrome text-fg',
         ring && 'shadow-[0_0_0_2px_var(--avatar-ring-gap,var(--bg-page)),0_0_0_4px_var(--text-primary)]',
         className,
       )}

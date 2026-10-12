@@ -9,7 +9,7 @@ const card = cva('overflow-hidden transition-[background-color,border-color] dur
     ground: {
       page: 'bg-page text-fg',
       sunk: 'bg-sunk text-fg',
-      field: 'bg-brand-field text-ink',
+      field: 'bg-brand-field text-brand-field-fg',
       ink: 'bg-ink text-linen ink:bg-ink-raised',
     },
     radius: { panel: 'rounded-lg', section: 'rounded-xl' },

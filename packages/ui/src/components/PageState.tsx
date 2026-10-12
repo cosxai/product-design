@@ -71,7 +71,7 @@ export function PageNotice({ tone = 'info', children, action, className, ...rest
       role={tone === 'update' ? 'alert' : 'status'}
       className={cn(
         'flex items-center gap-3 rounded-md px-4 py-2.5 font-sans text-small',
-        tone === 'update' ? 'bg-brand-field text-ink' : 'bg-sunk text-fg',
+        tone === 'update' ? 'bg-brand-field text-brand-field-fg' : 'bg-sunk text-fg',
         className,
       )}
       {...rest}

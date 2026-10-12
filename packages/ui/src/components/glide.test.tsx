@@ -238,13 +238,13 @@ describe('FolderTree in a gliding sidebar', () => {
 
   const row = (name: RegExp) => screen.getByRole('treeitem', { name }).firstElementChild as HTMLElement;
 
-  it('rows carry data-glide-key; the selected row leaves its field to the block but keeps ink and weight', () => {
+  it('rows carry data-glide-key; the selected row leaves its field to the block but keeps the field text colour and weight', () => {
     render(<Sidebar value="fin" />);
     const fin = row(/^Financials/);
     expect(fin).toHaveAttribute('data-glide-key', 'fin');
     expect(fin.className).not.toContain('bg-brand-field');
     expect(fin.className).toContain('font-medium');
-    expect(fin.className).toContain('text-ink');
+    expect(fin.className).toContain('text-brand-field-fg');
     // the nested row is found: recent, all, room, legal, sha, side, fin → 7th
     expect(block().style.opacity).toBe('1');
     expect(block().style.top).toBe(`${6 * 34}px`);

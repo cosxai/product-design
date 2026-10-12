@@ -107,7 +107,7 @@ export function ListToolbar({
           </div>
         )}
         {active.map((f) => (
-          <span key={f.id} className="inline-flex h-[38px] items-center gap-1.5 rounded-md bg-brand-field px-3 text-ui font-medium text-ink">
+          <span key={f.id} className="inline-flex h-[38px] items-center gap-1.5 rounded-md bg-brand-field px-3 text-ui font-medium text-brand-field-fg">
             {f.label}
             {onFilterRemove && (
               <button
@@ -139,7 +139,7 @@ export function ListToolbar({
                 onClick={() => onViewChange(v)}
                 className={cn(
                   'grid size-[30px] cursor-pointer place-items-center rounded-sm text-fg outline-none focus-visible:shadow-(--focus-ring)',
-                  view === v ? 'bg-brand-field text-ink' : 'hover:bg-hover',
+                  view === v ? 'bg-brand-field text-brand-field-fg' : 'hover:bg-hover',
                 )}
               >
                 <Glyph size={15} strokeWidth={1.75} aria-hidden />

@@ -118,7 +118,7 @@ export function WindowDrop({ children, target, onDrop, readOnly = false, open, o
             aria-live="polite"
             className={cn(
               'pointer-events-auto flex items-center gap-3 rounded-lg px-5 py-4 text-body font-medium',
-              readOnly ? 'bg-ink text-linen' : 'border-2 border-ink bg-brand-field text-ink',
+              readOnly ? 'bg-ink text-linen' : 'border-2 border-ink bg-brand-field text-brand-field-fg',
             )}
           >
             {!readOnly && <Icon icon={Upload} size={18} />}

@@ -319,7 +319,7 @@ export function FolderTree({
             }}
             className={cn(
               'flex h-[34px] items-center gap-1.5 rounded-md pr-2 text-ui',
-              selected ? cn('font-medium text-ink', !glide?.active && 'bg-brand-field') : 'text-fg hover:bg-hover',
+              selected ? cn('font-medium text-brand-field-fg', !glide?.active && 'bg-brand-field') : 'text-fg hover:bg-hover',
               dropId === n.id && 'ring-2 ring-fg ring-inset',
               n.disabled && 'opacity-40',
             )}
@@ -367,7 +367,7 @@ export function FolderTree({
               </span>
             </span>
             {n.meta !== undefined && (
-              <span className={cn('shrink-0 text-meta tabular-nums', selected ? 'text-fg-on-yellow-secondary' : 'text-fg-secondary')}>{n.meta}</span>
+              <span className={cn('shrink-0 text-meta tabular-nums', selected ? 'text-brand-field-fg/70' : 'text-fg-secondary')}>{n.meta}</span>
             )}
           </div>
           {open && (

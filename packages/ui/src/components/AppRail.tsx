@@ -84,7 +84,7 @@ export const AppRail = forwardRef<HTMLElement, AppRailProps>(function AppRail(
               className={cn(
                 'relative grid h-[38px] w-10 shrink-0 cursor-pointer place-items-center rounded-md border-0 p-0 outline-none',
                 'transition-colors duration-[120ms] ease-standard focus-visible:shadow-(--focus-ring)',
-                on ? cn('text-ink', !glide.active && 'bg-brand-field') : 'bg-transparent text-fg',
+                on ? cn('text-brand-field-fg', !glide.active && 'bg-brand-field') : 'bg-transparent text-fg',
                 !on && !it.disabled && 'hover:bg-hover',
                 it.disabled && 'cursor-not-allowed opacity-40',
               )}

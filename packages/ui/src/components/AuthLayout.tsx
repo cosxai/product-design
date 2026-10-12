@@ -42,7 +42,7 @@ export function AuthLayout({ brand, headerEnd, children, help, footer, panel, cl
       </div>
       {panel && (
         <aside className="hidden w-[min(560px,45%)] shrink-0 p-6 @min-[900px]:flex">
-          <div className="flex flex-1 flex-col justify-between gap-8 overflow-hidden rounded-[24px] bg-brand-field p-14 text-ink">{panel}</div>
+          <div className="flex flex-1 flex-col justify-between gap-8 overflow-hidden rounded-[24px] bg-brand-field p-14 text-brand-field-fg">{panel}</div>
         </aside>
       )}
     </div>
@@ -117,7 +117,7 @@ export function AuthIconTile({ children, tone = 'plain' }: AuthIconTileProps) {
       className={cn(
         'grid size-14 place-items-center rounded-[14px]',
         tone === 'plain' && 'bg-sunk text-fg',
-        tone === 'yellow' && 'bg-brand-field text-ink',
+        tone === 'yellow' && 'bg-brand-field text-brand-field-fg',
         tone === 'error' && 'bg-error-wash text-error-text',
       )}
     >

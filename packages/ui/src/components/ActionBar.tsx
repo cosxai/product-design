@@ -509,7 +509,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
         disabled={a.disabled && !a.disabledReason ? true : undefined}
         aria-disabled={a.disabledReason ? true : undefined}
         onClick={() => !a.disabledReason && a.onSelect()}
-        className={cn(itemCls, a.active && 'bg-brand-field text-ink hover:bg-brand-field ink:hover:bg-brand-field')}
+        className={cn(itemCls, a.active && 'bg-brand-field text-brand-field-fg hover:bg-brand-field ink:hover:bg-brand-field')}
       >
         {Glyph && <Glyph size={16} strokeWidth={1.75} aria-hidden />}
         {!iconOnly && <span>{a.label}</span>}

@@ -81,7 +81,7 @@ export const BottomTabs = forwardRef<HTMLElement, BottomTabsProps>(function Bott
               data-glide-key={it.key}
               className={cn(
                 'grid h-7 w-12 place-items-center rounded-pill transition-colors duration-[120ms] ease-standard',
-                on && cn('text-ink', !glide.active && 'bg-brand-field'),
+                on && cn('text-brand-field-fg', !glide.active && 'bg-brand-field'),
               )}
             >
               {it.avatar ? (

@@ -223,11 +223,11 @@ export function Select({
           className={cn(
             'flex items-center gap-2 rounded-md px-2.5 py-2 text-[13px] leading-[1.35] text-fg transition-colors duration-[120ms] ease-standard',
             o.disabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer',
-            on ? 'bg-brand-field font-medium text-ink' : idx === active && 'bg-hover',
+            on ? 'bg-brand-field font-medium text-brand-field-fg' : idx === active && 'bg-hover',
           )}
         >
           <span className="min-w-0 flex-1 truncate">{o.label}</span>
-          {o.meta && <span className={cn('shrink-0 text-meta tabular-nums', on ? 'text-fg-on-yellow-secondary' : 'text-fg-secondary')}>{o.meta}</span>}
+          {o.meta && <span className={cn('shrink-0 text-meta tabular-nums', on ? 'text-brand-field-fg/70' : 'text-fg-secondary')}>{o.meta}</span>}
           {on && <Check size={13} strokeWidth={2} aria-hidden className="shrink-0" />}
         </div>
       );

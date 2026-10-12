@@ -4,10 +4,14 @@
  * everything else stays ink, so any colour keeps text readable:
  *   --brand-field  large areas: selected nav and tabs, section grounds
  *   --brand-mark   small marks: dots, progress, highlights, attention fills
- * Ink (text, primary button, icons) and --status-error are not injectable.
- * Default: the COSX yellow. A workspace sets both on <html>.
+ *   --brand-field-fg  text and icons on the field: ink, unless a workspace's
+ *                     field is its colour itself (not a tint) and white
+ *                     reads better on it
+ * Ink (other text, primary button, icons) and --status-error are not injectable.
+ * Default: the COSX yellow. A workspace sets them on <html>.
  */
 :root {
   --brand-field: var(--yellow);
+  --brand-field-fg: var(--ink);
   --brand-mark: var(--yellow-accent);
 }
