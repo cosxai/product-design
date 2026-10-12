@@ -933,8 +933,10 @@ function DocInputPlaceholder({
   // v0.8.0 · when baked, render the value as plain text instead of
   // the placeholder pill. Bake is set server-side on signing-session
   // read; unbaked renders keep the empty placeholder for authors
-  // previewing the template.
-  const isBaked = typeof b.bakedValue === "string" && b.bakedValue.length > 0;
+  // previewing the template. An empty string still counts as baked:
+  // the server bakes "" on purpose (e.g. signer-title with no title)
+  // and the signed copy must print blank, not the AUTO-FILLED hint.
+  const isBaked = typeof b.bakedValue === "string";
   // v0.10.0 · surface the autoFill affordance the same way
   // DocTextareaPlaceholder does — "AUTO-FILLED AT SIGNING" copy
   // when the block is signing-service-driven and hasn't been baked
@@ -987,7 +989,8 @@ function DocTextareaPlaceholder({
     docStyle?.["doc-textarea"]?.root,
     b.style,
   );
-  const isBaked = typeof b.bakedValue === "string" && b.bakedValue.length > 0;
+  // Empty string counts as baked (see DocInputPlaceholder).
+  const isBaked = typeof b.bakedValue === "string";
   // v0.9.0 · autoFill support mirrors DocInputPlaceholder. When the
   // block carries a known autoFill enum and hasn't been baked yet
   // (server hasn't run resolveAutoFill), show the "AUTO-FILLED AT
@@ -1005,7 +1008,7 @@ function DocTextareaPlaceholder({
       style={rootStyle}
     >
       {isBaked ? (
-        <span style={bakedValueStyle}>{b.bakedValue}</span>
+        <span style={bakedTextareaValueStyle}>{b.bakedValue}</span>
       ) : showAutoFillHint ? (
         <span style={autoFillHintTextStyle}>{autoFillHintCopy(b.autoFill)}</span>
       ) : (
@@ -1306,6 +1309,16 @@ const bakedValueStyle: CSSProperties = {
   color: "#18181b",
   fontFamily:
     "var(--ck-font-sans, 'Geist Variable', 'Geist', system-ui, -apple-system, sans-serif)",
+};
+
+// Long-text values keep the signer's own line breaks (HTML collapses
+// "\n" otherwise) and break unbroken strings rather than overflow the
+// page. Single-line inputs keep bakedValueStyle so they never wrap
+// mid-word on the field line.
+const bakedTextareaValueStyle: CSSProperties = {
+  ...bakedValueStyle,
+  whiteSpace: "pre-wrap",
+  overflowWrap: "anywhere",
 };
 
 // ──────────────────────────────────────────────────────────────────

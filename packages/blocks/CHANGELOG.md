@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.2 (2026-10-12)
+- fix: baked doc-textarea values keep the signer's line breaks (`white-space: pre-wrap`) and break long unbroken strings (`overflow-wrap: anywhere`) — signed PDFs flattened multi-line answers into one line (QA 2026-10-12). Single-line doc-input values are unchanged.
+- fix: an empty-string `bakedValue` now counts as baked and renders blank. The server bakes "" on purpose (signer-title with no title); the signed PDF printed "AUTO-FILLED WITH TITLE" instead. Unbaked blocks (no `bakedValue`) still show the hint.
+
 ## 0.12.1 (2026-07-21)
 - fix: doc-checkbox checked state renders a tick (SVG, currentColor) instead of filling the box solid — signed PDFs showed black squares (QA 2026-07-21)
 
