@@ -1,4 +1,4 @@
-## Unreleased
+## 1.0.0-alpha.28 (2026-10-12)
 
 - FolderTree: the chevron takes the row's colour (it was always ink), so
   it turns white with the rest of a selected row on a strong field.
