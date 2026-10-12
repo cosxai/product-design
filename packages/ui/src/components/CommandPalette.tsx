@@ -29,6 +29,13 @@ export type CommandSource = {
   minQuery?: number | undefined;
 };
 
+/** A section shown while nothing is typed: recent items, places to go. */
+export type CommandSection = {
+  id: string;
+  label: string;
+  items: CommandItem[];
+};
+
 export type CommandPaletteLabels = {
   /** @default "Search or run an action" */
   placeholder?: string;
@@ -49,6 +56,8 @@ export type CommandPaletteProps = {
   sources: CommandSource[];
   /** Actions for the query ("Ask the Agent about “cap table”"), always listed after the results. */
   actions?: ((query: string) => CommandItem[]) | undefined;
+  /** What the palette offers before anything is typed (recent, go to…); empty sections are left out. */
+  idle?: CommandSection[] | undefined;
   labels?: CommandPaletteLabels | undefined;
   /** ms after typing before sources run. @default 150 */
   debounce?: number | undefined;
@@ -64,7 +73,7 @@ type SourceState = { status: 'pending' | 'done' | 'failed'; items: CommandItem[]
  * any is out, and "nothing matches" only once every source has returned.
  * Arrows, Enter, Esc (cmdk + Radix Dialog). Pair with useCommandPaletteHotkey.
  */
-export function CommandPalette({ open, onOpenChange, sources, actions, labels = {}, debounce = 150 }: CommandPaletteProps) {
+export function CommandPalette({ open, onOpenChange, sources, actions, idle, labels = {}, debounce = 150 }: CommandPaletteProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Record<string, SourceState>>({});
   // The highlighted row. Follows the first result as sections arrive,
@@ -112,7 +121,9 @@ export function CommandPalette({ open, onOpenChange, sources, actions, labels = 
   const pending = states.some((s) => s.status === 'pending');
   const found = states.some((s) => s.items.length > 0);
   const actionItems = q && actions ? actions(q) : [];
+  const idleSections = q ? [] : (idle ?? []).filter((sec) => sec.items.length > 0);
   const order = [
+    ...idleSections.flatMap((sec) => sec.items.map((i) => `idle:${sec.id}:${i.id}`)),
     ...sourcesRef.current.flatMap((s) => (results[s.id]?.items ?? []).map((i) => `${s.id}:${i.id}`)),
     ...actionItems.map((i) => `action:${i.id}`),
   ];
@@ -155,6 +166,13 @@ export function CommandPalette({ open, onOpenChange, sources, actions, labels = 
               {pending && <Spinner label="Searching" className="text-fg-secondary" />}
             </div>
             <Command.List className="max-h-[min(420px,60vh)] overflow-y-auto p-1.5">
+              {idleSections.map((sec) => (
+                <Command.Group key={`idle:${sec.id}`} className={GROUP} heading={sec.label}>
+                  {sec.items.map((item) => (
+                    <PaletteItem key={`idle:${sec.id}:${item.id}`} value={`idle:${sec.id}:${item.id}`} item={item} onRun={run} />
+                  ))}
+                </Command.Group>
+              ))}
               {sourcesRef.current.map((s) => {
                 const st = results[s.id];
                 if (!st || (st.status !== 'pending' && st.items.length === 0)) return null;

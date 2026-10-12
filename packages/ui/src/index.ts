@@ -42,7 +42,7 @@ export { AsyncSelect, type AsyncSelectProps } from './components/AsyncSelect';
 export { Breadcrumb, type BreadcrumbItem, type BreadcrumbProps } from './components/Breadcrumb';
 export { ChoiceCards, type Choice, type ChoiceCardsProps } from './components/ChoiceCards';
 export { CodeInput, type CodeInputProps } from './components/CodeInput';
-export { CommandPalette, useCommandPaletteHotkey, type CommandItem, type CommandPaletteLabels, type CommandPaletteProps, type CommandSource } from './components/CommandPalette';
+export { CommandPalette, useCommandPaletteHotkey, type CommandItem, type CommandSection, type CommandPaletteLabels, type CommandPaletteProps, type CommandSource } from './components/CommandPalette';
 export { ConfirmDialog, PromptDialog, StepUpDialog, type ConfirmDialogProps, type PromptDialogProps, type StepUpDialogProps } from './components/ConfirmDialog';
 export { CopyField, type CopyFieldProps } from './components/CopyField';
 export { DateInput, FuzzyDateInput, type DateInputProps, type DatePrecision, type FuzzyDateInputProps } from './components/DateInput';

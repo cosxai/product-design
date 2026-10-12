@@ -279,6 +279,43 @@ describe('Menu', () => {
 });
 
 describe('CommandPalette', () => {
+  it('shows the idle sections before anything is typed, and hides them once a query runs', async () => {
+    const onRecent = vi.fn();
+    render(
+      <CommandPalette
+        open
+        onOpenChange={() => {}}
+        debounce={0}
+        sources={[{ id: 'ws', label: 'Workspaces', search: async () => [{ id: 'n', title: 'Northgate Advisory', onSelect: () => {} }] }]}
+        idle={[
+          { id: 'recent', label: 'Recent', items: [{ id: 'h', title: 'Harbour Ventures', onSelect: onRecent }] },
+          { id: 'go', label: 'Go to', items: [{ id: 'archived', title: 'Archived workspaces', onSelect: () => {} }] },
+          { id: 'none', label: 'Empty', items: [] },
+        ]}
+      />,
+    );
+    expect(screen.getByText('Recent')).toBeInTheDocument();
+    expect(screen.getByText('Archived workspaces')).toBeInTheDocument();
+    expect(screen.queryByText('Empty')).toBeNull();
+    await userEvent.keyboard('{Enter}');
+    expect(onRecent).toHaveBeenCalledOnce();
+  });
+
+  it('idle sections give way to results', async () => {
+    render(
+      <CommandPalette
+        open
+        onOpenChange={() => {}}
+        debounce={0}
+        sources={[{ id: 'ws', label: 'Workspaces', search: async () => [{ id: 'n', title: 'Northgate Advisory', onSelect: () => {} }] }]}
+        idle={[{ id: 'recent', label: 'Recent', items: [{ id: 'h', title: 'Harbour Ventures', onSelect: () => {} }] }]}
+      />,
+    );
+    await userEvent.type(screen.getByRole('combobox'), 'north');
+    expect(await screen.findByText('Northgate Advisory')).toBeInTheDocument();
+    expect(screen.queryByText('Harbour Ventures')).toBeNull();
+  });
+
   it('shows fast results first, keeps the spinner until every source returns, only then says nothing matches', async () => {
     let slowResolve!: (v: []) => void;
     const onOpen = vi.fn();

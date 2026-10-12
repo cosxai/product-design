@@ -1,3 +1,9 @@
+## 1.0.0-alpha.29 (2026-10-12)
+
+- CommandPalette: `idle` — sections shown before anything is typed
+  (recent items, places to go). Empty sections are left out; they give
+  way to results once a query runs; Enter runs the first.
+
 ## 1.0.0-alpha.28 (2026-10-12)
 
 - FolderTree: the chevron takes the row's colour (it was always ink), so
