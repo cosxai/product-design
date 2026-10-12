@@ -329,7 +329,7 @@ export function FolderTree({
               <span
                 aria-hidden
                 onClick={() => toggleExpand(n)}
-                className="grid size-5 shrink-0 cursor-pointer place-items-center rounded-xs text-fg hover:bg-fg/10"
+                className="grid size-5 shrink-0 cursor-pointer place-items-center rounded-xs hover:bg-fg/10"
               >
                 <ChevronRight size={14} strokeWidth={2} className={cn('transition-transform duration-[120ms]', open && 'rotate-90')} />
               </span>

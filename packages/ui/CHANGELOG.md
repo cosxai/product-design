@@ -1,3 +1,8 @@
+## Unreleased
+
+- FolderTree: the chevron takes the row's colour (it was always ink), so
+  it turns white with the rest of a selected row on a strong field.
+
 ## 1.0.0-alpha.27 (2026-10-12)
 
 - Brand: a third injection point, `--brand-field-fg` (Tailwind
