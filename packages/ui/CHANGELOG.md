@@ -1,3 +1,11 @@
+## 1.0.0-alpha.25 (2026-10-12)
+
+- CodeInput: one key fills one cell with an input method on. A Windows
+  Chinese/Japanese IME sent the digit twice — while composing and on
+  commit, after focus had moved on — so each key filled two cells.
+  Composing input now waits for the commit, which fills the cell it
+  began in.
+
 ## 1.0.0-alpha.24 (2026-10-08)
 
 - formatShortcut writes keys the Windows way off Apple: "Ctrl+Enter",

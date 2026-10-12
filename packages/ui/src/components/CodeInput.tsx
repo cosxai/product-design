@@ -51,6 +51,11 @@ export function CodeInput({
   const [own, setOwn] = useState('');
   const code = (value ?? own).slice(0, length);
   const cells = useRef<Array<HTMLInputElement | null>>([]);
+  // An input method (Chinese / Japanese IME on Windows) sends the digit
+  // twice: once while composing, once when it commits — after focus has
+  // moved on, so one key filled two cells. Composing input waits for the
+  // commit; the commit fills the cell it began in.
+  const composing = useRef(false);
   const allowed = mode === 'numeric' ? /\d/ : /[a-z0-9]/i;
   const bad = Boolean(invalid || field?.invalid);
   const off = Boolean(disabled || field?.disabled);
@@ -103,7 +108,17 @@ export function CodeInput({
             aria-invalid={bad || undefined}
             aria-describedby={field?.describedBy}
             onFocus={(e) => e.currentTarget.select()}
-            onChange={(e) => put(i, e.target.value)}
+            onChange={(e) => {
+              if (composing.current || (e.nativeEvent as InputEvent).isComposing) return;
+              put(i, e.target.value);
+            }}
+            onCompositionStart={() => {
+              composing.current = true;
+            }}
+            onCompositionEnd={(e) => {
+              composing.current = false;
+              put(i, e.data);
+            }}
             onPaste={(e) => {
               e.preventDefault();
               put(0, e.clipboardData.getData('text'));

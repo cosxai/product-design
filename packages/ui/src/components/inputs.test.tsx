@@ -241,6 +241,28 @@ describe('CodeInput', () => {
     expect(onChange).toHaveBeenLastCalledWith('4');
   });
 
+  it('an input method commits a digit once: one key, one cell', () => {
+    const onChange = vi.fn();
+    render(<CodeInput length={4} onChange={onChange} />);
+    const cells = screen.getAllByRole('textbox');
+    // Windows IME, as the browser does it: composing input in the cell,
+    // then the commit lands in whichever cell has focus by then.
+    const imeKey = (cell: HTMLElement, digit: string) => {
+      fireEvent.compositionStart(cell);
+      fireEvent.change(cell, { target: { value: digit } });
+      const target = document.activeElement as HTMLElement;
+      fireEvent.compositionEnd(target, { data: digit });
+      fireEvent.change(target, { target: { value: digit } });
+    };
+    act(() => cells[0]!.focus());
+    imeKey(cells[0]!, '1');
+    expect(onChange).toHaveBeenLastCalledWith('1');
+    expect(cells[1]).toHaveFocus();
+    imeKey(cells[1]!, '2');
+    expect(onChange).toHaveBeenLastCalledWith('12');
+    expect(cells.map((c) => (c as HTMLInputElement).value).join('')).toBe('12');
+  });
+
   it('counts down to resend', () => {
     vi.useFakeTimers();
     const onResend = vi.fn();
