@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
 import type { SearchStatus } from './inputs-search';
+import { scrollsInDialog } from './scroll-lock';
 import { Spinner } from './Spinner';
 
 export type ListItem = {
@@ -121,7 +122,7 @@ export function ListboxBody({
   }
 
   return (
-    <div id={id} role="listbox" className="flex max-h-[260px] flex-col overflow-y-auto">
+    <div id={id} role="listbox" {...scrollsInDialog} className="flex max-h-[260px] flex-col overflow-y-auto overscroll-contain">
       {status === 'done' &&
         items.map((it, i) =>
           row(

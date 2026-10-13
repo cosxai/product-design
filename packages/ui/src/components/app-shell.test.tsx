@@ -10,6 +10,7 @@ import { Avatar } from './Avatar';
 import { BottomSheet } from './BottomSheet';
 import { BottomTabs, type BottomTabItem } from './BottomTabs';
 import { Button } from './Button';
+import { Dialog, DialogContent } from './Dialog';
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from './Popover';
 
 describe('Popover', () => {
@@ -59,6 +60,27 @@ describe('Popover', () => {
       </Popover>,
     );
     expect(container.querySelector('[role="dialog"]')).not.toBeNull();
+  });
+
+  it('scrolls with the wheel inside a modal Dialog and still calls its own onWheel', () => {
+    const onWheel = vi.fn();
+    render(
+      <Dialog open>
+        <DialogContent title="Share">
+          <Popover open>
+            <PopoverAnchor>
+              <span>row</span>
+            </PopoverAnchor>
+            <PopoverContent aria-label="Card" onWheel={onWheel}>
+              <p>long list</p>
+            </PopoverContent>
+          </Popover>
+        </DialogContent>
+      </Dialog>,
+    );
+    expect(fireEvent.wheel(document.body, { deltaY: 100 })).toBe(false);
+    expect(fireEvent.wheel(screen.getByText('long list'), { deltaY: 100 })).toBe(true);
+    expect(onWheel).toHaveBeenCalledTimes(1);
   });
 
   it('passes axe open', async () => {

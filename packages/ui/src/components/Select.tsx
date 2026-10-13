@@ -57,6 +57,9 @@ function normalise(options: SelectProps['options']): SelectOption[] {
  * must. Arrows move, Enter chooses, Esc closes, Home/End jump, a letter
  * jumps to it. The chosen row sits on the brand colour; disabled rows stay
  * visible with their reason. No shadow — paper lifted by its hairline.
+ * The menu is modal (like a native select): it brings its own scroll lock,
+ * so it scrolls with the wheel and on touch inside a Dialog too, and the
+ * first click outside only closes it.
  */
 export function Select({
   options,
@@ -246,7 +249,7 @@ export function Select({
   }
 
   return (
-    <Popover.Root open={open} onOpenChange={(o) => (o ? openWith() : setOpen(false))}>
+    <Popover.Root modal open={open} onOpenChange={(o) => (o ? openWith() : setOpen(false))}>
       <Popover.Trigger asChild disabled={off}>
         <button
           type="button"
@@ -340,7 +343,7 @@ export function Select({
             tabIndex={canSearch ? undefined : -1}
             aria-activedescendant={!canSearch && active >= 0 ? optionId(active) : undefined}
             onKeyDown={canSearch ? undefined : onMenuKey}
-            className="min-h-0 flex-1 overflow-y-auto outline-none"
+            className="min-h-0 flex-1 overflow-y-auto overscroll-contain outline-none"
           >
             {shown.length === 0 ? <div className="px-2.5 pt-2.5 pb-3 text-[12.5px] text-fg-secondary">{emptyText}</div> : rows}
           </div>

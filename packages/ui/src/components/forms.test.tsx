@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
@@ -7,6 +7,7 @@ import { axe } from 'vitest-axe';
 
 import { a11y } from '../../test/a11y';
 import { Checkbox } from './Checkbox';
+import { Dialog, DialogContent } from './Dialog';
 import { Field } from './Field';
 import { Input } from './Input';
 import { RadioGroup } from './Radio';
@@ -154,7 +155,32 @@ describe('Select', () => {
     const row = await screen.findByRole('option', { name: 'Kowloon Bay, Archived' });
     expect(row).toHaveAttribute('aria-disabled', 'true');
     await user.click(row);
-    expect(screen.getByRole('combobox', { name: 'Customer' })).toHaveTextContent('Choose one');
+    // Still open: the menu is modal, so the rest of the page is hidden from the accessibility tree.
+    expect(screen.getByRole('combobox', { name: 'Customer', hidden: true })).toHaveTextContent('Choose one');
+  });
+
+  it('scrolls with the wheel and on touch inside a modal Dialog', async () => {
+    const user = userEvent.setup();
+    const many = Array.from({ length: 30 }, (_, i) => `Document ${i + 1}`);
+    render(
+      <Dialog open>
+        <DialogContent title="Request documents">
+          <Controlled options={many} />
+        </DialogContent>
+      </Dialog>,
+    );
+    // The dialog's scroll lock is on: a wheel outside it is cancelled.
+    expect(fireEvent.wheel(document.body, { deltaY: 100 })).toBe(false);
+    await user.click(screen.getByRole('combobox', { name: 'Customer' }));
+    const list = await screen.findByRole('listbox');
+    // jsdom has no layout: give the list room to scroll.
+    list.style.overflowY = 'auto';
+    Object.defineProperty(list, 'scrollHeight', { configurable: true, value: 1200 });
+    Object.defineProperty(list, 'clientHeight', { configurable: true, value: 280 });
+    const row = within(list).getByRole('option', { name: 'Document 3' });
+    expect(fireEvent.wheel(row, { deltaY: 100 })).toBe(true);
+    fireEvent.touchStart(row, { touches: [{ clientX: 10, clientY: 200 }], changedTouches: [{ clientX: 10, clientY: 200 }] });
+    expect(fireEvent.touchMove(row, { touches: [{ clientX: 10, clientY: 100 }], changedTouches: [{ clientX: 10, clientY: 100 }] })).toBe(true);
   });
 
   it('turns the filter on above 8 options and filters', async () => {

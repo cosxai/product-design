@@ -2,6 +2,7 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 import type { ComponentProps } from 'react';
 
 import { cn } from '../lib/cn';
+import { scrollsInDialog } from './scroll-lock';
 
 /** Popover root: `open` / `onOpenChange`, or uncontrolled with PopoverTrigger. */
 export const Popover = PopoverPrimitive.Root;
@@ -23,19 +24,27 @@ export type PopoverContentProps = ComponentProps<typeof PopoverPrimitive.Content
  * Page colour, 14px corners, a hairline edge; no shadow (3.0 has none).
  * Renders in a portal and flips to stay in view (placement auto, Radix
  * Popover); Esc and an outside click close it and focus returns to the
- * trigger.
+ * trigger. It scrolls inside a modal Dialog too.
  *
  * Compose with: PopoverTrigger asChild onto an IconButton / AppRail slot;
  * Menu for a list of actions instead (it brings arrow-key navigation).
  */
-export function PopoverContent({ className, sideOffset = 6, collisionPadding = 8, align = 'start', inline = false, ...rest }: PopoverContentProps) {
+export function PopoverContent({ className, sideOffset = 6, collisionPadding = 8, align = 'start', inline = false, onWheel, onTouchMove, ...rest }: PopoverContentProps) {
   const content = (
     <PopoverPrimitive.Content
       sideOffset={sideOffset}
       collisionPadding={collisionPadding}
       align={align}
+      onWheel={(e) => {
+        scrollsInDialog.onWheel(e);
+        onWheel?.(e);
+      }}
+      onTouchMove={(e) => {
+        scrollsInDialog.onTouchMove(e);
+        onTouchMove?.(e);
+      }}
       className={cn(
-        'z-[60] w-[320px] max-w-[calc(100vw-16px)] overflow-y-auto rounded-[14px] border border-rule bg-page p-2 font-sans text-ui text-fg outline-none',
+        'z-[60] w-[320px] max-w-[calc(100vw-16px)] overflow-y-auto overscroll-contain rounded-[14px] border border-rule bg-page p-2 font-sans text-ui text-fg outline-none',
         'max-h-(--radix-popover-content-available-height)',
         className,
       )}

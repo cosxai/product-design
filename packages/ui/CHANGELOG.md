@@ -1,3 +1,21 @@
+## 1.0.0-alpha.30 (2026-10-13)
+
+- DateInput: a typed date outside `min` / `max` is not taken — like
+  unreadable text, the value stays, the field is marked invalid and says
+  the range ("Choose a date from 13 Oct 2026 to 31 Dec 2026.", or "on or
+  after" / "on or before" with one bound). `rangeHint` gives your own
+  words. The calendar already greyed those days out; typing got past it.
+- Select inside a modal Dialog scrolls with the wheel and on touch. The
+  Dialog's scroll lock cancelled every wheel outside the dialog, and the
+  menu sits in a portal on `<body>`. The menu now opens modal, as a
+  native select does: it brings its own scroll lock, hides the rest of
+  the page from assistive tech while open, and the first click outside
+  only closes it.
+- AsyncSelect, RecipientsInput and MentionInput results, and
+  PopoverContent, scroll inside a modal Dialog too (focus stays in their
+  input, so they stop the wheel and touch at the list instead of opening
+  modal). Lists no longer scroll the page behind them at their ends.
+
 ## 1.0.0-alpha.29 (2026-10-12)
 
 - CommandPalette: `idle` — sections shown before anything is typed

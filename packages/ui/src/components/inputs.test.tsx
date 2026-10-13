@@ -7,6 +7,7 @@ import { AsyncSelect } from './AsyncSelect';
 import { ChoiceCards } from './ChoiceCards';
 import { CodeInput } from './CodeInput';
 import { CopyField } from './CopyField';
+import { Dialog, DialogContent } from './Dialog';
 import { DateInput, FuzzyDateInput } from './DateInput';
 import { Field } from './Field';
 import { formatDate, parseDate, toIso } from './inputs-date';
@@ -173,6 +174,40 @@ describe('dates', () => {
     expect(box).toHaveAccessibleDescription(/12 Mar 2019/);
   });
 
+  it('DateInput does not take a typed date outside min / max', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<DateInput label="Due" min="2026-10-13" max="2026-12-31" onChange={onChange} />);
+    const box = screen.getByRole('textbox', { name: 'Due' });
+    await user.type(box, '12/10/2026');
+    await user.tab();
+    expect(onChange).not.toHaveBeenCalled();
+    expect(box).toHaveAttribute('aria-invalid', 'true');
+    expect(box).toHaveAccessibleDescription('Choose a date from 13 Oct 2026 to 31 Dec 2026.');
+    await user.clear(box);
+    await user.type(box, '2027-01-01');
+    await user.tab();
+    expect(onChange).not.toHaveBeenCalled();
+    await user.clear(box);
+    await user.type(box, '13 Oct 2026');
+    await user.tab();
+    expect(onChange).toHaveBeenCalledWith('2026-10-13');
+    expect(box).not.toHaveAttribute('aria-invalid');
+  });
+
+  it('DateInput says the one bound it has, or the caller’s own words', async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<DateInput label="Due" min="2026-10-13" />);
+    await user.type(screen.getByRole('textbox', { name: 'Due' }), '2026-10-12');
+    await user.tab();
+    expect(screen.getByRole('textbox', { name: 'Due' })).toHaveAccessibleDescription('Choose a date on or after 13 Oct 2026.');
+    unmount();
+    render(<DateInput label="Due" max="2026-10-13" rangeHint="Due dates can’t be in the past." />);
+    await user.type(screen.getByRole('textbox', { name: 'Due' }), '2026-10-14');
+    await user.tab();
+    expect(screen.getByRole('textbox', { name: 'Due' })).toHaveAccessibleDescription('Due dates can’t be in the past.');
+  });
+
   it('DateInput picks from the calendar', async () => {
     const onChange = vi.fn();
     render(<DateInput label="Share expires" value="2026-10-31" onChange={onChange} />);
@@ -300,6 +335,25 @@ describe('AsyncSelect', () => {
     expect(search).toHaveBeenCalledTimes(2);
     await user.keyboard('{ArrowDown}{ArrowDown}{Enter}');
     expect(onCreate).toHaveBeenCalledWith('Har');
+  });
+
+  it('its results scroll with the wheel and on touch inside a modal Dialog', async () => {
+    const user = timed();
+    render(
+      <Dialog open>
+        <DialogContent title="Share">
+          <AsyncSelect aria-label="Customer" search={() => Promise.resolve(people)} />
+        </DialogContent>
+      </Dialog>,
+    );
+    // The dialog's scroll lock is on: a wheel outside it is cancelled.
+    expect(fireEvent.wheel(document.body, { deltaY: 100 })).toBe(false);
+    await user.type(screen.getByRole('combobox', { name: 'Customer' }), 'Ha');
+    await act(async () => void vi.advanceTimersByTime(300));
+    const row = await screen.findByRole('option', { name: /Harbour Ventures/ });
+    expect(fireEvent.wheel(row, { deltaY: 100 })).toBe(true);
+    expect(fireEvent.touchMove(row, { touches: [{ clientX: 10, clientY: 100 }] })).toBe(true);
+    expect(screen.getByRole('combobox', { name: 'Customer' })).toHaveFocus();
   });
 
   it('the choice becomes a clearable card; errors offer Retry', async () => {

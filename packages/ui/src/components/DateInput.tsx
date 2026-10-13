@@ -32,9 +32,11 @@ export type DateInputProps = Common & {
   onChange?: ((value: string | null) => void) | undefined;
   /** Accessible name of the calendar button. @default "Choose a date" */
   calendarLabel?: string | undefined;
-  /** Earliest / latest choosable (ISO). */
+  /** Earliest / latest choosable (ISO). A typed date outside them is not taken. */
   min?: string | undefined;
   max?: string | undefined;
+  /** Shown when a typed date falls outside min / max. @default "Choose a date from 1 Oct 2026 to 31 Dec 2026." (or "on or after" / "on or before") */
+  rangeHint?: ReactNode;
   placeholder?: string | undefined;
   /** Start with the calendar open. */
   defaultOpen?: boolean | undefined;
@@ -110,8 +112,19 @@ function wrap(common: Common, invalidNote: ReactNode | null, control: ReactNode,
  * underlined in the accent.
  */
 export function DateInput(props: DateInputProps) {
-  const { value, defaultValue = null, onChange, calendarLabel = 'Choose a date', min, max, placeholder = 'e.g. 12 Mar 2019', defaultOpen = false, formatHint = 'Use a date like 12 Mar 2019 or 2019-03-12.', name } =
-    props;
+  const {
+    value,
+    defaultValue = null,
+    onChange,
+    calendarLabel = 'Choose a date',
+    min,
+    max,
+    rangeHint,
+    placeholder = 'e.g. 12 Mar 2019',
+    defaultOpen = false,
+    formatHint = 'Use a date like 12 Mar 2019 or 2019-03-12.',
+    name,
+  } = props;
   const [own, setOwn] = useState<string | null>(defaultValue);
   const iso = value === undefined ? own : value;
   const parsed = fromIso(iso);
@@ -119,14 +132,18 @@ export function DateInput(props: DateInputProps) {
   const [lang, setLang] = useState<'en' | 'zh'>('en');
   useEffect(() => setLang(langOf(frame.current)), []);
   const [text, setText] = useState(parsed ? formatDate(parsed, lang) : '');
-  const [unreadable, setUnreadable] = useState(false);
+  // Why the typed text was not taken: it is not a date, or not one in min…max.
+  const [problem, setProblem] = useState<'format' | 'range' | null>(null);
+  const unreadable = problem !== null;
   const noteId = useId();
   const [open, setOpen] = useState(defaultOpen);
+  const lo = fromIso(min);
+  const hi = fromIso(max);
 
   // Follow value changes from outside.
   useEffect(() => {
     setText(parsed ? formatDate(parsed, lang) : '');
-    setUnreadable(false);
+    setProblem(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [iso, lang]);
 
@@ -136,24 +153,36 @@ export function DateInput(props: DateInputProps) {
   };
   const readText = () => {
     if (!text.trim()) {
-      setUnreadable(false);
+      setProblem(null);
       if (iso !== null) commit(null);
       return;
     }
     const p = parseDate(text);
     if (!p) {
-      setUnreadable(true);
+      setProblem('format');
       return;
     }
-    setUnreadable(false);
     const next = toIso(p);
+    // ISO dates compare as strings.
+    if ((lo && next < toIso(lo)) || (hi && next > toIso(hi))) {
+      setProblem('range');
+      return;
+    }
+    setProblem(null);
     setText(formatDate(p, lang));
     if (next !== iso) commit(next);
   };
 
-  const bounds = [min && fromIso(min) ? { before: toDate(fromIso(min)!) } : null, max && fromIso(max) ? { after: toDate(fromIso(max)!) } : null].filter(
-    (m): m is { before: Date } | { after: Date } => m !== null,
-  );
+  const bounds = [lo ? { before: toDate(lo) } : null, hi ? { after: toDate(hi) } : null].filter((m): m is { before: Date } | { after: Date } => m !== null);
+  const rangeNote =
+    rangeHint ??
+    (lo && hi
+      ? `Choose a date from ${formatDate(lo, lang)} to ${formatDate(hi, lang)}.`
+      : lo
+        ? `Choose a date on or after ${formatDate(lo, lang)}.`
+        : hi
+          ? `Choose a date on or before ${formatDate(hi, lang)}.`
+          : null);
 
   const control = (
     <Inner {...props} frame={frame} invalid={unreadable}>
@@ -168,7 +197,7 @@ export function DateInput(props: DateInputProps) {
             aria-describedby={describedBy(props, field, unreadable, noteId)}
             onChange={(e) => {
               setText(e.target.value);
-              if (unreadable) setUnreadable(false);
+              if (unreadable) setProblem(null);
             }}
             onBlur={readText}
             onKeyDown={(e) => {
@@ -223,7 +252,7 @@ export function DateInput(props: DateInputProps) {
       )}
     </Inner>
   );
-  return wrap(props, unreadable ? formatHint : null, control, noteId);
+  return wrap(props, problem === 'range' ? rangeNote : problem === 'format' ? formatHint : null, control, noteId);
 }
 
 function Inner({
