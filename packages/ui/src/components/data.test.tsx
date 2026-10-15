@@ -203,6 +203,16 @@ const tree: TreeNode[] = [
 ];
 
 describe('FolderTree', () => {
+  it('size column draws its rows at an app column\'s row height; the default stays compact', () => {
+    const { unmount } = render(<FolderTree label="Folders" nodes={tree} />);
+    const row = () => screen.getByRole('treeitem', { name: /Harbour data room/ }).firstElementChild as HTMLElement;
+    expect(row().className).toContain('h-[34px]');
+    unmount();
+    render(<FolderTree label="Folders" nodes={tree} size="column" />);
+    expect(row().className).toContain('h-9');
+    expect(row().className).toContain('text-[14px]');
+  });
+
   it('a double click on a folder opens or closes it, as well as selecting it', async () => {
     const onSelect = vi.fn();
     render(<FolderTree label="Folders" nodes={tree} onSelect={onSelect} />);

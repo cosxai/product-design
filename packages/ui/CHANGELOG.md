@@ -1,3 +1,9 @@
+## 1.0.0-alpha.31 (2026-10-16)
+
+- FolderTree: `size` — `"column"` draws rows at an app's second-column row
+  (36px, 14px, radius 8) so a tree among the column's own rows lines up
+  with them; `"default"` keeps the compact 34px row (dialogs, panels).
+
 ## 1.0.0-alpha.30 (2026-10-13)
 
 - DateInput: a typed date outside `min` / `max` is not taken — like

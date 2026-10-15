@@ -51,6 +51,13 @@ export type FolderTreeProps = {
    * glide between the app's own nav buttons and the tree's rows.
    */
   glide?: Glide | undefined;
+  /**
+   * Row size. `column` matches an app's second-column rows (36px, 14px,
+   * radius 8) for a tree that sits among them; `default` is the compact
+   * 34px row for dialogs and panels.
+   * @default "default"
+   */
+  size?: 'default' | 'column' | undefined;
   className?: string | undefined;
 };
 
@@ -116,6 +123,7 @@ export function FolderTree({
   canDrop,
   loadingLabel = 'Loading',
   glide,
+  size = 'default',
   className,
 }: FolderTreeProps) {
   const [innerExpanded, setInnerExpanded] = useState<Set<string>>(() => new Set(defaultExpandedIds ?? []));
@@ -318,7 +326,8 @@ export function FolderTree({
               onDropItems?.(n.id, e.dataTransfer);
             }}
             className={cn(
-              'flex h-[34px] items-center gap-1.5 rounded-md pr-2 text-ui',
+              'flex items-center gap-1.5 pr-2',
+              size === 'column' ? 'h-9 rounded-lg text-[14px]' : 'h-[34px] rounded-md text-ui',
               selected ? cn('font-medium text-brand-field-fg', !glide?.active && 'bg-brand-field') : 'text-fg hover:bg-hover',
               dropId === n.id && 'ring-2 ring-fg ring-inset',
               n.disabled && 'opacity-40',
@@ -373,7 +382,7 @@ export function FolderTree({
           {open && (
             <ul role="group" className="m-0 list-none p-0">
               {isLoading && !c ? (
-                <li role="none" className="flex h-[34px] items-center text-fg-secondary" style={{ paddingLeft: 4 + level * 18 + 26 }}>
+                <li role="none" className={cn('flex items-center text-fg-secondary', size === 'column' ? 'h-9' : 'h-[34px]')} style={{ paddingLeft: 4 + level * 18 + 26 }}>
                   <Spinner label={loadingLabel} />
                 </li>
               ) : (
