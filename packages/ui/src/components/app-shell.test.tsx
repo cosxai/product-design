@@ -407,4 +407,16 @@ describe('AppRail', () => {
     );
     expect(await a11y(container)).toHaveNoViolations();
   });
+
+  it('wraps a long unbroken title inside the dialog, clear of the close button', () => {
+    render(
+      <Dialog open>
+        <DialogContent title="Shareholder_agreement_final_signed_v12_with_all_schedules_and_annexes.pdf" closeLabel="Close">
+          body
+        </DialogContent>
+      </Dialog>,
+    );
+    const title = screen.getByRole('heading', { name: /Shareholder_agreement/ });
+    expect(title.className).toContain('[overflow-wrap:anywhere]');
+  });
 });

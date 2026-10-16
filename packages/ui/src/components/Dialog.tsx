@@ -116,7 +116,7 @@ export function DialogContent({
         <div className="flex items-start gap-4 px-7 pt-6">
           <div className="min-w-0 flex-1">
             {eyebrow && <div className="mb-2.5 text-meta font-medium text-fg-secondary">{eyebrow}</div>}
-            <DialogPrimitive.Title className="m-0 text-[21px] leading-[1.2] font-medium tracking-heading">{title}</DialogPrimitive.Title>
+            <DialogPrimitive.Title className="m-0 text-[21px] leading-[1.2] font-medium tracking-heading break-words [overflow-wrap:anywhere]">{title}</DialogPrimitive.Title>
           </div>
           {!hideClose && (
             <DialogPrimitive.Close asChild>

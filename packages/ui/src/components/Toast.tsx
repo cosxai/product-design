@@ -166,7 +166,7 @@ export function Toaster({ labels, offset = 24 }: ToasterProps) {
             <span aria-hidden className={cn('mt-[5px] size-2 shrink-0 rounded-pill', DOT[status])} />
             <div className="min-w-0 flex-1">
               <div className={statusLabelClass(status)}>{l[status]}</div>
-              <ToastPrimitive.Title className="text-ui leading-[1.4] font-medium">{t.title}</ToastPrimitive.Title>
+              <ToastPrimitive.Title className="text-ui leading-[1.4] font-medium break-words [overflow-wrap:anywhere]">{t.title}</ToastPrimitive.Title>
               {t.description && <ToastPrimitive.Description className="mt-0.5 text-[13px] leading-normal text-grey-inverse">{t.description}</ToastPrimitive.Description>}
               {t.action && (
                 <ToastPrimitive.Action

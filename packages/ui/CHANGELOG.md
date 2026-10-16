@@ -1,3 +1,9 @@
+## 1.0.0-alpha.32 (2026-10-16)
+
+- Dialog and Toast: a long unbroken title (a file name with no spaces) wraps
+  inside the box instead of running under the close button or past the
+  edge.
+
 ## 1.0.0-alpha.31 (2026-10-16)
 
 - FolderTree: `size` — `"column"` draws rows at an app's second-column row
