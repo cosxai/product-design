@@ -1,3 +1,9 @@
+## 1.0.0-alpha.33 (2026-10-17)
+
+- AsyncSelect, RecipientsInput, MentionInput results: the name keeps its
+  width and the meta on the right (a slug, "Customer · 3 projects")
+  truncates first, instead of a long meta squeezing the name to "QA-Sch…".
+
 ## 1.0.0-alpha.32 (2026-10-16)
 
 - Dialog and Toast: a long unbroken title (a file name with no spaces) wraps

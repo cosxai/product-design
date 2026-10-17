@@ -129,8 +129,9 @@ export function ListboxBody({
             i,
             <>
               <Avatar item={it} className={i === active ? 'bg-ink text-linen' : undefined} />
-              <span className="min-w-0 flex-1 truncate">{it.label}</span>
-              {it.meta && <span className="shrink-0 text-meta text-fg-secondary">{it.meta}</span>}
+              {/* The name keeps its width; the meta takes what's left and truncates first */}
+              <span className={cn('min-w-0 truncate', !it.meta && 'flex-1')}>{it.label}</span>
+              {it.meta && <span className="min-w-[4ch] flex-1 basis-0 truncate text-right text-meta text-fg-secondary">{it.meta}</span>}
             </>,
             selectedValues?.has(it.value),
           ),

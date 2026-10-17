@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -335,6 +335,19 @@ describe('AsyncSelect', () => {
     expect(search).toHaveBeenCalledTimes(2);
     await user.keyboard('{ArrowDown}{ArrowDown}{Enter}');
     expect(onCreate).toHaveBeenCalledWith('Har');
+  });
+
+  it('gives the name its room: the meta truncates first', async () => {
+    const user = timed();
+    render(<AsyncSelect aria-label="Customer" search={() => Promise.resolve(people)} />);
+    await user.type(screen.getByRole('combobox', { name: 'Customer' }), 'H');
+    await act(async () => void vi.advanceTimersByTime(300));
+    const list = await screen.findByRole('listbox');
+    const name = within(list).getByText('Harbour Ventures');
+    const meta = within(list).getByText('Customer · 3 projects');
+    expect(name.className).not.toMatch(/\bflex-1\b/);
+    expect(meta.className).toMatch(/\btruncate\b/);
+    expect(meta.className).toMatch(/\bflex-1\b/);
   });
 
   it('its results scroll with the wheel and on touch inside a modal Dialog', async () => {
