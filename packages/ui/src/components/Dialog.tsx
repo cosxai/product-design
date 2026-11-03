@@ -23,8 +23,9 @@ const WIDTH = {
 } as const;
 
 const MOBILE = {
-  // Confirmations stay centred.
-  center: 'max-sm:left-4 max-sm:right-4 max-sm:top-1/2 max-sm:-translate-y-1/2 max-sm:rounded-lg',
+  // Confirmations stay centred: 16px from each side, so the desktop's horizontal centring
+  // (left 50%, translate -50%) is dropped — kept, it pushed the dialog half off the left edge.
+  center: 'max-sm:left-4 max-sm:right-4 max-sm:w-auto max-sm:translate-x-0 max-sm:top-1/2 max-sm:-translate-y-1/2 max-sm:rounded-lg',
   // Long forms push in full screen.
   page: 'max-sm:inset-0 max-sm:max-h-none max-sm:rounded-none max-sm:border-0',
   // Light choices become a bottom sheet.
