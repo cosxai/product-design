@@ -47,12 +47,13 @@ export const LargeTitlePage = forwardRef<HTMLDivElement, LargeTitlePageProps>(fu
     <div className={cn('flex min-h-0 min-w-0 flex-1 flex-col bg-page text-fg', className)} {...rest}>
       <div
         className={cn(
-          'sticky top-0 z-20 grid h-11 shrink-0 grid-cols-[1fr_auto_1fr] items-center bg-page px-1.5 transition-shadow duration-(--motion-fade)',
+          // Each side keeps at least what it holds; the title takes what is left and truncates there, centred while room allows
+          'sticky top-0 z-20 grid h-11 shrink-0 grid-cols-[minmax(max-content,1fr)_minmax(0,auto)_minmax(max-content,1fr)] items-center gap-1 bg-page px-1.5 transition-shadow duration-(--motion-fade)',
           collapsed ? 'shadow-[0_1px_0_var(--rule-soft)]' : 'shadow-none',
         )}
       >
         <div className="flex min-w-0 items-center justify-start">{leading}</div>
-        <span aria-hidden={!collapsed} className={cn('max-w-[60vw] truncate text-[16px] font-medium transition-opacity duration-(--motion-fade)', collapsed ? 'opacity-100' : 'opacity-0')}>
+        <span aria-hidden={!collapsed} className={cn('min-w-0 truncate text-center text-[16px] font-medium transition-opacity duration-(--motion-fade)', collapsed ? 'opacity-100' : 'opacity-0')}>
           {title}
         </span>
         <div className="flex min-w-0 items-center justify-end gap-0.5">{actions}</div>
