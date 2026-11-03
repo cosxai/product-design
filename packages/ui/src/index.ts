@@ -83,5 +83,6 @@ export { WorkspaceMark, WorkspaceRow, type WorkspaceMarkProps, type WorkspaceRow
 export { AppRail, AppRailSlot, type AppRailItem, type AppRailProps, type AppRailSlotProps } from './components/AppRail';
 export { Avatar, type AvatarProps, type AvatarSize } from './components/Avatar';
 export { BottomSheet, type BottomSheetProps } from './components/BottomSheet';
+export { LargeTitlePage, type LargeTitlePageProps } from './components/LargeTitlePage';
 export { BottomTabs, type BottomTabItem, type BottomTabsProps } from './components/BottomTabs';
 export { Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, type PopoverContentProps } from './components/Popover';
