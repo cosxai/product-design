@@ -30,6 +30,25 @@ function Page({ actions }: { actions: ActionBarAction[] }) {
 }
 
 describe('ActionBar', () => {
+  it('a click runs the handler registered last, even when nothing the bar shows changed', async () => {
+    const seen: number[] = [];
+    function Counter() {
+      const [n, setN] = useState(0);
+      useActionBarItems('page', [{ id: 'save', label: 'Save', onSelect: () => seen.push(n) }]);
+      return <button type="button" onClick={() => setN((x) => x + 1)}>more</button>;
+    }
+    render(
+      <ActionBarProvider storageKey={null}>
+        <Counter />
+        <ActionBar foldable={false} />
+      </ActionBarProvider>,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'more' }));
+    await userEvent.click(screen.getByRole('button', { name: 'more' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(seen).toEqual([2]);
+  });
+
   it('stays whole when not foldable, even with a stored fold', () => {
     render(
       <ActionBarProvider storageKey={null} defaultFolded>

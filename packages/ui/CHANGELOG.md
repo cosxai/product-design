@@ -1,3 +1,10 @@
+## 1.0.0-alpha.36 (2026-11-12)
+
+- ActionBar: clicking an item runs the handler its page registered last, as
+  a shortcut already did. The bar only re-renders when what it shows
+  changes, so a Save clicked after a second edit used to save the form as it
+  was at the first one.
+
 ## 1.0.0-alpha.33 (2026-10-17)
 
 - AsyncSelect, RecipientsInput, MentionInput results: the name keeps its

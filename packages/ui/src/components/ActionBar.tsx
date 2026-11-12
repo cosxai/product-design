@@ -462,6 +462,12 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
   }, [width, prefs, setPrefs]);
 
   const list = mode ? mode.actions : selection ? selection.actions : idle;
+  // The bar re-renders only when what it shows changes, so a click reads the handler registered last, like a shortcut does
+  const run = (a: ActionBarAction) => {
+    const now = ctx.read();
+    const current = now.mode ? now.mode.actions : now.selection ? now.selection.actions : now.idle;
+    (current.find((x) => x.id === a.id) ?? a).onSelect();
+  };
   if (hiddenProp || hidden || (state === 'idle' && list.length === 0)) return null;
 
   if (folded) {
@@ -508,7 +514,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
         aria-keyshortcuts={a.shortcut ? keys ?? undefined : undefined}
         disabled={a.disabled && !a.disabledReason ? true : undefined}
         aria-disabled={a.disabledReason ? true : undefined}
-        onClick={() => !a.disabledReason && a.onSelect()}
+        onClick={() => !a.disabledReason && run(a)}
         className={cn(itemCls, a.active && 'bg-brand-field text-brand-field-fg hover:bg-brand-field ink:hover:bg-brand-field')}
       >
         {Glyph && <Glyph size={16} strokeWidth={1.75} aria-hidden />}
@@ -607,7 +613,7 @@ export function ActionBar({ presentation, hidden: hiddenProp, maxActions = 6, la
                   shortcut={a.shortcut ? formatShortcut(a.shortcut) : undefined}
                   disabled={Boolean(a.disabled)}
                   disabledReason={a.disabledReason}
-                  onSelect={() => a.onSelect()}
+                  onSelect={() => run(a)}
                 >
                   {a.label}
                 </MenuItem>
